@@ -148,8 +148,6 @@ export default class Routing {
 
     if (route.urlJs) {
       try {
-        const response = await fetch(route.urlJs);
-        // const data = await response.text();
         const script = document.createElement('script');
         script.type = 'module';
         script.src = route.urlJs;
@@ -157,14 +155,8 @@ export default class Routing {
           console.log('Script load successfully');
 
           import('../' + route.urlJs)
-          .then((module) => {
-              const { setGuiReference, setRouting } = module;
-              setGuiReference(guiReference);
-              setRouting(this);
-          })
-          .catch((err) => {
-            console.error('Errore durante l\'importazione del modulo:', err);
-          });
+          .then(module => module.onLoad(guiReference, this))
+          .catch(err => { throw err; });
         };
 
         script.onerror = err => {
