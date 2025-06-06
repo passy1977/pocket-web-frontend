@@ -32,21 +32,10 @@
         import Routing from "./js/pocket-routing.mjs";
         let routing = new Routing({
             context: document.getElementById('context'),
-            callbackUpdate: lastUpdate => {
-                            if(routing.getLastPath === '/home') {
-                                        console.debug(routing.getLastPath);
-                                                            const newElement = document.createElement('context');
-                        newElement.innerHTML = 'Contenuto HTML con <script>alert("Ciao!");<\/script>';
-                        // Aggiungi gli script in modo sicuro
-                        const scripts = newElement.getElementsByTagName('script');
-                        for (let i = 0; i < scripts.length; i++) {
-                            const scriptContent = scripts[i].textContent;
-                            const newScript = document.createElement('script');
-                            newScript.text = scriptContent;
-                            document.body.appendChild(newScript);
-                        }
-                        document.body.appendChild(newElement);
-                                    }
+            callbackUpdate: getLastPath => {
+                if(getLastPath === '/home') {
+                    console.debug(getLastPath);
+                }
             }
         });
 
@@ -58,23 +47,6 @@
             routing.load('/home');
         });
 
-
-        
-
-            if(routing.getLastPath === '/home') {
-                console.debug(routing.getLastPath);
-                                    const newElement = document.createElement('context');
-newElement.innerHTML = 'Contenuto HTML con <script>alert("Ciao!");<\/script>';
-// Aggiungi gli script in modo sicuro
-const scripts = newElement.getElementsByTagName('script');
-for (let i = 0; i < scripts.length; i++) {
-    const scriptContent = scripts[i].textContent;
-    const newScript = document.createElement('script');
-    newScript.text = scriptContent;
-    document.body.appendChild(newScript);
-}
-document.body.appendChild(newElement);
-            }
 
     </script>
 <script src="lib/bootstrap-5.3.6-dist/js/bootstrap.min.js"></script>
