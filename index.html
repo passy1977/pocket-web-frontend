@@ -5,29 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="lib/bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/bootstrap-5.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <div class="main-container">
+    <section class="main-container">
         <nav>
-            <button type="button" class="btn"><img src="images/ic_menu.svg" /></button>
-            <button type="button" class="btn"><img src="images/ic_add_black.svg" /></button>
-            <h2>Main</h2>
-            <button type="button" class="btn float-end"><img src="images/ic_add_field.svg" /></button>
-            <button type="button" class="btn float-end"><img src="images/ic_add_group.svg" /></button>
+            <button id="left" type="button" class="btn"><img id="left-image" src="images/ic_menu.svg" /></button>
+            <button type="button" class="btn" disabled><img src="images/pixel.png" /></button>
+            <h1 id="title">Main</h1>
+            <button id="right-0" type="button" class="btn float-end"><img id="right-0-image" src="images/ic_add_field.svg" /></button>
+            <button id="right-1" type="button" class="btn float-end"><img id="right-1-image" src="images/ic_add_group.svg" /></button>
         </nav>
 
-        <div class="m-3 ">
-            <div style="height: 400px; background-color: cornsilk;">
+        <div class="m-3">
+            <main id="context">
 
-            </div>
+            </main>
         </div>
-    </div>
+    </section>
 </div>
+    <script type="module">
+        import { } from "./js/pocket-web.mjs";
+        import Routing from "./js/pocket-routing.mjs";
+        let routing = new Routing({
+            context: document.getElementById('context'),
+            callbackUpdate: lastUpdate => {
+                            if(routing.getLastPath === '/home') {
+                                        console.debug(routing.getLastPath);
+                                                            const newElement = document.createElement('context');
+                        newElement.innerHTML = 'Contenuto HTML con <script>alert("Ciao!");<\/script>';
+                        // Aggiungi gli script in modo sicuro
+                        const scripts = newElement.getElementsByTagName('script');
+                        for (let i = 0; i < scripts.length; i++) {
+                            const scriptContent = scripts[i].textContent;
+                            const newScript = document.createElement('script');
+                            newScript.text = scriptContent;
+                            document.body.appendChild(newScript);
+                        }
+                        document.body.appendChild(newElement);
+                                    }
+            }
+        });
 
-<script src="lib/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+        window.addEventListener('load', () => {
+            routing.load(window.location.pathname);
+        });
+
+        document.getElementById('left').addEventListener('click', () => {
+            routing.load('/home');
+        });
+
+
+        
+
+            if(routing.getLastPath === '/home') {
+                console.debug(routing.getLastPath);
+                                    const newElement = document.createElement('context');
+newElement.innerHTML = 'Contenuto HTML con <script>alert("Ciao!");<\/script>';
+// Aggiungi gli script in modo sicuro
+const scripts = newElement.getElementsByTagName('script');
+for (let i = 0; i < scripts.length; i++) {
+    const scriptContent = scripts[i].textContent;
+    const newScript = document.createElement('script');
+    newScript.text = scriptContent;
+    document.body.appendChild(newScript);
+}
+document.body.appendChild(newElement);
+            }
+
+    </script>
+<script src="lib/bootstrap-5.3.6-dist/js/bootstrap.min.js"></script>
 </body>
 </html>

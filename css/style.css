@@ -13,24 +13,55 @@ body {
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh; /* Altezza completa della finestra */
+    height: 100vh;
     margin: 0;
+    margin-top: 2vh;
 }
 
-.btn-primary {
+nav {
+    background-color: var(--primary-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    line-height: 1.5em;
+    color: var(--text-selected);
+    font-size: x-large;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+nav img {
+    width: 40px;
+    height: 40px;
+}
+
+nav .btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.btn-secondary {
+nav .btn-secondary {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
     color: var(--text-color);
 }
 
-.btn-primary:hover {
+nav .btn-primary:hover {
     background-color: darken(var(--primary-color), 10%);
+}
+
+nav h1 {
+    display: inline-block;
+    line-height: 2vw;
+    left: 0;
+    margin: auto;
+    font-size: 1.75vw;
+    text-align: center;
+    font-weight: bold;
+}
+
+nav .btn:disabled {
+    border-color: transparent
 }
 
 .form-control {
@@ -42,9 +73,7 @@ body {
     color: rgba(var(--primary-color),var(--bs-text-opacity)) !important
 }
 
-/** commons **/
-
-.login-container, .main-container {
+.main-container {
     background: #fff;
     border-radius: var(--border-radius);
     border: solid 1px var(--primary-color);
