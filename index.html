@@ -28,24 +28,58 @@
     </section>
 </div>
     <script type="module">
-        import { } from "./js/pocket-web.mjs";
-        import Routing from "./js/pocket-routing.mjs";
-        let routing = new Routing({
-            context: document.getElementById('context'),
-            callbackUpdate: getLastPath => {
-                if(getLastPath === '/home') {
-                    console.debug(getLastPath);
+        import Routing, { guiReference } from "./js/pocket-routing.mjs";
+
+        let routing = null;
+        try {
+            routing = new Routing({
+                    context: document.getElementById('context'),
+                    buttonLeft: document.getElementById('left'),
+                    buttonLeftImage: document.getElementById('left-image'),
+                    title: document.getElementById('title'),
+                    buttonRight0: document.getElementById('right-0'),
+                    buttonRight0Image: document.getElementById('right-0-image'),
+                    buttonRight1: document.getElementById('right-1'),
+                    buttonRight1Image: document.getElementById('right-1-image')
+                },
+                getLastPath => {
+                    if(getLastPath === '/home') {
+                        console.debug(getLastPath);
+                    }
                 }
+            );
+        } catch (error) {
+            console.error('Failed to initialize routing:', error);
+            alert('An error occurred while initializing the routing mechanism.');
+        }
+
+
+        window.addEventListener('load', () => {
+            if (!routing) {
+                console.error('Routing instance is not initialized');
+                alert('Routing instance is not initialized. Please try reloading the page.');
+                return;
+            }
+
+            try {
+                routing
+                .load(window.location.pathname)
+                .catch(error => {
+                    console.error('Error loading resources:', error);
+                    alert(`An error occurred while loading the resources for ${window.location.pathname}: ${error.message}`);
+                })
+                .then(ret => {
+                    if (ret) {
+                        console.log("Route loaded successfully:", ret);
+                    } else {
+                        console.log("Failed to load route.");
+                    }
+                });
+            } catch (error) {
+                console.error(error);
             }
         });
 
-        window.addEventListener('load', () => {
-            routing.load(window.location.pathname);
-        });
-
-        document.getElementById('left').addEventListener('click', () => {
-            routing.load('/home');
-        });
 
 
     </script>
