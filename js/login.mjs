@@ -1,4 +1,4 @@
-export function onLoad(guiReference, routing) {
+export function onUpdateGui(session, guiReference) {
     guiReference?.buttonLeft?.addEventListener('click', () => {
         if (!routing) {
             console.error('Routing instance is not initialized');

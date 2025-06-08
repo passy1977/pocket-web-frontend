@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main</title>
+    <title></title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="lib/bootstrap-5.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 </head>
-<body>
+    <body>
 <div class="container">
     <section class="main-container">
         <nav>
@@ -20,19 +20,21 @@
             <button id="right-1" type="button" class="btn float-end"><img id="right-1-image" src="images/ic_add_group.svg" /></button>
         </nav>
 
-        <div class="m-3">
-            <main id="context">
 
-            </main>
+        <div class="m-3">
+            <div id="alert" class="alert alert-danger d-flex align-items-center" role="alert"></div>
+            <main id="context"></main>
         </div>
     </section>
 </div>
     <script type="module">
-        import Routing, { guiReference } from "./js/pocket-routing.mjs";
+        import Session, { guiReference } from "./js/pocket.mjs";
+        import Socket from "./js/socket.mjs";
 
-        let routing = null;
+        let session = null;
         try {
-            routing = new Routing({
+            session = new Session({
+                    alert: document.getElementById('alert'),
                     context: document.getElementById('context'),
                     buttonLeft: document.getElementById('left'),
                     buttonLeftImage: document.getElementById('left-image'),
@@ -49,20 +51,20 @@
                 }
             );
         } catch (error) {
-            console.error('Failed to initialize routing:', error);
-            alert('An error occurred while initializing the routing mechanism.');
+            console.error('Failed to initialize session:', error);
+            alert('An error occurred while initializing the session mechanism.');
         }
 
 
         window.addEventListener('load', () => {
-            if (!routing) {
-                console.error('Routing instance is not initialized');
-                alert('Routing instance is not initialized. Please try reloading the page.');
+            if (!session) {
+                console.error('Session instance is not initialized');
+                alert('Session instance is not initialized. Please try reloading the page.');
                 return;
             }
 
             try {
-                routing
+                session
                 .load(window.location.pathname)
                 .catch(error => {
                     console.error('Error loading resources:', error);
@@ -83,6 +85,6 @@
 
 
     </script>
-<script src="lib/bootstrap-5.3.6-dist/js/bootstrap.min.js"></script>
+    <script src="lib/bootstrap-5.3.6-dist/js/bootstrap.min.js"></script>
 </body>
 </html>

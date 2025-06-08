@@ -2,13 +2,14 @@
 export let guiReference = null;
 
 //python -m http.server 8000
-export default class Routing {
+export default class Session {
   #callbackUpdate;
   #lastPath;
   #routes;
   #logged;
 
   constructor({
+    alert,
     context, 
     buttonLeft, 
     buttonLeftImage, 
@@ -23,7 +24,11 @@ export default class Routing {
 ) {
 
     if (!new.target) {
-      throw new TypeError(`calling Routing constructor without new is invalid`);
+      throw new TypeError(`calling Session constructor without new is invalid`);
+    }
+
+    if(typeof alert !== 'object') {
+      throw new TypeError(`alert it's not a object`);
     }
 
     if(typeof context !== 'object') {
@@ -79,31 +84,31 @@ export default class Routing {
     this.#routes = {
         '/': { 
           urlView: 'views/login.html', 
-          urlJs: './js/pocket-login.mjs', 
+          urlJs: './js/login.mjs', 
           loginMandatory: false, 
           home: true
         },
         '/registration': { 
           urlView: 'views/registration.html', 
-          urlJs: './js/pocket-registration.mjs', 
+          urlJs: './js/registration.mjs', 
           loginMandatory: false, 
           home: false
         },
         '/home': { 
           urlView: 'views/home.html', 
-          urlJs: './js/pocket-home.mjs', 
+          urlJs: './js/home.mjs', 
           loginMandatory: true, 
           home: false
         },
         '/group-detail': { 
           urlView: 'views/group-detail.html', 
-          urlJs: './js/pocket-group-detail.mjs', 
+          urlJs: './js/group-detail.mjs', 
           loginMandatory: true, 
           home: false
         },
         '/field-detail': { 
           urlView: 'views/field-detail.html', 
-          urlJs: './js/pocket-field-detail.mjs', 
+          urlJs: './js/field-detail.mjs', 
           loginMandatory: true, 
           home: false
         },
@@ -155,7 +160,7 @@ export default class Routing {
           console.log('Script load successfully');
 
           import('../' + route.urlJs)
-          .then(module => module.onLoad(guiReference, this))
+          .then(module => module.onUpdateGui(this, guiReference))
           .catch(err => { throw err; });
         };
 
