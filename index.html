@@ -15,76 +15,18 @@
         <nav>
             <button id="left" type="button" class="btn"><img id="left-image" src="images/ic_menu.svg" /></button>
             <button type="button" class="btn" disabled><img src="images/pixel.png" /></button>
-            <h1 id="title">Main</h1>
+            <h1 id="title"></h1>
             <button id="right-0" type="button" class="btn float-end"><img id="right-0-image" src="images/ic_add_field.svg" /></button>
             <button id="right-1" type="button" class="btn float-end"><img id="right-1-image" src="images/ic_add_group.svg" /></button>
         </nav>
 
-
         <div class="m-3">
-            <div id="alert" class="alert alert-danger d-flex align-items-center" role="alert"></div>
+            <div id="alert" class="alert alert-danger d-flex align-items-center visually-hidden" role="alert"></div>
             <main id="context"></main>
         </div>
     </section>
 </div>
-    <script type="module">
-        import Session, { guiReference } from "./js/pocket.mjs";
-        import Socket from "./js/socket.mjs";
-
-        let session = null;
-        try {
-            session = new Session({
-                    alert: document.getElementById('alert'),
-                    context: document.getElementById('context'),
-                    buttonLeft: document.getElementById('left'),
-                    buttonLeftImage: document.getElementById('left-image'),
-                    title: document.getElementById('title'),
-                    buttonRight0: document.getElementById('right-0'),
-                    buttonRight0Image: document.getElementById('right-0-image'),
-                    buttonRight1: document.getElementById('right-1'),
-                    buttonRight1Image: document.getElementById('right-1-image')
-                },
-                getLastPath => {
-                    if(getLastPath === '/home') {
-                        console.debug(getLastPath);
-                    }
-                }
-            );
-        } catch (error) {
-            console.error('Failed to initialize session:', error);
-            alert('An error occurred while initializing the session mechanism.');
-        }
-
-
-        window.addEventListener('load', () => {
-            if (!session) {
-                console.error('Session instance is not initialized');
-                alert('Session instance is not initialized. Please try reloading the page.');
-                return;
-            }
-
-            try {
-                session
-                .load(window.location.pathname)
-                .catch(error => {
-                    console.error('Error loading resources:', error);
-                    alert(`An error occurred while loading the resources for ${window.location.pathname}: ${error.message}`);
-                })
-                .then(ret => {
-                    if (ret) {
-                        console.log("Route loaded successfully:", ret);
-                    } else {
-                        console.log("Failed to load route.");
-                    }
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        });
-
-
-
-    </script>
+    <script type="module" src="js/pocket.mjs"></script>
     <script src="lib/bootstrap-5.3.6-dist/js/bootstrap.min.js"></script>
 </body>
 </html>

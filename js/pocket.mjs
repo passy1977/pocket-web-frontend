@@ -1,207 +1,69 @@
+"use strict";
 
-export let guiReference = null;
+import Session from "./session.mjs";
+import Socket from "./socket.mjs";
 
-//python -m http.server 8000
-export default class Session {
-  #callbackUpdate;
-  #lastPath;
-  #routes;
-  #logged;
+let session = null;
 
-  constructor({
-    alert,
-    context, 
-    buttonLeft, 
-    buttonLeftImage, 
-    title, 
-    buttonRight0, 
-    buttonRight0Image, 
-    buttonRight1,
-    buttonRight1Image
-  }, 
-  callbackUpdate,
-  logged = false
-) {
-
-    if (!new.target) {
-      throw new TypeError(`calling Session constructor without new is invalid`);
+window.addEventListener('load', () => {
+    try {
+        session = new Session({
+                alert: document.getElementById('alert'),
+                context: document.getElementById('context'),
+                buttonLeft: document.getElementById('left'),
+                buttonLeftImage: document.getElementById('left-image'),
+                title: document.getElementById('title'),
+                buttonRight0: document.getElementById('right-0'),
+                buttonRight0Image: document.getElementById('right-0-image'),
+                buttonRight1: document.getElementById('right-1'),
+                buttonRight1Image: document.getElementById('right-1-image')
+            },
+            getLastPath => {
+                if(getLastPath === '/home') {
+                    console.debug(getLastPath);
+                }
+            }
+        );
+    } catch (error) {
+        console.error('Failed to initialize session:', error);
+        alert('An error occurred while initializing the session mechanism.');
     }
 
-    if(typeof alert !== 'object') {
-      throw new TypeError(`alert it's not a object`);
-    }
-
-    if(typeof context !== 'object') {
-      throw new TypeError(`context it's not a object`);
-    }
-
-    if(typeof buttonLeft !== 'object') {
-      throw new TypeError(`buttonLeft it's not a object`);
-    }
-
-    if(typeof buttonLeftImage !== 'object') {
-      throw new TypeError(`buttonLeftImage it's not a object`);
-    }
-
-    if(typeof title !== 'object') {
-      throw new TypeError(`title it's not a object`);
-    }
-
-    if(typeof buttonRight0!== 'object') {
-      throw new TypeError(`buttonRight0 it's not a object`);
-    }
-
-    if(typeof buttonRight0Image !== 'object') {
-      throw new TypeError(`buttonRight0Image it's not a object`);
-    }
-
-    if(typeof buttonRight1 !== 'object') {
-      throw new TypeError(`buttonRight1 it's not a object`);
-    }
-
-    if(typeof buttonRight1Image !== 'object') {
-      throw new TypeError(`buttonRight1Image it's not a object`);
-    }
-
-    if(typeof callbackUpdate !== 'function') {
-      throw new TypeError(`callbackUpdate it's not a function`);
-    }
-
-    guiReference = {
-      context,
-      buttonLeft,
-      buttonLeftImage,
-      title,
-      buttonRight0,
-      buttonRight0Image,
-      buttonRight1,
-      buttonRight1Image,
-    };
-    this.#callbackUpdate = callbackUpdate;
-    this.#logged = logged;
-
-    this.#lastPath = '';
-    this.#routes = {
-        '/': { 
-          urlView: 'views/login.html', 
-          urlJs: './js/login.mjs', 
-          loginMandatory: false, 
-          home: true
-        },
-        '/registration': { 
-          urlView: 'views/registration.html', 
-          urlJs: './js/registration.mjs', 
-          loginMandatory: false, 
-          home: false
-        },
-        '/home': { 
-          urlView: 'views/home.html', 
-          urlJs: './js/home.mjs', 
-          loginMandatory: true, 
-          home: false
-        },
-        '/group-detail': { 
-          urlView: 'views/group-detail.html', 
-          urlJs: './js/group-detail.mjs', 
-          loginMandatory: true, 
-          home: false
-        },
-        '/field-detail': { 
-          urlView: 'views/field-detail.html', 
-          urlJs: './js/field-detail.mjs', 
-          loginMandatory: true, 
-          home: false
-        },
-    };
-  }
-
-  get getLastPath() {
-    return this.#lastPath;
-  }
-
-  async loadView(path, route) {
-    if (typeof path !== 'string') {
-      throw new TypeError(`path is not a string`);
-    }
-
-    if (typeof route !== 'object' || !route.urlView) {
-      throw new TypeError(`route is not an object or does not have a urlView property`);
-    }
-
-    if (route.urlView) {
-      try {
-        const response = await fetch(route.urlView);
-        const data = await response.text();
-        guiReference.context.innerHTML = data;
-      } catch (error) {
-        console.error('Fetch error:', error);
-        throw new Error(`Failed to load view for ${path}`);
-      }
-    } else {
-      throw new Error(`route is null`);
-    }
-  }
-
-  async loadJs(path, route) {
-    if (typeof path !== 'string') {
-      throw new TypeError(`path is not a string`);
-    }
-
-    if (typeof route !== 'object' || !route.urlJs) {
-      throw new TypeError(`route is not an object or does not have a urlJs property`);
-    }
-
-    if (route.urlJs) {
-      try {
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = route.urlJs;
-        script.onload = () => {
-          console.log('Script load successfully');
-
-          import('../' + route.urlJs)
-          .then(module => module.onUpdateGui(this, guiReference))
-          .catch(err => { throw err; });
-        };
-
-        script.onerror = err => {
-          throw err;
-        };
-        
-        guiReference.context.appendChild(script);
-      } catch (error) {
-        throw new Error(`Failed to load JavaScript for ${path}`);
-      }
-    } else {
-      throw new Error(`route is null`);
-    }
-  }
-
-  async load(path) {
-    if(path === undefined || path === null) {
-      return false;
-    }
-    let route = null;
-    if (this.#routes.hasOwnProperty(path)) {
-      route = this.#routes[path];
-    } else {
-      route = this.#routes['/'];
-    }
-
-    if(route.loginMandatory && !this.#logged) {
-      throw new Error(`Login it's mandatory for ${path}`);
-    }
+    showAlert('pippo');
 
     try {
-      await this.loadView(path, route);
-      await this.loadJs(path, route);
-
-      this.#callbackUpdate(this.#lastPath);
-      return true;
+        session
+        .load(window.location.pathname)
+        .catch(error => {
+            console.error('Error loading resources:', error);
+            alert(`An error occurred while loading the resources for ${window.location.pathname}: ${error.message}`);
+        })
+        .then(ret => {
+            if (ret) {
+                console.log("Route loaded successfully:", ret);
+            } else {
+                console.log("Failed to load route.");
+            }
+        });
     } catch (error) {
-      console.error('Error loading resources:', error);
-      throw new Error(`Failed to load resources for ${path}`);
+        console.error(error);
     }
-  }
-};
+});
 
+export function showAlert(msg) {
+    if(msg === undefined || msg === null) {
+      return false;
+    }
+
+    if(typeof msg !== 'string') {
+      throw new TypeError(`msg it's not a string`);
+    }
+
+    session?.getGui?.alert.classList.remove('visually-hidden');
+    //session?.getGui?.alert.innerHTML = msg;
+    console.log(session?.getGui?.alert);
+}
+
+export function hideAlert() {
+    session?.getGui?.alert.classList.add('visually-hidden');
+}
