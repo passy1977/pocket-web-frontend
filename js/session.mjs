@@ -1,6 +1,8 @@
 
 "use strict";
 
+import showAlert from "./pocket.mjs";
+
 //python -m http.server 8000
 export default class Session {
   #callbackUpdate;
@@ -148,7 +150,7 @@ export default class Session {
 
           import('../' + route.urlJs)
           .then(module => module.onUpdateGui(this))
-          .catch(err => { throw err; });
+          .catch(err => { showAlert(err); });
         };
 
         script.onerror = err => {
@@ -180,9 +182,9 @@ export default class Session {
       route = this.#routes['/'];
     }
 
-    // if(route.loginMandatory && !this.#logged) {
-    //   throw new Error(`Login it's mandatory for ${path}`);
-    // }
+    if(route.loginMandatory && !this.#logged) {
+      throw new Error(`Login it's mandatory for ${path}`);
+    }
 
     document.title = route.title;
     this.#gui.title.innerHTML = route.title;
@@ -209,8 +211,8 @@ export default class Session {
 
     try {
       this.load(path)                
-      .catch(error => {
-          throw Error('Error loading resources:', error);
+      .catch(err => {
+          showAlert(err);
       })
       .then(ret => {
           if (ret) {

@@ -26,42 +26,26 @@ window.addEventListener('load', () => {
         );
     } catch (error) {
         console.error('Failed to initialize session:', error);
-        alert('An error occurred while initializing the session mechanism.');
+        showAlert('An error occurred while initializing the session mechanism.');
     }
 
-    showAlert('pippo');
-
     try {
-        session
-        .load(window.location.pathname)
-        .catch(error => {
-            console.error('Error loading resources:', error);
-            alert(`An error occurred while loading the resources for ${window.location.pathname}: ${error.message}`);
-        })
-        .then(ret => {
-            if (ret) {
-                console.log("Route loaded successfully:", ret);
-            } else {
-                console.log("Failed to load route.");
-            }
-        });
+        session.loadSynch(window.location.pathname);
     } catch (error) {
-        console.error(error);
+        showAlert(error);
     }
 });
 
-export function showAlert(msg) {
+export default function showAlert(msg) {
     if(msg === undefined || msg === null) {
       return false;
     }
 
-    if(typeof msg !== 'string') {
-      throw new TypeError(`msg it's not a string`);
-    }
-
     session?.getGui?.alert.classList.remove('visually-hidden');
-    //session?.getGui?.alert.innerHTML = msg;
-    console.log(session?.getGui?.alert);
+    
+    const div = document.createElement('div');
+    div.innerHTML = msg;
+    session?.getGui?.alert.appendChild(div);
 }
 
 export function hideAlert() {
