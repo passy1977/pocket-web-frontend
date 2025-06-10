@@ -25,12 +25,20 @@ export default class Session {
       throw new TypeError(`context it's not a object`);
     }
 
-    if(typeof gui.buttonLeft !== 'object') {
-      throw new TypeError(`buttonLeft it's not a object`);
+    if(typeof gui.buttonLeft0 !== 'object') {
+      throw new TypeError(`buttonLeft0 it's not a object`);
     }
 
-    if(typeof gui.buttonLeftImage !== 'object') {
-      throw new TypeError(`buttonLeftImage it's not a object`);
+    if(typeof gui.buttonLeftImage0 !== 'object') {
+      throw new TypeError(`buttonLeftImage0 it's not a object`);
+    }
+
+    if(typeof gui.buttonLeft1 !== 'object') {
+      throw new TypeError(`buttonLeft1 it's not a object`);
+    }
+
+    if(typeof gui.buttonLeftImage1 !== 'object') {
+      throw new TypeError(`buttonLeftImage1 it's not a object`);
     }
 
     if(typeof gui.title !== 'object') {
@@ -64,36 +72,36 @@ export default class Session {
     this.#lastPath = '';
     this.#routes = {
         '/': { 
-          urlView: 'views/login.html', 
-          urlJs: './views/login.mjs', 
+          urlView: '/views/login.html', 
+          urlJs: '/views/login.mjs', 
           title: 'Login',
           loginMandatory: false, 
           home: true
         },
         '/registration': { 
-          urlView: 'views/registration.html', 
-          urlJs: './views/registration.mjs', 
+          urlView: '/views/registration.html', 
+          urlJs: '/views/registration.mjs', 
           title: 'Registration',
           loginMandatory: false, 
           home: false
         },
         '/home': { 
-          urlView: 'views/home.html', 
-          urlJs: './views/home.mjs', 
+          urlView: '/views/home.html', 
+          urlJs: '/views/home.mjs', 
           title: 'Home',
           loginMandatory: true, 
           home: false
         },
         '/group-detail': { 
-          urlView: 'views/group-detail.html', 
-          urlJs: './views/group-detail.mjs', 
+          urlView: '/views/group-detail.html', 
+          urlJs: '/views/group-detail.mjs', 
           title: 'Group',
           loginMandatory: true, 
           home: false
         },
         '/field-detail': { 
-          urlView: 'views/field-detail.html', 
-          urlJs: './views/field-detail.mjs',
+          urlView: '/views/field-detail.html', 
+          urlJs: '/views/field-detail.mjs',
           title: 'Field', 
           loginMandatory: true, 
           home: false

@@ -10,8 +10,10 @@ window.addEventListener('load', () => {
         session = new Session({
                 alert: document.getElementById('alert'),
                 context: document.getElementById('context'),
-                buttonLeft: document.getElementById('left'),
-                buttonLeftImage: document.getElementById('left-image'),
+                buttonLeft0: document.getElementById('left-0'),
+                buttonLeftImage0: document.getElementById('left-image-0'),
+                buttonLeft1: document.getElementById('left-1'),
+                buttonLeftImage1: document.getElementById('left-image-1'),
                 title: document.getElementById('title'),
                 buttonRight0: document.getElementById('right-0'),
                 buttonRight0Image: document.getElementById('right-0-image'),
@@ -44,7 +46,7 @@ export default function showAlert(msg) {
     session?.getGui?.alert.classList.remove('visually-hidden');
     
     const div = document.createElement('div');
-    div.innerHTML = msg;
+    div.innerHTML += msg;
     session?.getGui?.alert.appendChild(div);
 }
 
