@@ -53,6 +53,7 @@ nav .btn-primary:hover {
 nav h1 {
     display: inline-block;
     line-height: 2vw;
+    min-height: 20px;
     left: 0;
     margin: auto;
     font-size: 20px;
@@ -90,4 +91,13 @@ nav .btn:disabled {
 .btn-primary.active {
   background-color: darken(var(--primary-color), 10%);
   border-color: darken(var(--primary-color), 10%);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.5);
 }
