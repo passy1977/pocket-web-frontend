@@ -1,7 +1,8 @@
 /* Variabili CSS per colori personalizzati */
 :root {
     --primary-color: #ef705d;
-    --secondary-color: #d1d2d3;
+    --secondary-color: #c4c4c4;
+    --secondary-active-color: #dcdcdc;
     --background-color: #f8f9fa;
     --text-color: #212529;
     --text-selected: #f8f9fa;
@@ -81,23 +82,32 @@ nav .btn:disabled {
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  width: 100%;
+    --bs-btn-bg: var(--secondary-color);
+    --bs-btn-border-color: var(--secondary-color);
+    --bs-btn-hover-bg: var(--secondary-active-color); 
+    --bs-btn-active-bg: var(--secondary-active-color);
+    --bs-btn-hover-border-color: var(--secondary-active-color);
+    --bs-btn-active-border-color: var(--secondary-color);
+    --bs-btn-disabled-bg: var(--secondary-active-color); 
+    --bs-btn-disabled-border-color: var(--secondary-active-color); 
+    width: 100%;
 }
 
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary.active {
-  background-color: darken(var(--primary-color), 10%);
-  border-color: darken(var(--primary-color), 10%);
+.btn-primary:active,
+.btn-primary:hover {
+    border-color: var(--secondary-active-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
 }
 
 .form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .form-check-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.5);
 }
