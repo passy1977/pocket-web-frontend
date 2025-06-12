@@ -1,1 +1,30 @@
-registration
+<div class="d-flex justify-content-center my-3">
+    <form id="form" class="mx-auto">
+        <!-- SERVER JSON CONFIGURATION -->
+        <div class="form-section">
+            <h3>SERVER JSON CONFIGURATION</h3>
+            <textarea id="jsonConfig" class="form-control" rows="10"></textarea>
+        </div>
+
+        <!-- SERVER USER CONFIGURATION -->
+        <div class="form-section">
+            <h3>SERVER USER CONFIGURATION</h3>
+            <div class="mb-3">
+                <label for="passwdInput" class="form-label">Enter password</label>
+                <input type="password" class="form-control" id="passwdInput">
+                <div id="passwdInputError" class="form-control-error collapse"></div>
+            </div>
+            <div class="mb-3">
+                <label for="confirmPasswdInput" class="form-label">Confirm password</label>
+                <input type="password" class="form-control" id="confirmPasswdInput">
+                <div id="confirmPasswdInputError" class="form-control-error collapse"></div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+</div>
+
+<link href="/views/registration.css" rel="stylesheet">
