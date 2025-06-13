@@ -3,7 +3,6 @@
 
 import showAlert from "./pocket.mjs";
 import BACKEND_URL from './constants.mjs';
-import Socket from "./socket.mjs";
 
 //python -m http.server 8000
 export default class Session {
@@ -12,7 +11,6 @@ export default class Session {
   #routes;
   #logged;
   #gui;
-  #socket;
 
   constructor(gui, callbackUpdate, logged = false) {
 
@@ -71,7 +69,6 @@ export default class Session {
     this.#gui = gui;
     this.#callbackUpdate = callbackUpdate;
     this.#logged = logged;
-    this.#socket = new Socket(BACKEND_URL);
 
     this.#lastPath = '';
     this.#routes = {

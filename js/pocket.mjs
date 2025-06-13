@@ -1,11 +1,10 @@
 "use strict";
 
 import Session from "./session.mjs";
-import Socket from "./socket.mjs";
 
 let session = null;
 
-window.addEventListener('load', () => {
+window.onload = () => {
     try {
         session = new Session({
                 alert: document.getElementById('alert'),
@@ -36,7 +35,7 @@ window.addEventListener('load', () => {
     } catch (error) {
         showAlert(error);
     }
-});
+};
 
 export default function showAlert(msg) {
     if(msg === undefined || msg === null) {
