@@ -1,6 +1,7 @@
 "use strict";
 
 import Session from "./session.mjs";
+import { fetchUserData } from "./serverAPI.mjs";
 
 let session = null;
 
@@ -25,6 +26,9 @@ window.onload = () => {
                 }
             }
         );
+
+        fetchUserData(23);
+
     } catch (error) {
         console.error('Failed to initialize session:', error);
         showAlert('An error occurred while initializing the session mechanism.');
