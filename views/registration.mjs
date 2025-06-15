@@ -1,6 +1,6 @@
 "use strict"
 
-import showAlert from "../js/pocket.mjs";
+import showAlert from '../js/pocket.mjs';
 
 export function onUpdateGui(session) {
     session?.getGui?.buttonLeft0?.classList.remove('collapse');
@@ -10,19 +10,19 @@ export function onUpdateGui(session) {
     document.getElementById('form').addEventListener('submit', event => {
         event.preventDefault();
 
-        let passwdInput = document.getElementById('passwdInput');
+        let inputPasswd = document.getElementById('inputPasswd');
         let confirmPasswdInput = document.getElementById('confirmPasswdInput');
 
         let exit = false;
-        if(passwdInput?.value === '') {
-            const div =  document.getElementById('passwdInputError');
+        if(inputPasswd?.value === '') {
+            const div =  document.getElementById('inputPasswdError');
             div.innerHTML = 'Password it\'s empty';
             div.classList.remove('collapse');
             exit = true;
         }
 
         if(confirmPasswdInput?.value === '') {
-            const div =  document.getElementById('confirmPasswdInputError');
+            const div =  document.getElementById('inputConfirmPasswdError');
             div.innerHTML = 'Confirm password it\'s empty';
             div.classList.remove('collapse');
             exit = true;
@@ -32,17 +32,12 @@ export function onUpdateGui(session) {
             return;
         }
         
-        if(passwdInput?.value !== confirmPasswdInput?.value) {
+        if(inputPasswd?.value !== confirmPasswdInput?.value) {
             showAlert('Passwords mismatch');
             return;
         } 
 
         session.loadSynch('/');
-        
-
-
-
-
       
     });
 

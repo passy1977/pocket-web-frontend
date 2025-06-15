@@ -1,15 +1,12 @@
 
 "use strict";
 
-import showAlert from "./pocket.mjs";
-import BACKEND_URL from './constants.mjs';
+import showAlert from './pocket.mjs';
 
 //python -m http.server 8000
 export default class Session {
   #callbackUpdate;
   #lastPath;
-  #routes;
-  #logged;
   #gui;
 
   constructor(gui, callbackUpdate, logged = false) {
@@ -68,46 +65,7 @@ export default class Session {
 
     this.#gui = gui;
     this.#callbackUpdate = callbackUpdate;
-    this.#logged = logged;
-
     this.#lastPath = '';
-    this.#routes = {
-        '/': { 
-          urlView: '/views/login.html', 
-          urlJs: '/views/login.mjs', 
-          title: 'Login',
-          loginMandatory: false, 
-          home: true
-        },
-        '/registration': { 
-          urlView: '/views/registration.html', 
-          urlJs: '/views/registration.mjs', 
-          title: 'Registration',
-          loginMandatory: false, 
-          home: false
-        },
-        '/home': { 
-          urlView: '/views/home.html', 
-          urlJs: '/views/home.mjs', 
-          title: 'Home',
-          loginMandatory: true, 
-          home: false
-        },
-        '/group-detail': { 
-          urlView: '/views/group-detail.html', 
-          urlJs: '/views/group-detail.mjs', 
-          title: 'Group',
-          loginMandatory: true, 
-          home: false
-        },
-        '/field-detail': { 
-          urlView: '/views/field-detail.html', 
-          urlJs: '/views/field-detail.mjs',
-          title: 'Field', 
-          loginMandatory: true, 
-          home: false
-        }
-    };
   }
 
   get getLastPath() {
@@ -118,89 +76,79 @@ export default class Session {
     return this.#gui;
   }
 
-  async #loadView(path, route) {
+  async #loadHtml(path) {
     if (typeof path !== 'string') {
       throw new TypeError(`path is not a string`);
     }
 
-    if (typeof route !== 'object' || !route.urlView) {
-      throw new TypeError(`route is not an object or does not have a urlView property`);
-    }
-
-    if (route.urlView) {
+    if (path) {
+      const fullPath = `/views${path}.html`;
       try {
-        const response = await fetch(route.urlView);
+        const response = await fetch(fullPath);
         const data = await response.text();
         this.#gui.context.innerHTML = data;
       } catch (error) {
-        throw new Error(`Failed to load view for ${path}: ${error}`);
+        throw new Error(`Failed to load view for ${fullPath}: ${error}`);
       }
     } else {
-      throw new Error(`route is null`);
+      throw new Error(`path is null`);
     }
   }
 
-  async #loadJs(path, route) {
+  async #loadJs(path) {
     if (typeof path !== 'string') {
       throw new TypeError(`path is not a string`);
     }
 
-    if (typeof route !== 'object' || !route.urlJs) {
-      throw new TypeError(`route is not an object or does not have a urlJs property`);
-    }
+    if (path) {
+      const fullPath = `/views${path}.mjs`;
 
-    if (route.urlJs) {
       try {
         const script = document.createElement('script');
         script.type = 'module';
-        script.src = route.urlJs;
+        script.src = fullPath;
         script.onload = () => {
-          console.log(`Script load successfully: ${route.urlJs}`);
+          console.log(`Script load successfully: ${fullPath}`);
 
-          import('../' + route.urlJs)
+          import(fullPath)
           .then(module => module.onUpdateGui(this))
-          .catch(err => { showAlert(err); });
+          .catch(err => showAlert(err.message));
         };
 
-        script.onerror = err => {
-          throw err;
-        };
+        script.onerror = err => showAlert(err.message)
+        
         
         this.#gui.context.appendChild(script);
       } catch (error) {
-        throw new Error(`Failed to load JavaScript for ${path}: ${error}`);
+        throw new Error(`Failed to load JavaScript for ${fullPath}: ${error}`);
       }
     } else {
-      throw new Error(`route is null`);
+      throw new Error(`path is null`);
     }
   }
 
-  async load(path) {
-    if(path === undefined || path === null) {
+  async load(data) {
+    if(data === undefined || data === null) {
       return false;
     }
 
-    if(typeof path !== 'string') {
-      throw new TypeError(`path it's not a string`);
+    if(typeof data !== 'object') {
+      throw new TypeError(`data it's not a object`);
+    }
+    
+    let {path, title} = data;
+
+    if(path === '/') {
+      path = '/login';
+      title = 'Login';
     }
 
-    let route = null;
-    if (this.#routes.hasOwnProperty(path)) {
-      route = this.#routes[path];
-    } else {
-      route = this.#routes['/'];
-    }
-
-    if(route.loginMandatory && !this.#logged) {
-      throw new Error(`Login it's mandatory for ${path}`);
-    }
-
-    document.title = route.title;
-    this.#gui.title.innerHTML = route.title;
+    document.title = title;
+    this.#gui.title.innerHTML = title;
 
     try {
-      await this.#loadView(path, route);
-      await this.#loadJs(path, route);
+      await this.#loadHtml(path);
+      await this.#loadJs(path);
 
       this.#callbackUpdate(this.#lastPath);
       return true;
@@ -209,17 +157,17 @@ export default class Session {
     }
   }
 
-  loadSynch(path) {
-    if(path === undefined || path === null) {
+  loadSynch(data) {
+    if(data === undefined || data === null) {
       return false;
     }
 
-    if(typeof path !== 'string') {
-      throw new TypeError(`path it's not a string`);
+    if(typeof data !== 'object') {
+      throw new TypeError(`data it's not a object`);
     }
 
     try {
-      this.load(path)                
+      this.load(data)                
       .catch(err => {
           showAlert(err);
       })

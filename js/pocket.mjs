@@ -1,7 +1,6 @@
 "use strict";
 
 import Session from "./session.mjs";
-import { fetchUserData } from "./serverAPI.mjs";
 
 let session = null;
 
@@ -27,15 +26,13 @@ window.onload = () => {
             }
         );
 
-        fetchUserData(23);
-
     } catch (error) {
         console.error('Failed to initialize session:', error);
         showAlert('An error occurred while initializing the session mechanism.');
     }
 
     try {
-        session.loadSynch(window.location.pathname);
+        session.loadSynch({path: window.location.pathname, title: "Login"});
     } catch (error) {
         showAlert(error);
     }
@@ -49,7 +46,7 @@ export default function showAlert(msg) {
     session?.getGui?.alert.classList.remove('visually-hidden');
     
     const div = document.createElement('div');
-    div.innerHTML += msg;
+    div.innerHTML = msg;
     session?.getGui?.alert.appendChild(div);
 }
 

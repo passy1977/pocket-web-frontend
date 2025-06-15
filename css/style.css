@@ -112,3 +112,15 @@ nav .btn:disabled {
 .form-check-input:focus {
     box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.5);
 }
+
+.form-section {
+    margin-top: 1em;
+}
+
+.form-control-error {
+    color: red;
+}
+
+.form-label {
+    margin-bottom: 0;
+}
