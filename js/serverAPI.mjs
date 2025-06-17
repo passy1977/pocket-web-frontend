@@ -31,7 +31,7 @@ export function login(email, passwd, callback) {
     }
 
     fetch(`${BACKEND_URL}/v5/pocket/login`, {
-        method: 'POST', // Imposta il metodo HTTP a POST
+        method: 'POST', 
         headers: {
             'Content-Type': 'application/json'
         },
