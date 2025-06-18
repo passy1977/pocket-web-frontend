@@ -1,7 +1,7 @@
 "use strict";
 
 import { login } from '../js/serverAPI.mjs';
-import showAlert from '../js/pocket.mjs';
+import showAlert, { hideAlert } from '../js/pocket.mjs';
 
 export function onUpdateGui(session) {
     session?.getGui?.buttonLeft0?.classList.add('collapse');
@@ -11,6 +11,7 @@ export function onUpdateGui(session) {
     document.getElementById('form').addEventListener('submit', event => {
         event.preventDefault();
 
+        hideAlert();
         let inputEmail = document.getElementById('inputEmail');
         let inputPasswd = document.getElementById('inputPasswd');
 

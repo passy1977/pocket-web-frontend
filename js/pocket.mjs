@@ -1,5 +1,6 @@
 "use strict";
 
+import { hello } from "./serverAPI.mjs";
 import Session from "./session.mjs";
 
 let session = null;
@@ -32,6 +33,19 @@ window.onload = () => {
     }
 
     try {
+        hello( ({data, error}) => {
+                if(data) {
+                    session.loadSynch(data);
+                } else {
+                    if(error) {
+                        showAlert(error);
+                    } else {
+                        showAlert('unhandled error');
+                    }
+                } 
+            }
+        );
+
         session.loadSynch({path: window.location.pathname, title: "Login"});
     } catch (error) {
         showAlert(error);
@@ -44,12 +58,14 @@ export default function showAlert(msg) {
     }
 
     session?.getGui?.alert.classList.remove('visually-hidden');
-    
     const div = document.createElement('div');
     div.innerHTML = msg;
     session?.getGui?.alert.appendChild(div);
 }
 
 export function hideAlert() {
-    session?.getGui?.alert.classList.add('visually-hidden');
+    if(session?.getGui?.alert) {
+        session.getGui.alert.innerHTML = '';
+        session.getGui.alert.classList.add('visually-hidden');
+    }
 }

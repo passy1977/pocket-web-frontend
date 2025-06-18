@@ -16,6 +16,18 @@ export function fetchUserData(userId) {
         });
 }
 
+export function hello(callback) {
+    fetch(`${BACKEND_URL}/v5/pocket/hello`, {
+        method: 'GET', 
+        headers: {
+            'Content-Type': 'text/plain'
+        }
+    })
+    .then(response => response.json()) 
+    .then(data => callback({data, error: null}))
+    .catch(error => callback({data: null, error}));
+}
+
 export function login(email, passwd, callback) {
 
     if(typeof email !== 'string') {
