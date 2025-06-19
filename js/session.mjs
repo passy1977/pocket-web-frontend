@@ -8,6 +8,7 @@ export default class Session {
   #callbackUpdate;
   #lastPath;
   #gui;
+  #lastData;
 
   constructor(gui, callbackUpdate, logged = false) {
 
@@ -136,7 +137,9 @@ export default class Session {
       throw new TypeError(`data it's not a object`);
     }
     
-    let {path, title} = data;
+    this.#lastData = data;
+
+    let {path, title} = this.#lastData;
 
     if(path === '/') {
       path = '/login';

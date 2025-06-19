@@ -124,3 +124,7 @@ nav .btn:disabled {
 .form-label {
     margin-bottom: 0;
 }
+
+#alert {
+    justify-content: center;
+}

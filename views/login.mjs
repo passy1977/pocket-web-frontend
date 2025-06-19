@@ -1,6 +1,6 @@
 "use strict";
 
-import { login } from '../js/serverAPI.mjs';
+import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert } from '../js/pocket.mjs';
 
 export function onUpdateGui(session) {
@@ -31,7 +31,7 @@ export function onUpdateGui(session) {
         }
 
         if(execute) {
-            login(inputEmail?.value, inputPasswd.value, ({data, error}) => {
+            serverAPI.login(inputEmail?.value, inputPasswd.value, ({data, error}) => {
                 if(data) {
                     session.loadSynch(data);
                 } else {

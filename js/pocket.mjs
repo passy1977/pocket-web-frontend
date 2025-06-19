@@ -1,6 +1,6 @@
 "use strict";
 
-import { hello } from "./serverAPI.mjs";
+import serverAPI from "./serverAPI.mjs";
 import Session from "./session.mjs";
 
 let session = null;
@@ -33,7 +33,7 @@ window.onload = () => {
     }
 
     try {
-        hello( ({data, error}) => {
+        serverAPI.hello( ({data, error}) => {
                 if(data) {
                     session.loadSynch(data);
                 } else {
@@ -45,8 +45,6 @@ window.onload = () => {
                 } 
             }
         );
-
-        session.loadSynch({path: window.location.pathname, title: "Login"});
     } catch (error) {
         showAlert(error);
     }
