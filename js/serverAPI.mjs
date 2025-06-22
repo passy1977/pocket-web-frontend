@@ -14,12 +14,12 @@ class ServerAPI {
             throw new TypeError(`url it's not a object`);
         }
 
-        this.#enterPoint = `${url}/v5/pocket/hello`;
+        this.#enterPoint = `${url}/v5/pocket`;
         this.#sessionId = null;
     }
 
     hello(callback) {
-        fetch(this.#enterPoint, {
+        fetch(this.#enterPoint + '/hello', {
             method: 'GET', 
             headers: {
                 'Content-Type': 'text/plain'
@@ -54,7 +54,7 @@ class ServerAPI {
             throw new TypeError(`callback it's not a function`); 
         }
 
-        fetch(this.#enterPoint, {
+        fetch(this.#enterPoint + '/login', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json'
@@ -62,12 +62,13 @@ class ServerAPI {
             body: JSON.stringify({
                 path: '/login',
                 title: 'Login',
-                jwt: null,
                 session_id: this.#sessionId,
+                jwt: null,
                 group: null,
                 group_fields: null,
                 field: null,
-                data: email + '|' + passwd
+                data: email + '|' + passwd,
+                error: null,
             })
         })
         .then(response => response.json()) 
