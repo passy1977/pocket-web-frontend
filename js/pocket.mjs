@@ -35,7 +35,7 @@ window.onload = () => {
     try {
         serverAPI.hello( ({data, error}) => {
                 if(data) {
-                    session.loadSynch(data);
+                    session.loadSync(data);
                 } else {
                     if(error) {
                         showAlert(error);

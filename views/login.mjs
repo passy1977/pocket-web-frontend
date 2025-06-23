@@ -33,7 +33,7 @@ export function onUpdateGui(session) {
         if(execute) {
             serverAPI.login(inputEmail?.value, inputPasswd.value, ({data, error}) => {
                 if(data) {
-                    session.loadSynch(data);
+                    session.loadSync(data);
                 } else {
                     if(error) {
                         showAlert(error);

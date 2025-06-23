@@ -19,11 +19,11 @@ class ServerAPI {
     }
 
     hello(callback) {
-        fetch(this.#enterPoint + '/hello', {
+        fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
             method: 'GET', 
             headers: {
                 'Content-Type': 'text/plain'
-            }
+            },
         })
         .then(response => response.json()) 
         .then(data => { 
@@ -61,13 +61,13 @@ class ServerAPI {
             },
             body: JSON.stringify({
                 path: '/login',
-                title: 'Login',
+                title: '',
                 session_id: this.#sessionId,
                 jwt: null,
                 group: null,
                 group_fields: null,
                 field: null,
-                data: email + '|' + passwd,
+                data: `${email}|${passwd}`,
                 error: null,
             })
         })
@@ -82,6 +82,54 @@ class ServerAPI {
         .catch(error => callback({data: null, error}));
     }
 
+    registration({jsonConfig, email, inputPasswd, confirmPasswdInput}) {
+        if(this.#sessionId === null) {
+            throw new Error(`Session not valid`);
+        }
+
+        if(typeof jsonConfig !== 'string') {
+            throw new TypeError(`jsonConfig it's not a string`);
+        }
+
+        if(typeof email !== 'string') {
+            throw new TypeError(`email it's not a string`);
+        }
+
+        if(typeof inputPasswd !== 'string') {
+            throw new TypeError(`inputPasswd it's not a string`);
+        }
+
+        if(typeof confirmPasswdInput !== 'string') {
+            throw new TypeError(`confirmPasswdInput it's not a string`);
+        }
+
+        fetch(this.#enterPoint + '/registration', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: '/registration',
+                title: '',
+                session_id: this.#sessionId,
+                jwt: null,
+                group: null,
+                group_fields: null,
+                field: null,
+                data: `${jsonConfig}|${email}|${inputPasswd}|${confirmPasswdInput}`,
+                error: null,
+            })
+        })
+          .then(response => response.json())
+          .then(data => {
+              if(data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id) {
+                  callback({data, error: null});
+              } else {
+                  callback({data: null, error: Error('No valid session_id')})
+              }
+          })
+          .catch(error => callback({data: null, error}));
+    }
 }
 
 const serverAPI = new ServerAPI(BACKEND_URL);

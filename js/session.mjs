@@ -160,7 +160,7 @@ export default class Session {
     }
   }
 
-  loadSynch(data) {
+  loadSync(data) {
     if(data === undefined || data === null) {
       return false;
     }
