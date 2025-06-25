@@ -1,6 +1,6 @@
 'use strict'
 
-import showAlert from '../js/pocket.mjs';
+import showAlert, { sleep } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 export function onUpdateGui(session) {
@@ -8,54 +8,61 @@ export function onUpdateGui(session) {
     session?.getGui?.buttonLeft1?.classList.add('collapse');
     session?.getGui?.buttonRight0?.classList.add('collapse');
     session?.getGui?.buttonRight1?.classList.add('collapse');
-    document.getElementById('form').addEventListener('submit', event => {
+    document.getElementById('form').addEventListener('submit', async event => {
         event.preventDefault();
 
-        const inputEmail = document.getElementById('inputEmail');
         const inputPasswd = document.getElementById('inputPasswd');
         const inputPasswdConfirm = document.getElementById('inputPasswdConfirm');
         const jsonConfig = document.getElementById('jsonConfig');
 
         let exit = false;
-        if(inputEmail?.value === '') {
-            const div =  document.getElementById('inputEmailError');
-            div.innerHTML = 'Email it\'s empty';
-            div.classList.remove('collapse');
-            exit = true;
-        }
-
-        if(inputPasswd?.value === '') {
-            const div =  document.getElementById('inputPasswdError');
+        if (inputPasswd?.value === '') {
+            const div = document.getElementById('inputPasswdError');
             div.innerHTML = 'Password it\'s empty';
             div.classList.remove('collapse');
             exit = true;
         }
 
-        if(inputPasswdConfirm?.value === '') {
-            const div =  document.getElementById('inputPasswdConfirmError');
+        if (inputPasswdConfirm?.value === '') {
+            const div = document.getElementById('inputPasswdConfirmError');
             div.innerHTML = 'Confirm password it\'s empty';
             div.classList.remove('collapse');
             exit = true;
         }
 
-        if(exit) {
+        if (exit) {
             return;
         }
-        
-        if(inputPasswd?.value !== inputPasswdConfirm?.value) {
+
+        if (inputPasswd?.value !== inputPasswdConfirm?.value) {
             inputPasswd.value = '';
             inputPasswdConfirm.value = '';
             showAlert('Passwords mismatch');
             return;
-        } 
+        }
 
-        if(jsonConfig?.value === '') {
+        if (jsonConfig?.value === '') {
             showAlert('Server json config empty');
             return;
         }
 
+        if (!session.getLastData) {
+            showAlert('Email empty');
+            await sleep(1000);
+            session.loadSync({
+                path: '/login',
+                title: 'Login'
+            })
+            return;
+        }
+
         try {
-            serverAPI.registration({jsonConfig: jsonConfig.value, email: inputEmail?.value, inputPasswd: inputPasswd.value, confirmPasswdInput: inputPasswdConfirm.value});
+            serverAPI.registration({
+                jsonConfig: jsonConfig.value,
+                email: session.getLastData,
+                inputPasswd: inputPasswd.value,
+                confirmPasswdInput: inputPasswdConfirm.value
+            });
         } catch (e) {
             showAlert('Server json config empty');
         }

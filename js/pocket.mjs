@@ -67,3 +67,11 @@ export function hideAlert() {
         session.getGui.alert.classList.add('visually-hidden');
     }
 }
+
+export function sleep(ms = 1000) {
+  if(typeof ms !== 'number') {
+    throw new TypeError(`ms it's not a object`);
+  }
+
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

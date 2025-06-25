@@ -6,7 +6,6 @@ import showAlert from './pocket.mjs';
 //python -m http.server 8000
 export default class Session {
   #callbackUpdate;
-  #lastPath;
   #gui;
   #lastData;
 
@@ -66,11 +65,10 @@ export default class Session {
 
     this.#gui = gui;
     this.#callbackUpdate = callbackUpdate;
-    this.#lastPath = '';
   }
 
-  get getLastPath() {
-    return this.#lastPath;
+  get getLastData() {
+    return this.#lastData;
   }
 
   get getGui() {
