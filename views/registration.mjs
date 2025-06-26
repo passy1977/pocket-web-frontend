@@ -59,9 +59,9 @@ export function onUpdateGui(session) {
         try {
             serverAPI.registration({
                 jsonConfig: jsonConfig.value,
-                email: session.getLastData,
-                inputPasswd: inputPasswd.value,
-                confirmPasswdInput: inputPasswdConfirm.value
+                email: session.getLastData.data,
+                passwd: inputPasswd.value,
+                confirmPasswd: inputPasswdConfirm.value
             });
         } catch (e) {
             showAlert('Server json config empty');

@@ -82,7 +82,7 @@ class ServerAPI {
         .catch(error => callback({data: null, error}));
     }
 
-    registration({jsonConfig, email, inputPasswd, confirmPasswdInput}) {
+    registration({jsonConfig, email, passwd, confirmPasswd}) {
         if(this.#sessionId === null) {
             throw new Error(`Session not valid`);
         }
@@ -95,12 +95,12 @@ class ServerAPI {
             throw new TypeError(`email it's not a string`);
         }
 
-        if(typeof inputPasswd !== 'string') {
-            throw new TypeError(`inputPasswd it's not a string`);
+        if(typeof passwd !== 'string') {
+            throw new TypeError(`passwd it's not a string`);
         }
 
-        if(typeof confirmPasswdInput !== 'string') {
-            throw new TypeError(`confirmPasswdInput it's not a string`);
+        if(typeof confirmPasswd !== 'string') {
+            throw new TypeError(`confirmPasswd it's not a string`);
         }
 
         fetch(this.#enterPoint + '/registration', {
@@ -116,7 +116,7 @@ class ServerAPI {
                 group: null,
                 group_fields: null,
                 field: null,
-                data: `${jsonConfig}|${email}|${inputPasswd}|${confirmPasswdInput}`,
+                data: `${jsonConfig}|${email}|${passwd}|${confirmPasswd}`,
                 error: null,
             })
         })

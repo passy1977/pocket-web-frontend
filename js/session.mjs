@@ -9,7 +9,7 @@ export default class Session {
   #gui;
   #lastData;
 
-  constructor(gui, callbackUpdate, logged = false) {
+  constructor(gui, callbackUpdate) {
 
     if (!new.target) {
       throw new TypeError(`calling Session constructor without new is invalid`);
@@ -151,7 +151,7 @@ export default class Session {
       await this.#loadHtml(path);
       await this.#loadJs(path);
 
-      this.#callbackUpdate(this.#lastPath);
+      this.#callbackUpdate(this.#lastData);
       return true;
     } catch (error) {
       throw new Error(`Failed to load resources for ${path}: ${error}`);

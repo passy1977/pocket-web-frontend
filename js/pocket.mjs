@@ -20,9 +20,9 @@ window.onload = () => {
                 buttonRight1: document.getElementById('right-1'),
                 buttonRight1Image: document.getElementById('right-1-image')
             },
-            getLastPath => {
-                if(getLastPath === '/home') {
-                    console.debug(getLastPath);
+            data => {
+                if(data.path === '/home') {
+                    console.debug("TODO", data);
                 }
             }
         );
