@@ -31,16 +31,18 @@ export function onUpdateGui(session) {
         }
 
         if(execute) {
-            serverAPI.login(inputEmail?.value, inputPasswd.value, ({data, error}) => {
-                if(data) {
-                    session.loadSync(data);
-                } else {
-                    if(error) {
+            serverAPI.login({
+                email: inputEmail?.value,
+                passwd: inputPasswd?.value,
+                callback: ({data, error}) => {
+                    if(data) {
+                        session.loadSync(data);
+                    } else if(error) {
                         showAlert(error);
                     } else {
                         showAlert('unhandled error');
                     }
-                } 
+                }
             });
         }
         

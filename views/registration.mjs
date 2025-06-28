@@ -61,7 +61,16 @@ export function onUpdateGui(session) {
                 jsonConfig: jsonConfig.value,
                 email: session.getLastData.data,
                 passwd: inputPasswd.value,
-                confirmPasswd: inputPasswdConfirm.value
+                confirmPasswd: inputPasswdConfirm.value,
+                callback: ({data, error}) => {
+                    if(data) {
+                        session.loadSync(data);
+                    } else if(error) {
+                        showAlert(error);
+                    } else {
+                        showAlert('unhandled error');
+                    }
+                }
             });
         } catch (e) {
             showAlert('Server json config empty');

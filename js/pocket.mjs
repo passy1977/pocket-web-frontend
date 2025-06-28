@@ -55,6 +55,10 @@ export default function showAlert(msg) {
       return false;
     }
 
+    if(msg === 'TypeError: Failed to fetch') {
+      msg = 'No server API connection';
+    }
+
     session?.getGui?.alert.classList.remove('visually-hidden');
     const div = document.createElement('div');
     div.innerHTML = msg;
