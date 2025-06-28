@@ -1,6 +1,6 @@
 'use strict'
 
-import showAlert, { sleep } from '../js/pocket.mjs';
+import showAlert, { hideAlert, sleep } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 export function onUpdateGui(session) {
@@ -11,23 +11,25 @@ export function onUpdateGui(session) {
     document.getElementById('form').addEventListener('submit', async event => {
         event.preventDefault();
 
+        hideAlert();
+
         const inputPasswd = document.getElementById('inputPasswd');
         const inputPasswdConfirm = document.getElementById('inputPasswdConfirm');
         const jsonConfig = document.getElementById('jsonConfig');
 
         let exit = false;
         if (inputPasswd?.value === '') {
-            const div = document.getElementById('inputPasswdError');
-            div.innerHTML = 'Password it\'s empty';
-            div.classList.remove('collapse');
+            inputPasswd?.classList.add('is-invalid');
             exit = true;
+        } else {
+            inputPasswd?.classList.remove('is-invalid');
         }
 
         if (inputPasswdConfirm?.value === '') {
-            const div = document.getElementById('inputPasswdConfirmError');
-            div.innerHTML = 'Confirm password it\'s empty';
-            div.classList.remove('collapse');
+            inputPasswdConfirm?.classList.add('is-invalid');
             exit = true;
+        } else {
+            inputPasswdConfirm?.classList.remove('is-invalid');
         }
 
         if (exit) {

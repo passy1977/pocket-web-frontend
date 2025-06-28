@@ -86,15 +86,10 @@ class ServerAPI {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                ...this.#defaultDataTransfer,
                 path: '/login',
-                title: '',
                 session_id: this.#sessionId,
-                jwt: null,
-                group: null,
-                group_fields: null,
-                field: null,
                 data: `${email}|${passwd}`,
-                error: null,
             })
         })
         .then(response => response.json()) 
@@ -133,15 +128,10 @@ class ServerAPI {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                ...this.#defaultDataTransfer,
                 path: '/registration',
-                title: '',
                 session_id: this.#sessionId,
-                jwt: null,
-                group: null,
-                group_fields: null,
-                field: null,
                 data: `${jsonConfig}|${email}|${passwd}|${confirmPasswd}`,
-                error: null,
             })
         })
           .then(response => response.json())

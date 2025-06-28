@@ -15,6 +15,15 @@ export function onUpdateGui(session) {
         let inputEmail = document.getElementById('inputEmail');
         let inputPasswd = document.getElementById('inputPasswd');
 
+
+        if(session.getLastData?.data) {
+            var dataSplit = data.data.split('|');
+
+            inputEmail.value = dataSplit[0];
+            inputEmail.value = dataSplit[1];
+        }
+
+
         let execute = true;
         if(inputEmail?.value === '') {
             inputEmail?.classList.add('is-invalid');
