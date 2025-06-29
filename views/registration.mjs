@@ -8,6 +8,11 @@ export function onUpdateGui(session) {
     session?.getGui?.buttonLeft1?.classList.add('collapse');
     session?.getGui?.buttonRight0?.classList.add('collapse');
     session?.getGui?.buttonRight1?.classList.add('collapse');
+
+    if(!session.getLastData?.data) {
+        throw 'Data null';
+    }
+
     document.getElementById('form').addEventListener('submit', async event => {
         event.preventDefault();
 

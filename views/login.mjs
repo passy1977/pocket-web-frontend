@@ -8,20 +8,23 @@ export function onUpdateGui(session) {
     session?.getGui?.buttonLeft1?.classList.add('collapse');
     session?.getGui?.buttonRight0?.classList.add('collapse');
     session?.getGui?.buttonRight1?.classList.add('collapse');
+
+    if(session.getLastData?.data) {
+        const inputEmail = document.getElementById('inputEmail');
+        const inputPasswd = document.getElementById('inputPasswd');
+
+        const dataSplit = session.getLastData.data.split('|');
+
+        inputEmail.value = dataSplit[0];
+        inputPasswd.value = dataSplit[1];
+    }
+
     document.getElementById('form').addEventListener('submit', event => {
         event.preventDefault();
 
         hideAlert();
-        let inputEmail = document.getElementById('inputEmail');
-        let inputPasswd = document.getElementById('inputPasswd');
-
-
-        if(session.getLastData?.data) {
-            var dataSplit = data.data.split('|');
-
-            inputEmail.value = dataSplit[0];
-            inputEmail.value = dataSplit[1];
-        }
+        const inputEmail = document.getElementById('inputEmail');
+        const inputPasswd = document.getElementById('inputPasswd');
 
 
         let execute = true;
