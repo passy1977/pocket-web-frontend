@@ -94,7 +94,6 @@ export function onUpdateGui(session) {
         }
     }
 
-
     if(session?.getLastData.fields) {
         for (const field of session?.getLastData.fields) {
             table += buildRow(ROW, {

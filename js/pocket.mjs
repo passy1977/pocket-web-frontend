@@ -5,7 +5,7 @@ import Session from "./session.mjs";
 
 let session = null;
 
-const debug = '/home';
+const debug = null;
 
 window.onload = () => {
     try {
