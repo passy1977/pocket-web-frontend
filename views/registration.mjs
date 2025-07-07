@@ -4,7 +4,17 @@ import showAlert, { hideAlert, sleep } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 export function onUpdateGui(session) {
-    session?.getGui?.buttonLeft0?.classList.remove('collapse');
+
+    session?.getGui?.buttonLeft0.classList.remove('collapse');
+    const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
+    buttonLeftImage0.src = '/images/ic_back.svg';
+    buttonLeftImage0.addEventListener('click', () =>
+      session.loadSync({
+          path: '/login',
+          title: 'Login'
+      })
+    );
+
     session?.getGui?.buttonLeft1?.classList.add('collapse');
     session?.getGui?.buttonRight0?.classList.add('collapse');
     session?.getGui?.buttonRight1?.classList.add('collapse');
@@ -85,13 +95,5 @@ export function onUpdateGui(session) {
 
     });
 
-    let buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
-    buttonLeftImage0.src = '/images/ic_back.svg';
-    buttonLeftImage0.addEventListener('click', () => 
-        session.loadSync({
-            path: '/login',
-            title: 'Login'
-        })
-    );
 }
 

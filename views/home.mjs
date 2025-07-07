@@ -52,22 +52,35 @@ function buildRow(ROW, {
 }
 
 export function onUpdateGui(session) {
+    session?.getGui?.buttonLeft0.classList.remove('collapse');
+    const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
+    buttonLeftImage0.src = '/images/ic_menu.svg';
+    buttonLeftImage0.addEventListener('click', () =>
+      console.log("buttonLeftImage0")
+    );
+
+    session?.getGui?.buttonRight0.classList.remove('collapse');
+    const buttonRightImage0 = session?.getGui?.buttonRightImage0;
+    buttonRightImage0.classList.remove('collapse');
+    buttonRightImage0.src = '/images/ic_add_field.svg';
+    buttonRightImage0.addEventListener('click', () =>
+      console.log("buttonRightImage0")
+    );
+
+    session?.getGui?.buttonRight1.classList.remove('collapse');
+    const buttonRightImage1 = session?.getGui?.buttonRightImage1;
+    buttonRightImage1.classList.remove('collapse');
+    buttonRightImage1.src = '/images/ic_add_group.svg';
+    buttonRightImage1.addEventListener('click', () =>
+      console.log("buttonRightImage1")
+    );
+
 
     const dataContainer = document.getElementById('data-container');
     if(!dataContainer) {
         throw new DOMException('data-container not found', 'home.mjs');
     }
     const ROW = dataContainer.innerHTML;
-
-
-    const a = buildRow(
-      ROW,
-      {
-          type: FieldType.GROUP,
-          title: 'Test',
-          passwd: 'passwd',
-      }
-    );
 
     let table = '';
     if(session?.getLastData.groups) {

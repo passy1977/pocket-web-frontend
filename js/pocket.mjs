@@ -18,9 +18,9 @@ window.onload = () => {
                 buttonLeftImage1: document.getElementById('left-image-1'),
                 title: document.getElementById('title'),
                 buttonRight0: document.getElementById('right-0'),
-                buttonRight0Image: document.getElementById('right-0-image'),
+                buttonRightImage0: document.getElementById('right-image-0'),
                 buttonRight1: document.getElementById('right-1'),
-                buttonRight1Image: document.getElementById('right-1-image')
+                buttonRightImage1: document.getElementById('right-image-1')
             },
             data => {
                 if(data.path === '/home') {

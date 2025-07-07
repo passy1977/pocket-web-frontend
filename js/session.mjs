@@ -47,16 +47,16 @@ export default class Session {
       throw new TypeError(`buttonRight0 it's not a object`);
     }
 
-    if(typeof gui.buttonRight0Image !== 'object') {
-      throw new TypeError(`buttonRight0Image it's not a object`);
+    if(typeof gui.buttonRightImage0 !== 'object') {
+      throw new TypeError(`buttonRightImage0 it's not a object`);
     }
 
     if(typeof gui.buttonRight1 !== 'object') {
       throw new TypeError(`buttonRight1 it's not a object`);
     }
 
-    if(typeof gui.buttonRight1Image !== 'object') {
-      throw new TypeError(`buttonRight1Image it's not a object`);
+    if(typeof gui.buttonRightImage1 !== 'object') {
+      throw new TypeError(`buttonRightImage1 it's not a object`);
     }
 
     if(typeof callbackUpdate !== 'function') {
