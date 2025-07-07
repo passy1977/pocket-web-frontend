@@ -125,6 +125,19 @@ nav .btn:disabled {
     margin-bottom: 0;
 }
 
+.btn-outline-secondary {
+    --bs-btn-color: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-hover-color: var(--primary-color);
+}
+
+.btn:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
 #alert {
     justify-content: center;
 }
+

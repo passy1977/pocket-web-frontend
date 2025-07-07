@@ -138,7 +138,36 @@ class ServerAPI {
           .then(data => this.#handleData(data, callback))
           .catch(error => callback({data: null, error}));
     }
+
+    debug({path, callback}) {
+        if(typeof path !== 'string') {
+            throw new TypeError(`path it's not a string`);
+        }
+
+        if(typeof callback !== 'function') {
+            throw new TypeError(`callback it's not a function`);
+        }
+
+        fetch(this.#enterPoint + '/debug', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...this.#defaultDataTransfer,
+                path: '/debug',
+                title: 'Debug',
+                session_id: 'debug',
+                data: path
+            })
+        })
+          .then(response => response.json())
+          .then(data => callback({ data: data, error: null }))
+          .catch(error => callback({data: null, error}));
+    }
 }
+
+
 
 const serverAPI = new ServerAPI(BACKEND_URL);
 

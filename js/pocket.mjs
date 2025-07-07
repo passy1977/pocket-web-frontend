@@ -5,6 +5,8 @@ import Session from "./session.mjs";
 
 let session = null;
 
+const debug = '/home';
+
 window.onload = () => {
     try {
         session = new Session({
@@ -33,18 +35,35 @@ window.onload = () => {
     }
 
     try {
+      if(!debug)  {
         serverAPI.hello( ({data, error}) => {
-                if(data) {
-                    session.loadSync(data);
-                } else {
-                    if(error) {
-                        showAlert(error);
-                    } else {
-                        showAlert('unhandled error');
-                    }
-                } 
+          if (data) {
+            session.loadSync(data);
+          } else {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
             }
-        );
+          }
+        });
+      } else {
+        serverAPI.debug( { path: debug, callback: ({data, error}) => {
+            if(data) {
+              session.loadSync(data);
+            } else {
+              if(error) {
+                showAlert(error);
+              } else {
+                showAlert('unhandled error');
+              }
+            }
+          }
+        });
+      }
+
+
+
     } catch (error) {
         showAlert(error);
     }
