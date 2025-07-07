@@ -1,19 +1,21 @@
 <div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-search">
-  <button class="btn btn-outline-secondary" type="button" id="button-search">Button</button>
+  <input type="text" class="form-control" placeholder="Filter the data below" aria-label="Filter the data below" aria-describedby="button-search">
+  <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
 </div>
 
 <div id="data-container" class="container">
-  <div id="row-{id}" class="row">
+  <div id="row-{type}-{id}" class="row">
     <div class="col-md-auto">
-      <img src="{icon}" alt="{icon-alt}" class="img-thumbnail">
+      <img src="{icon}" alt="{icon-alt}">
     </div>
     <div class="col">
       {title}
     </div>
+    <!--
     <div class="col">
       {passwd}
     </div>
+    -->
     <div class="col-md-auto">
       {buttons}
     </div>
