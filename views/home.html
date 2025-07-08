@@ -5,18 +5,18 @@
 
 <div id="data-container" class="container">
   <div id="row-{type}-{id}" class="row">
-    <div class="col-md-auto">
+    <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
       <img src="{icon}" alt="{icon-alt}">
     </div>
-    <div class="col">
+    <div class="col" data-type="{type}" data-type-id="{id}">
       {title}
     </div>
     <!--
-    <div class="col">
+    <div class="col-md-auto passwd" data-field="passwd" data-type="{type}" data-type-id="{id}">
       {passwd}
     </div>
     -->
-    <div class="col-md-auto">
+    <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
       {buttons}
     </div>
   </div>

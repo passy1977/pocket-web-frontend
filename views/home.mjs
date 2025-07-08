@@ -31,24 +31,39 @@ function buildRow(ROW, {
         throw new TypeError(`passwd it's not a string`);
     }
 
-    let row = ROW;
 
-    row = row.replace('{type}', type === FieldType.GROUP ? 'group' : 'field');
-    row = row.replace('{id}', id);
-    row = row.replace('{icon}', type === FieldType.GROUP ? 'images/ic_group.svg' : 'images/ic_field.svg');
-    row = row.replace('{icon-alt}', type === FieldType.GROUP ? 'Group icon' : 'Field icon');
-    row = row.replace('{title}', title);
+    let row = ROW.replaceAll('{type}', type === FieldType.GROUP ? 'group' : 'field');
+    row = row.replaceAll('{id}', id);
+    row = row.replaceAll('{icon}', type === FieldType.GROUP ? 'images/ic_group.svg' : 'images/ic_field.svg');
+    row = row.replaceAll('{icon-alt}', type === FieldType.GROUP ? 'Group icon' : 'Field icon');
+    row = row.replaceAll('{title}', title);
     if(passwd) {
-        row = row.replace('<!--', '');
-        row = row.replace('{passwd}', passwd);
-        row = row.replace('-->', '')
+        row = row.replaceAll('<!--', '');
+        row = row.replaceAll('{passwd}', passwd);
+        row = row.replaceAll('-->', '')
     } else {
-        row = row.replace('{passwd}', '');
+        row = row.replaceAll('{passwd}', '');
     }
 
-    row = row.replace('{buttons}', 'TODO');
+    row = row.replaceAll('{buttons}', 'TODO');
 
     return row;
+}
+
+function onClick(elm) {
+    if(typeof elm !== 'object') {
+        throw new TypeError(`elm it's not a object`);
+    }
+
+    console.log('click', elm);
+}
+
+function onTogglePasswd(elm) {
+    if(typeof elm !== 'object') {
+        throw new TypeError(`elm it's not a object`);
+    }
+
+    console.log('togglePasswd', elm);
 }
 
 export function onUpdateGui(session) {
@@ -97,7 +112,7 @@ export function onUpdateGui(session) {
     if(session?.getLastData.fields) {
         for (const field of session?.getLastData.fields) {
             table += buildRow(ROW, {
-                type: FieldType.GROUP,
+                type: FieldType.FIELD,
                 id: field.id,
                 title: field.title,
                 passwd: field.passwd
@@ -105,6 +120,36 @@ export function onUpdateGui(session) {
         }
     }
 
+    table += buildRow(ROW, {
+        type: FieldType.GROUP,
+        id: 1,
+        title: 'Test group',
+        passwd: null
+    });
+
+     table += buildRow(ROW, {
+        type: FieldType.FIELD,
+        id: 2,
+        title: 'Test field',
+        passwd: 'passwd'
+    });
+
     dataContainer.innerHTML = table;
+
+    for (const fader of dataContainer.children) {
+        for (const child of fader.children) {
+            const dataField = child.getAttribute('data-field');
+            if(dataField) {
+                child.setAttribute('data-hidden', true);
+                const textContent = child.textContent.trim();
+                child.textContent = '*'.repeat(textContent.length);
+
+                child.addEventListener('click', () => onTogglePasswd(child));
+            } else {
+                child.addEventListener('click', () => onClick(child));
+            }
+
+        }
+    }
 
 }

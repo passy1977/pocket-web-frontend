@@ -139,6 +139,10 @@ export default class Session {
 
     let {path, title} = this.#lastData;
 
+    if(path.startsWith('http')) {
+      throw new Error(`path can't start with "http"`);
+    }
+
     if(path === '/') {
       path = '/login';
       title = 'Login';
