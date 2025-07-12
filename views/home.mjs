@@ -1,5 +1,7 @@
 'use strict';
 
+import serverAPI from '../js/serverAPI.mjs';
+
 const FieldType = Object.freeze({
     GROUP: 0,
     FIELD: 1
@@ -119,6 +121,8 @@ export function onUpdateGui(session) {
             });
         }
     }
+
+    serverAPI.main(session.getNavigator[0]);
 
     table += buildRow(ROW, {
         type: FieldType.GROUP,

@@ -7,6 +7,7 @@ import showAlert from './pocket.mjs';
 export default class Session {
   #callbackUpdate;
   #gui;
+  #navigator;
   #lastData;
 
   constructor(gui, callbackUpdate) {
@@ -64,6 +65,10 @@ export default class Session {
     }
 
     this.#gui = gui;
+    this.#navigator = [{
+      groupId: 0,
+      search: ''
+    }];
     this.#callbackUpdate = callbackUpdate;
   }
 
@@ -73,6 +78,10 @@ export default class Session {
 
   get getGui() {
     return this.#gui;
+  }
+
+  get getNavigator() {
+    return this.#navigator;
   }
 
   async #loadHtml(path) {

@@ -35,7 +35,6 @@ class ServerAPI {
             path: '',
             title: '',
             session_id: null,
-            jwt: null,
             group: null,
             group_fields: null,
             field: null,
@@ -138,6 +137,37 @@ class ServerAPI {
           .then(data => this.#handleData(data, callback))
           .catch(error => callback({data: null, error}));
     }
+
+    main({groupId, search}) {
+        if(this.#sessionId === null) {
+            throw new Error(`Session not valid`);
+        }
+
+        if(typeof groupId !== 'number') {
+            throw new TypeError(`groupId it's not a groupId`);
+        }
+
+        if(typeof search !== 'string') {
+            throw new TypeError(`search it's not a string`);
+        }
+
+        fetch(this.#enterPoint + '/main', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...this.#defaultDataTransfer,
+                path: '/main',
+                session_id: this.#sessionId,
+                data: `${groupId}|${search}`,
+            })
+        })
+          .then(response => response.json())
+          .then(data => this.#handleData(data, callback))
+          .catch(error => callback({data: null, error}));
+    }
+
 
     debug({path, callback}) {
         if(typeof path !== 'string') {
