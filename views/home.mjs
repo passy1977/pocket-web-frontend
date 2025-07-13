@@ -99,8 +99,10 @@ export function onUpdateGui(session) {
     }
     const ROW = dataContainer.innerHTML;
 
+    const data = serverAPI.home(session.getNavigator[0]);
+
     let table = '';
-    if(session?.getLastData.groups) {
+    if(data?.groups) {
         for (const group of session?.getLastData.groups) {
             table += buildRow(ROW, {
                 type: FieldType.GROUP,
@@ -111,7 +113,7 @@ export function onUpdateGui(session) {
         }
     }
 
-    if(session?.getLastData.fields) {
+    if(data?.fields) {
         for (const field of session?.getLastData.fields) {
             table += buildRow(ROW, {
                 type: FieldType.FIELD,
@@ -122,7 +124,7 @@ export function onUpdateGui(session) {
         }
     }
 
-    serverAPI.main(session.getNavigator[0]);
+
 
     table += buildRow(ROW, {
         type: FieldType.GROUP,

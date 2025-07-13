@@ -138,7 +138,7 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
-    main({groupId, search}) {
+    home({groupId, search}) {
         if(this.#sessionId === null) {
             throw new Error(`Session not valid`);
         }
@@ -151,21 +151,20 @@ class ServerAPI {
             throw new TypeError(`search it's not a string`);
         }
 
-        fetch(this.#enterPoint + '/main', {
+        const data =  fetch(this.#enterPoint + '/home', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 ...this.#defaultDataTransfer,
-                path: '/main',
+                path: '/home',
                 session_id: this.#sessionId,
                 data: `${groupId}|${search}`,
             })
-        })
-          .then(response => response.json())
-          .then(data => this.#handleData(data, callback))
-          .catch(error => callback({data: null, error}));
+        }).await;
+
+        return data;
     }
 
 
