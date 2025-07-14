@@ -6,6 +6,7 @@ class ServerAPI {
     #sessionId;
     #handleData;
     #defaultDataTransfer;
+    #fetchData
 
     constructor(url) {
         if (!new.target) {
@@ -13,7 +14,7 @@ class ServerAPI {
         }
 
         if(typeof url !== 'string') {
-            throw new TypeError(`url it's not a object`);
+            throw new TypeError(`url it's not a string`);
         }
 
         this.#enterPoint = `${url}/v5/pocket`;
@@ -41,17 +42,47 @@ class ServerAPI {
             data: null,
             error: null,
         };
+        this.#fetchData = async (endPoint, body, method = 'POST', headers = { 'Content-Type': 'application/json' }) => {
+            if(typeof endPoint !== 'string') {
+                throw new TypeError(`endPoint it's not a string`);
+            }
+
+            if(body && typeof body !== 'string') {
+                throw new TypeError(`body it's not a string`);
+            }
+
+            if(typeof method !== 'string') {
+                throw new TypeError(`method it's not a string`);
+            }
+
+            if(typeof headers !== 'object') {
+                throw new TypeError(`headers it's not a object`);
+            }
+
+            const response = await fetch(endPoint,
+              {
+                method,
+                headers,
+                body
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+
+            await response.json().then(response => response.json()).then(data => data);
+        };
     }
 
     hello(callback) {
         fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
-            method: 'GET', 
+            method: 'GET',
             headers: {
                 'Content-Type': 'text/plain'
             },
         })
-        .then(response => response.json()) 
-        .then(data => { 
+        .then(response => response.json())
+        .then(data => {
             if(data.session_id && typeof data.session_id == 'string') {
                 this.#sessionId = data.session_id;
                 callback({data, error: null});
@@ -138,7 +169,7 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
-    home({groupId, search}) {
+    home({groupId, search}, callback) {
         if(this.#sessionId === null) {
             throw new Error(`Session not valid`);
         }
@@ -151,7 +182,11 @@ class ServerAPI {
             throw new TypeError(`search it's not a string`);
         }
 
-        const data =  fetch(this.#enterPoint + '/home', {
+        if(typeof callback !== 'function') {
+            throw new TypeError(`callback it's not a function`);
+        }
+
+        fetch(this.#enterPoint + '/home', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -162,11 +197,11 @@ class ServerAPI {
                 session_id: this.#sessionId,
                 data: `${groupId}|${search}`,
             })
-        }).await;
-
-        return data;
+        })
+          .then(response => response.json())
+          .then(data => this.#handleData(data, callback))
+          .catch(error => callback({data: null, error}));
     }
-
 
     debug({path, callback}) {
         if(typeof path !== 'string') {

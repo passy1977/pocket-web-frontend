@@ -8,7 +8,9 @@ export default class Session {
   #callbackUpdate;
   #gui;
   #navigator;
+  #group;
   #lastData;
+
 
   constructor(gui, callbackUpdate) {
 
@@ -64,12 +66,18 @@ export default class Session {
       throw new TypeError(`callbackUpdate it's not a function`);
     }
 
-    this.#gui = gui;
-    this.#navigator = [{
-      groupId: 0,
-      search: ''
-    }];
     this.#callbackUpdate = callbackUpdate;
+    this.#gui = gui;
+    this.#navigator = {
+      stack: [{
+        groupId: 0,
+        search: ''
+      }],
+      index: 0,
+    };
+    this.#group = {
+      note: ''
+    }
   }
 
   get getLastData() {

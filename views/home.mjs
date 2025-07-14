@@ -1,6 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
+import showAlert, { hideAlert } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
     GROUP: 0,
@@ -40,9 +41,9 @@ function buildRow(ROW, {
     row = row.replaceAll('{icon-alt}', type === FieldType.GROUP ? 'Group icon' : 'Field icon');
     row = row.replaceAll('{title}', title);
     if(passwd) {
-        row = row.replaceAll('<!--', '');
+        row = row.replaceAll('<!--passwd', '');
         row = row.replaceAll('{passwd}', passwd);
-        row = row.replaceAll('-->', '')
+        row = row.replaceAll('passwd-->', '')
     } else {
         row = row.replaceAll('{passwd}', '');
     }
@@ -69,6 +70,8 @@ function onTogglePasswd(elm) {
 }
 
 export function onUpdateGui(session) {
+    hideAlert();
+
     session?.getGui?.buttonLeft0.classList.remove('collapse');
     const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
     buttonLeftImage0.src = '/images/ic_menu.svg';
@@ -99,63 +102,60 @@ export function onUpdateGui(session) {
     }
     const ROW = dataContainer.innerHTML;
 
-    const data = serverAPI.home(session.getNavigator[0]);
+    const nav = session.getNavigator.stack[session.getNavigator.index];
 
-    let table = '';
-    if(data?.groups) {
-        for (const group of session?.getLastData.groups) {
-            table += buildRow(ROW, {
-                type: FieldType.GROUP,
-                id: group.id,
-                title: group.title,
-                passwd: null
-            });
-        }
-    }
+    serverAPI.home(nav, ({data, error}) => {
+        hideAlert();
+        if(data) {
+            const {groups, fields} = data;
 
-    if(data?.fields) {
-        for (const field of session?.getLastData.fields) {
-            table += buildRow(ROW, {
-                type: FieldType.FIELD,
-                id: field.id,
-                title: field.title,
-                passwd: field.passwd
-            });
-        }
-    }
-
-
-
-    table += buildRow(ROW, {
-        type: FieldType.GROUP,
-        id: 1,
-        title: 'Test group',
-        passwd: null
-    });
-
-     table += buildRow(ROW, {
-        type: FieldType.FIELD,
-        id: 2,
-        title: 'Test field',
-        passwd: 'passwd'
-    });
-
-    dataContainer.innerHTML = table;
-
-    for (const fader of dataContainer.children) {
-        for (const child of fader.children) {
-            const dataField = child.getAttribute('data-field');
-            if(dataField) {
-                child.setAttribute('data-hidden', true);
-                const textContent = child.textContent.trim();
-                child.textContent = '*'.repeat(textContent.length);
-
-                child.addEventListener('click', () => onTogglePasswd(child));
-            } else {
-                child.addEventListener('click', () => onClick(child));
+            let table = '';
+            if(groups) {
+                for (const group of groups) {
+                    table += buildRow(ROW, {
+                        type: FieldType.GROUP,
+                        id: group.id,
+                        title: group.title,
+                        passwd: null
+                    });
+                }
             }
 
+            if(data.fields) {
+                for (const field of fields) {
+                    table += buildRow(ROW, {
+                        type: FieldType.FIELD,
+                        id: field.id,
+                        title: field.title,
+                        passwd: field.passwd
+                    });
+                }
+            }
+
+            dataContainer.innerHTML = table;
+
+            for (const fader of dataContainer.children) {
+                for (const child of fader.children) {
+                    const dataField = child.getAttribute('data-field');
+                    if(dataField) {
+                        child.setAttribute('data-hidden', true);
+                        const textContent = child.textContent.trim();
+                        child.textContent = '*'.repeat(textContent.length);
+
+                        child.addEventListener('click', () => onTogglePasswd(child));
+                    } else {
+                        child.addEventListener('click', () => onClick(child));
+                    }
+
+                }
+            }
+        } else if(error) {
+            showAlert(error);
+        } else {
+            showAlert('unhandled error');
         }
-    }
+    });
+
+
 
 }
