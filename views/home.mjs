@@ -8,11 +8,14 @@ const FieldType = Object.freeze({
     FIELD: 1
 });
 
-function buildRow(ROW, {
-    type,
+let toastOpen = false;
+
+function buildRow(ROW, type, {
     id,
     title,
+    note,
     passwd,
+    has_child: hasChild
 }) {
     if(typeof ROW !== 'string') {
         throw new TypeError(`ROW it's not a string`);
@@ -30,22 +33,45 @@ function buildRow(ROW, {
         throw new TypeError(`title it's not a string`);
     }
 
+    if(note === FieldType.GROUP && typeof note !== 'string') {
+        throw new TypeError(`note it's not a string`);
+    }
+
+    if(hasChild === FieldType.GROUP && typeof hasChild !== 'boolean') {
+        throw new TypeError(`hasChild it's not a boolean`);
+    }
+
     if(type === FieldType.FIELD && typeof passwd !== 'string') {
         throw new TypeError(`passwd it's not a string`);
     }
-
 
     let row = ROW.replaceAll('{type}', type === FieldType.GROUP ? 'group' : 'field');
     row = row.replaceAll('{id}', id);
     row = row.replaceAll('{icon}', type === FieldType.GROUP ? 'images/ic_group.svg' : 'images/ic_field.svg');
     row = row.replaceAll('{icon-alt}', type === FieldType.GROUP ? 'Group icon' : 'Field icon');
     row = row.replaceAll('{title}', title);
+
+    if(note) {
+        row = row.replaceAll('<!--note', '');
+        row = row.replaceAll('{note-alt}', note.replaceAll('"', '\"'));
+        row = row.replaceAll('{note}', note);
+        row = row.replaceAll('note-->', '')
+    } else {
+        row = row.replaceAll('{note}', '');
+    }
+
     if(passwd) {
         row = row.replaceAll('<!--passwd', '');
         row = row.replaceAll('{passwd}', passwd);
         row = row.replaceAll('passwd-->', '')
     } else {
         row = row.replaceAll('{passwd}', '');
+    }
+
+    if(!hasChild) {
+        row = row.replaceAll('{no-child}', 'no-child');
+    } else {
+        row = row.replaceAll('{no-child}', '');
     }
 
     row = row.replaceAll('{buttons}', 'TODO');
@@ -57,6 +83,9 @@ function onClick(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
+    if(toastOpen) {
+        return;
+    }
 
     console.log('click', elm);
 }
@@ -65,8 +94,30 @@ function onTogglePasswd(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
+    if(toastOpen) {
+        return;
+    }
 
     console.log('togglePasswd', elm);
+}
+
+function onClickNote(elm) {
+    if(typeof elm !== 'object') {
+        throw new TypeError(`elm it's not a object`);
+    }
+    if(toastOpen) {
+        return;
+    }
+
+    const id = elm.getAttribute('data-type-id');
+    const toastEl = document.getElementById(`note-${id}`);
+    toastEl.addEventListener('hidden.bs.toast', function () {
+        toastOpen = false;
+    })
+    const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+
+    toast.show();
+    toastOpen = true;
 }
 
 export function onUpdateGui(session) {
@@ -112,23 +163,13 @@ export function onUpdateGui(session) {
             let table = '';
             if(groups) {
                 for (const group of groups) {
-                    table += buildRow(ROW, {
-                        type: FieldType.GROUP,
-                        id: group.id,
-                        title: group.title,
-                        passwd: null
-                    });
+                    table += buildRow(ROW, FieldType.GROUP, group);
                 }
             }
 
             if(data.fields) {
                 for (const field of fields) {
-                    table += buildRow(ROW, {
-                        type: FieldType.FIELD,
-                        id: field.id,
-                        title: field.title,
-                        passwd: field.passwd
-                    });
+                    table += buildRow(ROW, FieldType.FIELD, field);
                 }
             }
 
@@ -136,17 +177,24 @@ export function onUpdateGui(session) {
 
             for (const fader of dataContainer.children) {
                 for (const child of fader.children) {
-                    const dataField = child.getAttribute('data-field');
-                    if(dataField) {
-                        child.setAttribute('data-hidden', true);
-                        const textContent = child.textContent.trim();
-                        child.textContent = '*'.repeat(textContent.length);
+                    switch (child.getAttribute('data-field')) {
+                        case 'passwd': {
+                            child.setAttribute('data-hidden', true);
+                            const textContent = child.textContent.trim();
+                            child.textContent = '*'.repeat(textContent.length);
 
-                        child.addEventListener('click', () => onTogglePasswd(child));
-                    } else {
-                        child.addEventListener('click', () => onClick(child));
+                            child.addEventListener('click', () => onTogglePasswd(child));
+                            break;
+                        }
+                        case 'note': {
+                            child.addEventListener('click', () => onClickNote(child));
+                            break;
+                        }
+                        default: {
+                            child.addEventListener('click', () => onClick(child));
+                            break;
+                        }
                     }
-
                 }
             }
         } else if(error) {

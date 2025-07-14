@@ -12,7 +12,7 @@
     <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
       <img src="{icon}" alt="{icon-alt}">
     </div>
-    <div class="col" data-type="{type}" data-type-id="{id}">
+    <div class="col {no-child}" data-type="{type}" data-type-id="{id}">
       {title}
     </div>
     <!--passwd
@@ -20,9 +20,27 @@
       {passwd}
     </div>
     passwd-->
+    <!--note
+    <div class="col-md-auto note" data-field="note" data-type="{type}" data-type-id="{id}" data-note="{note}">
+      <img src="/images/ic_note.svg" alt="{note-alt}">
+    </div>
+    note-->
     <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
       {buttons}
     </div>
+    <!--note
+    <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
+      <div id="note-{id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">{title}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {note}
+        </div>
+      </div>
+    </div>
+    note-->
   </div>
 </div>
 

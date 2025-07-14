@@ -7,3 +7,7 @@
 .passwd {
     text-align: end;
 }
+
+.no-child {
+    font-style: italic;
+}
