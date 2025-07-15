@@ -3,12 +3,41 @@
 
 import showAlert from './pocket.mjs';
 
+export class GroupStacked {
+  #group;
+  #search
+
+  constructor(group, search) {
+    if (!new.target) {
+      throw new TypeError(`calling GroupStacked constructor without new is invalid`);
+    }
+
+    if(typeof group !== 'object') {
+      throw new TypeError(`group it's not a object`);
+    }
+
+    if(typeof search !== 'string') {
+      throw new TypeError(`search it's not a string`);
+    }
+
+    this.#group = group;
+    this.#search = search;
+  }
+
+  getGroup() {
+    return this.#group;
+  }
+
+  getSearch() {
+    return this.#search;
+  }
+
+}
 //python -m http.server 8000
 export default class Session {
   #callbackUpdate;
   #gui;
   #navigator;
-  #group;
   #lastData;
 
 
@@ -69,15 +98,9 @@ export default class Session {
     this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
     this.#navigator = {
-      stack: [{
-        groupId: 0,
-        search: ''
-      }],
+      stack: [new GroupStacked({id: 0, note: ''}, "")],
       index: 0,
     };
-    this.#group = {
-      note: ''
-    }
   }
 
   get getLastData() {

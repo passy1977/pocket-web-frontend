@@ -3,7 +3,7 @@
 </div>
 
 <div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Filter the data below" aria-label="Filter the data below" aria-describedby="button-search">
+  <input type="text" id="search" class="form-control" placeholder="Filter the data below" aria-label="Filter the data below" aria-describedby="button-search">
   <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
 </div>
 
@@ -15,14 +15,14 @@
     <div class="col {no-child}" data-type="{type}" data-type-id="{id}">
       {title}
     </div>
-    <!--passwd
+    <!--is-hidden
     <div class="col-md-auto passwd" data-field="passwd" data-type="{type}" data-type-id="{id}">
-      {passwd}
+      {is-hidden}
     </div>
-    passwd-->
+    is-hidden-->
     <!--note
     <div class="col-md-auto note" data-field="note" data-type="{type}" data-type-id="{id}" data-note="{note}">
-      <img src="/images/ic_note.svg" alt="{note-alt}">
+      <img src="/images/ic_note.svg" class="small-ico" alt="{note-alt}">
     </div>
     note-->
     <div class="col-md-auto" data-type="{type}" data-type-id="{id}">

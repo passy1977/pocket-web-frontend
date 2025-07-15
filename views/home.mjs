@@ -2,6 +2,7 @@
 
 import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert } from '../js/pocket.mjs';
+import { GroupStacked } from '../js/session.mjs';
 
 const FieldType = Object.freeze({
     GROUP: 0,
@@ -9,12 +10,15 @@ const FieldType = Object.freeze({
 });
 
 let toastOpen = false;
+const dataGroups = new Map();
+const dataFields = new Map();
+let globalSession = null;
 
 function buildRow(ROW, type, {
     id,
     title,
     note,
-    passwd,
+    is_hidden: isHidden,
     has_child: hasChild
 }) {
     if(typeof ROW !== 'string') {
@@ -41,8 +45,8 @@ function buildRow(ROW, type, {
         throw new TypeError(`hasChild it's not a boolean`);
     }
 
-    if(type === FieldType.FIELD && typeof passwd !== 'string') {
-        throw new TypeError(`passwd it's not a string`);
+    if(type === FieldType.FIELD && typeof isHidden !== 'boolean') {
+        throw new TypeError(`isHidden it's not a boolean`);
     }
 
     let row = ROW.replaceAll('{type}', type === FieldType.GROUP ? 'group' : 'field');
@@ -60,12 +64,12 @@ function buildRow(ROW, type, {
         row = row.replaceAll('{note}', '');
     }
 
-    if(passwd) {
-        row = row.replaceAll('<!--passwd', '');
-        row = row.replaceAll('{passwd}', passwd);
-        row = row.replaceAll('passwd-->', '')
+    if(isHidden) {
+        row = row.replaceAll('<!--is-hidden', '');
+        row = row.replaceAll('{is-hidden}', passwd);
+        row = row.replaceAll('is-hidden-->', '')
     } else {
-        row = row.replaceAll('{passwd}', '');
+        row = row.replaceAll('{is-hidden}', '');
     }
 
     if(!hasChild) {
@@ -87,6 +91,29 @@ function onClick(elm) {
         return;
     }
 
+    const search = document.getElementById(`search`);
+    const id = elm.getAttribute('data-type-id');
+    const type = elm.getAttribute('data-type');
+
+    switch (type) {
+        case 'group':
+            const idInt = parseInt(id);
+            if(globalSession && dataGroups.has(idInt)) {
+                globalSession.getNavigator.stack.push(
+                  new GroupStacked(dataGroups.get(idInt), search.textContent)
+                );
+                globalSession.getNavigator.index++;
+                globalSession.loadSync({
+                    path: '/home',
+                    title: 'Home',
+                });
+            }
+            break;
+        case 'field':
+            console.log(`field-${id}`);
+            break;
+
+    }
     console.log('click', elm);
 }
 
@@ -123,6 +150,8 @@ function onClickNote(elm) {
 export function onUpdateGui(session) {
     hideAlert();
 
+    globalSession = session;
+
     session?.getGui?.buttonLeft0.classList.remove('collapse');
     const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
     buttonLeftImage0.src = '/images/ic_menu.svg';
@@ -155,20 +184,33 @@ export function onUpdateGui(session) {
 
     const nav = session.getNavigator.stack[session.getNavigator.index];
 
-    serverAPI.home(nav, ({data, error}) => {
+    if(session.getNavigator.index > 0) {
+        document.title = nav.getGroup().title;
+        session.getGui.title.innerHTML = nav.getGroup().title;
+    }
+
+    serverAPI.home({
+        groupId: nav.getGroup().id,
+        search: nav.getSearch(),
+    }, ({data, error}) => {
         hideAlert();
         if(data) {
+            dataGroups.clear();
+            dataFields.clear();
+
             const {groups, fields} = data;
 
             let table = '';
             if(groups) {
                 for (const group of groups) {
+                    dataGroups.set(group.id, group);
                     table += buildRow(ROW, FieldType.GROUP, group);
                 }
             }
 
-            if(data.fields) {
+            if(fields) {
                 for (const field of fields) {
+                    dataFields.set(field.id, field);
                     table += buildRow(ROW, FieldType.FIELD, field);
                 }
             }

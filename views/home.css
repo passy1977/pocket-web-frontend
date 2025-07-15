@@ -11,3 +11,9 @@
 .no-child {
     font-style: italic;
 }
+
+.small-ico {
+    width: 19px;
+    height: 19px;
+
+}

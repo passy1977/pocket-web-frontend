@@ -175,7 +175,7 @@ class ServerAPI {
         }
 
         if(typeof groupId !== 'number') {
-            throw new TypeError(`groupId it's not a groupId`);
+            throw new TypeError(`groupId it's not a number`);
         }
 
         if(typeof search !== 'string') {
@@ -186,7 +186,7 @@ class ServerAPI {
             throw new TypeError(`callback it's not a function`);
         }
 
-        fetch(this.#enterPoint + '/home', {
+         fetch(this.#enterPoint + '/home', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
