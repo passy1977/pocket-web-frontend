@@ -15,5 +15,9 @@
 .small-ico {
     width: 19px;
     height: 19px;
+}
 
+.row-group:hover, .row-field:hover {
+    background-color: var(--secondary-active-color);
+    cursor: pointer;
 }

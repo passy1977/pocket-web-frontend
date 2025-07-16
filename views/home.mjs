@@ -2,14 +2,13 @@
 
 import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert } from '../js/pocket.mjs';
-import { GroupStacked } from '../js/session.mjs';
 
 const FieldType = Object.freeze({
     GROUP: 0,
     FIELD: 1
 });
 
-let toastOpen = false;
+let elmClicked = false;
 const dataGroups = new Map();
 const dataFields = new Map();
 let globalSession = null;
@@ -17,6 +16,7 @@ let globalSession = null;
 function buildRow(ROW, type, {
     id,
     title,
+    value,
     note,
     is_hidden: isHidden,
     has_child: hasChild
@@ -35,6 +35,10 @@ function buildRow(ROW, type, {
 
     if(typeof title !== 'string') {
         throw new TypeError(`title it's not a string`);
+    }
+
+    if(type === FieldType.FIELD && typeof value !== 'string') {
+        throw new TypeError(`value it's not a string`);
     }
 
     if(note === FieldType.GROUP && typeof note !== 'string') {
@@ -66,7 +70,7 @@ function buildRow(ROW, type, {
 
     if(isHidden) {
         row = row.replaceAll('<!--is-hidden', '');
-        row = row.replaceAll('{is-hidden}', passwd);
+        row = row.replaceAll('{is-hidden}', value);
         row = row.replaceAll('is-hidden-->', '')
     } else {
         row = row.replaceAll('{is-hidden}', '');
@@ -87,22 +91,17 @@ function onClick(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(toastOpen) {
+    if(elmClicked) {
         return;
     }
 
-    const search = document.getElementById(`search`);
-    const id = elm.getAttribute('data-type-id');
+    const id = parseInt(elm.getAttribute('data-type-id'));
     const type = elm.getAttribute('data-type');
 
     switch (type) {
         case 'group':
-            const idInt = parseInt(id);
-            if(globalSession && dataGroups.has(idInt)) {
-                globalSession.getNavigator.stack.push(
-                  new GroupStacked(dataGroups.get(idInt), search.textContent)
-                );
-                globalSession.getNavigator.index++;
+            if(globalSession && dataGroups.has(id)) {
+                globalSession.getStackNavigator.push(dataGroups.get(id),  document.getElementById(`search`)?.textContent);
                 globalSession.loadSync({
                     path: '/home',
                     title: 'Home',
@@ -117,34 +116,51 @@ function onClick(elm) {
     console.log('click', elm);
 }
 
-function onTogglePasswd(elm) {
+function onToggleHidden(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(toastOpen) {
+    if(elmClicked) {
         return;
     }
 
-    console.log('togglePasswd', elm);
+    const id = parseInt(elm.getAttribute('data-type-id'));
+
+    const dataContainer = document.getElementById('data-container');
+    for (const fader of dataContainer.children) {
+        for (const child of fader.children) {
+            if(child?.getAttribute('data-field') === 'is-hidden' && parseInt(child?.getAttribute('data-type-id')) === id) {
+                const field = dataFields.get(id);
+                if(child.getAttribute('data-hidden') === 'true') {
+                    child.textContent = field.value.trim();
+                    child.setAttribute('data-hidden', 'false');
+                } else {
+                    child.textContent = '*'.repeat(field.value.trim().length);
+                    child.setAttribute('data-hidden', 'true');
+                }
+
+            }
+        }
+    }
 }
 
 function onClickNote(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(toastOpen) {
+    if(elmClicked) {
         return;
     }
 
     const id = elm.getAttribute('data-type-id');
     const toastEl = document.getElementById(`note-${id}`);
     toastEl.addEventListener('hidden.bs.toast', function () {
-        toastOpen = false;
+        elmClicked = false;
     })
     const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
 
     toast.show();
-    toastOpen = true;
+    elmClicked = true;
 }
 
 export function onUpdateGui(session) {
@@ -152,28 +168,57 @@ export function onUpdateGui(session) {
 
     globalSession = session;
 
+    const {group, search} = session.getStackNavigator.get();
+
+    elmClicked = false;
+
     session?.getGui?.buttonLeft0.classList.remove('collapse');
     const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
-    buttonLeftImage0.src = '/images/ic_menu.svg';
-    buttonLeftImage0.addEventListener('click', () =>
-      console.log("buttonLeftImage0")
-    );
+    if(session.getStackNavigator.getIndex > 0) {
+        document.title = group.title;
+        session.getGui.title.innerHTML = group.title;
+        buttonLeftImage0.src = '/images/ic_back.svg';
+    } else {
+        buttonLeftImage0.src = '/images/ic_menu.svg';
+    }
+    buttonLeftImage0.addEventListener('click', () => {
+        if(elmClicked) {
+            return;
+        }
+        elmClicked = true;
+        session.getStackNavigator.pop();
+        globalSession.loadSync({
+            path: '/home',
+            title: 'Home',
+        });
+    });
 
     session?.getGui?.buttonRight0.classList.remove('collapse');
     const buttonRightImage0 = session?.getGui?.buttonRightImage0;
     buttonRightImage0.classList.remove('collapse');
     buttonRightImage0.src = '/images/ic_add_field.svg';
-    buttonRightImage0.addEventListener('click', () =>
-      console.log("buttonRightImage0")
-    );
+    buttonRightImage0.addEventListener('click', () => {
+        if(elmClicked) {
+            return;
+        }
+        elmClicked = true;
+        console.log('buttonRightImage0');
+    });
 
     session?.getGui?.buttonRight1.classList.remove('collapse');
     const buttonRightImage1 = session?.getGui?.buttonRightImage1;
     buttonRightImage1.classList.remove('collapse');
     buttonRightImage1.src = '/images/ic_add_group.svg';
-    buttonRightImage1.addEventListener('click', () =>
-      console.log("buttonRightImage1")
-    );
+    buttonRightImage1.addEventListener('click', () => {
+        if(elmClicked) {
+            return;
+        }
+        elmClicked = true;
+        console.log('buttonRightImage1');
+    });
+
+    const searchElm = document.getElementById(`search`);
+    searchElm.textContent = search;
 
 
     const dataContainer = document.getElementById('data-container');
@@ -182,20 +227,16 @@ export function onUpdateGui(session) {
     }
     const ROW = dataContainer.innerHTML;
 
-    const nav = session.getNavigator.stack[session.getNavigator.index];
 
-    if(session.getNavigator.index > 0) {
-        document.title = nav.getGroup().title;
-        session.getGui.title.innerHTML = nav.getGroup().title;
-    }
 
     serverAPI.home({
-        groupId: nav.getGroup().id,
-        search: nav.getSearch(),
+        groupId: group.id,
+        search: search,
     }, ({data, error}) => {
         hideAlert();
         if(data) {
             dataGroups.clear();
+            dataFields.clear();
             dataFields.clear();
 
             const {groups, fields} = data;
@@ -220,12 +261,12 @@ export function onUpdateGui(session) {
             for (const fader of dataContainer.children) {
                 for (const child of fader.children) {
                     switch (child.getAttribute('data-field')) {
-                        case 'passwd': {
-                            child.setAttribute('data-hidden', true);
+                        case 'is-hidden': {
+                            child.setAttribute('data-hidden', 'true');
                             const textContent = child.textContent.trim();
                             child.textContent = '*'.repeat(textContent.length);
 
-                            child.addEventListener('click', () => onTogglePasswd(child));
+                            child.addEventListener('click', () => onToggleHidden(child));
                             break;
                         }
                         case 'note': {

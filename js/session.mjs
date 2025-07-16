@@ -1,17 +1,23 @@
 
-"use strict";
+'use strict';
 
 import showAlert from './pocket.mjs';
 
-export class GroupStacked {
-  #group;
-  #search
+export class StackNavigator {
+  #stack;
+  #index;
 
-  constructor(group, search) {
+  constructor() {
     if (!new.target) {
       throw new TypeError(`calling GroupStacked constructor without new is invalid`);
     }
 
+    this.#stack = [];
+    this.push({id: 0, note: ''});
+    this.#index = 0;
+  }
+
+  push(group, search = '') {
     if(typeof group !== 'object') {
       throw new TypeError(`group it's not a object`);
     }
@@ -19,25 +25,35 @@ export class GroupStacked {
     if(typeof search !== 'string') {
       throw new TypeError(`search it's not a string`);
     }
-
-    this.#group = group;
-    this.#search = search;
+    this.#index++;
+    this.#stack.push({group, search});
   }
 
-  getGroup() {
-    return this.#group;
+  pop() {
+    this.#index--;
+    return this.#stack.pop();
   }
 
-  getSearch() {
-    return this.#search;
+  get(index = this.#index) {
+    if(typeof index !== 'number') {
+      throw new TypeError(`index it's not a number`);
+    }
+    return this.#stack[index];
   }
 
+  get getIndex() {
+    return this.#index;
+  }
+
+  get getSearch() {
+    return this.#index;
+  }
 }
-//python -m http.server 8000
+
 export default class Session {
   #callbackUpdate;
   #gui;
-  #navigator;
+  #stackNavigator;
   #lastData;
 
 
@@ -97,10 +113,7 @@ export default class Session {
 
     this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
-    this.#navigator = {
-      stack: [new GroupStacked({id: 0, note: ''}, "")],
-      index: 0,
-    };
+    this.#stackNavigator = new StackNavigator();
   }
 
   get getLastData() {
@@ -111,8 +124,8 @@ export default class Session {
     return this.#gui;
   }
 
-  get getNavigator() {
-    return this.#navigator;
+  get getStackNavigator() {
+    return this.#stackNavigator;
   }
 
   async #loadHtml(path) {

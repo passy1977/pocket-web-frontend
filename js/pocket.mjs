@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-import serverAPI from "./serverAPI.mjs";
-import Session from "./session.mjs";
+import serverAPI from './serverAPI.mjs';
+import Session from './session.mjs';
 
 let session = null;
 
@@ -24,7 +24,7 @@ window.onload = () => {
             },
             data => {
                 if(data.path === '/home') {
-                    console.debug("TODO", data);
+                    console.debug('TODO', data);
                 }
             }
         );

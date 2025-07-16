@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const BACKEND_URL = 'http://localhost:8080';
 

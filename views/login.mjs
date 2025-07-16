@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert } from '../js/pocket.mjs';
