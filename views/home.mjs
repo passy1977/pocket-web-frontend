@@ -41,11 +41,11 @@ function buildRow(ROW, type, {
         throw new TypeError(`value it's not a string`);
     }
 
-    if(note === FieldType.GROUP && typeof note !== 'string') {
+    if(type === FieldType.GROUP && typeof note !== 'string') {
         throw new TypeError(`note it's not a string`);
     }
 
-    if(hasChild === FieldType.GROUP && typeof hasChild !== 'boolean') {
+    if(type === FieldType.GROUP && typeof hasChild !== 'boolean') {
         throw new TypeError(`hasChild it's not a boolean`);
     }
 
@@ -76,7 +76,7 @@ function buildRow(ROW, type, {
         row = row.replaceAll('{is-hidden}', '');
     }
 
-    if(!hasChild) {
+    if(type === FieldType.GROUP && !hasChild) {
         row = row.replaceAll('{no-child}', 'no-child');
     } else {
         row = row.replaceAll('{no-child}', '');
@@ -109,7 +109,10 @@ function onClick(elm) {
             }
             break;
         case 'field':
-            console.log(`field-${id}`);
+            const elm = document.getElementById(`is-hidden-field-${id}`);
+            if(elm) {
+                onToggleHidden(elm);
+            }
             break;
 
     }
@@ -217,9 +220,31 @@ export function onUpdateGui(session) {
         console.log('buttonRightImage1');
     });
 
+    const noteContainer = document.getElementById(`note-container`);
+    const note = document.getElementById(`note`);
+    if(note && noteContainer && group.note) {
+        note.value = group.note;
+        noteContainer.classList.remove('collapse');
+    }
+
     const searchElm = document.getElementById(`search`);
     searchElm.textContent = search;
+    searchElm.addEventListener('keyup', event => {
+        if(typeof event !== 'object') {
+            throw new TypeError(`event it's not a object`);
+        }
+        if(elmClicked) {
+            return;
+        }
 
+        let {group, note} = session.getStackNavigator.get();
+        note = searchElm.textContent.trim();
+        globalSession.loadSync({
+            path: '/home',
+            title: 'Home',
+        });
+
+    });
 
     const dataContainer = document.getElementById('data-container');
     if(!dataContainer) {

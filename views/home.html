@@ -1,5 +1,5 @@
-<div class="input-group mb-3 collapse">
-  <textarea class="form-control" aria-label="Group note"></textarea>
+<div id="note-container" class="input-group mb-3 collapse">
+  <textarea id="note" class="form-control" aria-label="Group note" readonly></textarea>
 </div>
 
 <div class="input-group mb-3">
@@ -16,7 +16,7 @@
       {title}
     </div>
     <!--is-hidden
-    <div class="col-md-auto passwd" data-field="is-hidden" data-type="{type}" data-type-id="{id}">
+    <div id="is-hidden-{type}-{id}" class="col-md-auto passwd" data-field="is-hidden" data-type="{type}" data-type-id="{id}">
       {is-hidden}
     </div>
     is-hidden-->
@@ -42,6 +42,7 @@
     </div>
     note-->
   </div>
+  <div class="row row-separator"></div>
 </div>
 
 <link href="/views/home.css" rel="stylesheet">
