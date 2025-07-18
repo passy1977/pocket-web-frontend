@@ -20,13 +20,13 @@
       {is-hidden}
     </div>
     is-hidden-->
-    <!--note
-    <div class="col-md-auto note" data-field="note" data-type="{type}" data-type-id="{id}" data-note="{note}">
-      <img src="/images/ic_note.svg" class="small-ico" alt="{note-alt}">
-    </div>
-    note-->
-    <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
-      {buttons}
+    <div class="col-md-auto" data-field="buttons" data-type="{type}" data-type-id="{id}">
+      <!--note
+      <img src="/images/ic_note.svg" class="small-ico" data-field="note" data-type="{type}" data-type-id="{id}" alt="{note-alt}">
+      note-->
+      <img src="/images/ic_delete.svg" data-field="delete" data-type="{type}" data-type-id="{id}" alt="Delete {type}"/>
+      <img src="/images/ic_edit.svg" data-field="edit" data-type="{type}" data-type-id="{id}" alt="Edit {type}"/>
+      <img src="/images/ic_copy.svg" data-field="copy" data-type="{type}" data-type-id="{id}" alt="Copy {type}"/>
     </div>
     <!--note
     <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">

@@ -9,8 +9,8 @@ const FieldType = Object.freeze({
 });
 
 let elmClicked = false;
-const dataGroups = new Map();
-const dataFields = new Map();
+const globalGroups = new Map();
+const globalFields = new Map();
 let globalSession = null;
 
 function buildRow(ROW, type, {
@@ -82,8 +82,6 @@ function buildRow(ROW, type, {
         row = row.replaceAll('{no-child}', '');
     }
 
-    row = row.replaceAll('{buttons}', 'TODO');
-
     return row;
 }
 
@@ -100,8 +98,8 @@ function onClick(elm) {
 
     switch (type) {
         case 'group':
-            if(globalSession && dataGroups.has(id)) {
-                globalSession.getStackNavigator.push(dataGroups.get(id),  document.getElementById(`search`)?.textContent);
+            if(globalSession && globalGroups.has(id)) {
+                globalSession.getStackNavigator.push(globalGroups.get(id),  document.getElementById(`search`)?.textContent);
                 globalSession.loadSync({
                     path: '/home',
                     title: 'Home',
@@ -133,7 +131,7 @@ function onToggleHidden(elm) {
     for (const fader of dataContainer.children) {
         for (const child of fader.children) {
             if(child?.getAttribute('data-field') === 'is-hidden' && parseInt(child?.getAttribute('data-type-id')) === id) {
-                const field = dataFields.get(id);
+                const field = globalFields.get(id);
                 if(child.getAttribute('data-hidden') === 'true') {
                     child.textContent = field.value.trim();
                     child.setAttribute('data-hidden', 'false');
@@ -164,6 +162,37 @@ function onClickNote(elm) {
 
     toast.show();
     elmClicked = true;
+}
+
+function onClickDelete(elm) {
+    const id = parseInt(elm.getAttribute('data-type-id'));
+    const dataType = elm.getAttribute('data-type');
+    if(dataType !== 'group') {
+        const group = globalGroups?.get(id);
+        group.synchronized = false;
+        group.deleted = true;
+
+        //TODO
+    } else {
+        const field = globalFields?.get(id);
+        field.synchronized = false;
+        field.deleted = true;
+
+        //TODO
+    }
+}
+
+function onClickEdit(elm) {
+    console.log("onClickEdit", elm);
+}
+
+async function onClickCopy(elm) {
+    const id = parseInt(elm.getAttribute('data-type-id'));
+    try {
+        await navigator.clipboard.writeText(globalFields?.get(id).value);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 export function onUpdateGui(session) {
@@ -260,25 +289,30 @@ export function onUpdateGui(session) {
     }, ({data, error}) => {
         hideAlert();
         if(data) {
-            dataGroups.clear();
-            dataFields.clear();
-            dataFields.clear();
+            globalGroups.clear();
+            globalFields.clear();
+            elmClicked = false;
 
             const {groups, fields} = data;
 
             let table = '';
-            if(groups) {
-                for (const group of groups) {
-                    dataGroups.set(group.id, group);
-                    table += buildRow(ROW, FieldType.GROUP, group);
+            try {
+                if(groups) {
+                    for (const group of groups) {
+                        globalGroups.set(group.id, group);
+                        table += buildRow(ROW, FieldType.GROUP, group);
+                    }
                 }
-            }
 
-            if(fields) {
-                for (const field of fields) {
-                    dataFields.set(field.id, field);
-                    table += buildRow(ROW, FieldType.FIELD, field);
+                if(fields) {
+                    for (const field of fields) {
+                        globalFields.set(field.id, field);
+                        table += buildRow(ROW, FieldType.FIELD, field);
+                    }
                 }
+
+            } catch (e) {
+                showAlert(error);
             }
 
             dataContainer.innerHTML = table;
@@ -286,22 +320,38 @@ export function onUpdateGui(session) {
             for (const fader of dataContainer.children) {
                 for (const child of fader.children) {
                     switch (child.getAttribute('data-field')) {
-                        case 'is-hidden': {
+                        case 'is-hidden':
                             child.setAttribute('data-hidden', 'true');
                             const textContent = child.textContent.trim();
                             child.textContent = '*'.repeat(textContent.length);
 
                             child.addEventListener('click', () => onToggleHidden(child));
                             break;
-                        }
-                        case 'note': {
-                            child.addEventListener('click', () => onClickNote(child));
+                        case 'buttons':
+                            for (const img of child.children) {
+                                switch (img.getAttribute('data-field')) {
+                                    case 'note':
+                                        img.addEventListener('click', () => onClickNote(child));
+                                        break;
+                                    case 'delete':
+                                        img.addEventListener('click', () => onClickDelete(img));
+                                        break;
+                                    case 'edit':
+                                        img.addEventListener('click', () => onClickEdit(img));
+                                        break;
+                                    case 'copy':
+                                        if (child.getAttribute('data-type') === 'group') {
+                                            img.classList.add('collapse');
+                                        } else {
+                                            img.addEventListener('click', () => onClickCopy(img));
+                                        }
+                                        break;
+                                }
+                            }
                             break;
-                        }
-                        default: {
+                        default:
                             child.addEventListener('click', () => onClick(child));
                             break;
-                        }
                     }
                 }
             }
