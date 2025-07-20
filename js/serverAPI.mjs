@@ -230,16 +230,16 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
-    data({groups, groupFields, fields}, callback) {
-        if(typeof groups !== 'object') {
+    data({groups = null, groupFields = null, fields = null}, callback) {
+        if(groups && typeof groups !== 'object') {
             throw new TypeError(`group it's not a object`);
         }
 
-        if(typeof groupFields !== 'object') {
+        if(groupFields && typeof groupFields !== 'object') {
             throw new TypeError(`groupFields it's not a object`);
         }
 
-        if(typeof fields !== 'object') {
+        if(fields && typeof fields !== 'object') {
             throw new TypeError(`fields it's not a object`);
         }
 

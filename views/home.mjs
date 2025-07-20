@@ -182,13 +182,9 @@ function onClickDelete(elm) {
                 group.synchronized = false;
                 group.deleted = true;
 
-                // serverAPI.da({
-                //       groupId: group.id,
-                //       search,
-                //   },
-                //   updateRows);
-            };
-        })
+                serverAPI.data({groups: [group]}, updateRows);
+            }
+        });
 
     } else {
         showModal({
