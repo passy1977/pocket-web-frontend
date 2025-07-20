@@ -45,8 +45,8 @@ export function onUpdateGui(session) {
         if(execute) {
             serverAPI.login({
                 email: inputEmail?.value,
-                passwd: inputPasswd?.value,
-                callback: ({data, error}) => {
+                passwd: inputPasswd?.value
+            }, ({data, error}) => {
                     if(data) {
                         session.loadSync(data);
                     } else if(error) {
@@ -55,9 +55,8 @@ export function onUpdateGui(session) {
                         showAlert('unhandled error');
                     }
                 }
-            });
+            );
         }
-        
     });
 }
 

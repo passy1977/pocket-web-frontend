@@ -90,7 +90,10 @@ nav .btn:disabled {
     --bs-btn-hover-border-color: var(--secondary-active-color);
     --bs-btn-active-border-color: var(--secondary-color);
     --bs-btn-disabled-bg: var(--secondary-active-color); 
-    --bs-btn-disabled-border-color: var(--secondary-active-color); 
+    --bs-btn-disabled-border-color: var(--secondary-active-color);
+}
+
+.btn-full-width {
     width: 100%;
 }
 

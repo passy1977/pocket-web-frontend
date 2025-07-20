@@ -98,3 +98,56 @@ export function sleep(ms = 1000) {
 
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function showModal({title, message, close, confirm}, callback) {
+  if(typeof title !== 'string') {
+    throw new TypeError(`title it's not a string`);
+  }
+
+  if(typeof message !== 'string') {
+    throw new TypeError(`message it's not a string`);
+  }
+
+  if(typeof close !== 'string') {
+    throw new TypeError(`close it's not a string`);
+  }
+
+  if(typeof callback !== 'function') {
+    throw new TypeError(`callback it's not a function`);
+  }
+
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal'));
+  const titleEl = document.getElementById('modal-label');
+  const messageEl = document.getElementById('modal-body');
+  const closeHeaderEl = document.getElementById('modal-header-close');
+  const closeEl = document.getElementById('modal-close');
+  const confirmEl = document.getElementById('modal-confirm');
+
+  titleEl.innerHTML = title;
+  messageEl.innerHTML = message;
+  closeEl.innerHTML = close;
+
+  if (closeEl.onclick) {
+    closeEl.removeEventListener('click', closeEl.onclick);
+  }
+  closeEl.addEventListener('click', () => callback(false));
+
+  if (closeHeaderEl.onclick) {
+    closeHeaderEl.removeEventListener('click', closeEl.onclick);
+  }
+  closeHeaderEl.addEventListener('click', () => callback(false));
+
+  if(confirm !== null && typeof confirm === 'string') {
+    confirmEl.innerHTML = confirm;
+    if (confirmEl.onclick) {
+      confirmEl.removeEventListener('click', closeEl.onclick);
+    }
+    confirmEl.addEventListener('click', () => callback(true));
+    confirmEl.classList.remove('collapse');
+  } else {
+    confirmEl.classList.add('collapse');
+  }
+
+
+  modal.show();
+}

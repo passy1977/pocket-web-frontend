@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert } from '../js/pocket.mjs';
+import showAlert, { hideAlert, showModal } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
     GROUP: 0,
@@ -153,37 +153,93 @@ function onClickNote(elm) {
         return;
     }
 
-    const id = elm.getAttribute('data-type-id');
-    const toastEl = document.getElementById(`note-${id}`);
-    toastEl.addEventListener('hidden.bs.toast', function () {
-        elmClicked = false;
-    })
-    const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+    const id = parseInt(elm.getAttribute('data-type-id'));
+    const group = globalGroups.get(id);
 
-    toast.show();
+    showModal({
+        title: group.title,
+        message: group.note,
+        close: 'Close',
+    }, () => {
+        elmClicked = false;
+    });
+
     elmClicked = true;
 }
 
 function onClickDelete(elm) {
     const id = parseInt(elm.getAttribute('data-type-id'));
     const dataType = elm.getAttribute('data-type');
-    if(dataType !== 'group') {
-        const group = globalGroups?.get(id);
-        group.synchronized = false;
-        group.deleted = true;
+    if(dataType === 'group') {
+        showModal({
+            title: 'Delete group',
+            message: `Do you really want to delete <i>${globalGroups.get(id).title}</i> group and all depenencies?`,
+            close: 'No',
+            confirm: 'Yes',
+        }, (confirm) => {
+            if (confirm) {
+                const group = globalGroups?.get(id);
+                group.synchronized = false;
+                group.deleted = true;
 
-        //TODO
+                // serverAPI.da({
+                //       groupId: group.id,
+                //       search,
+                //   },
+                //   updateRows);
+            };
+        })
+
     } else {
-        const field = globalFields?.get(id);
-        field.synchronized = false;
-        field.deleted = true;
-
-        //TODO
+        showModal({
+            title: 'Delete field',
+            message: `Do you really want to delete <i>${globalFields.get(id).title}</i> field?`,
+            close: 'No',
+            confirm: 'Yes',
+        }, (confirm) => {
+            if (confirm) {
+                const field = globalFields?.get(id);
+                field.synchronized = false;
+                field.deleted = true;
+            }
+        });
     }
 }
 
 function onClickEdit(elm) {
-    console.log("onClickEdit", elm);
+    const id = parseInt(elm.getAttribute('data-type-id'));
+    const dataType = elm.getAttribute('data-type');
+    if(dataType === 'group') {
+        showModal({
+            title: 'Edit Group',
+            message: `Do you really want to edit <i>${globalGroups.get(id).title}</i>`,
+            close: 'No',
+            confirm: 'Yes',
+        }, (confirm) => {
+            if (confirm) {
+                const group = globalGroups?.get(id);
+
+                // serverAPI.da({
+                //       groupId: group.id,
+                //       search,
+                //   },
+                //   updateRows);
+            };
+        })
+
+    } else {
+        showModal({
+            title: 'Edit field',
+            message: `Do you really want to edit <i>${globalFields.get(id).title}</i> field?`,
+            close: 'No',
+            confirm: 'Yes',
+        }, (confirm) => {
+            if (confirm) {
+                const field = globalFields?.get(id);
+
+            }
+        });
+    }
 }
 
 async function onClickCopy(elm) {
@@ -249,13 +305,6 @@ export function onUpdateGui(session) {
         console.log('buttonRightImage1');
     });
 
-    const noteContainer = document.getElementById(`note-container`);
-    const note = document.getElementById(`note`);
-    if(note && noteContainer && group.note) {
-        note.value = group.note;
-        noteContainer.classList.remove('collapse');
-    }
-
     const searchElm = document.getElementById(`search`);
     searchElm.textContent = search;
     searchElm.addEventListener('keyup', event => {
@@ -266,8 +315,6 @@ export function onUpdateGui(session) {
             return;
         }
 
-        let {group, note} = session.getStackNavigator.get();
-        note = searchElm.textContent.trim();
         globalSession.loadSync({
             path: '/home',
             title: 'Home',
@@ -275,93 +322,93 @@ export function onUpdateGui(session) {
 
     });
 
-    const dataContainer = document.getElementById('data-container');
-    if(!dataContainer) {
-        throw new DOMException('data-container not found', 'home.mjs');
-    }
-    const ROW = dataContainer.innerHTML;
-
-
 
     serverAPI.home({
         groupId: group.id,
-        search: search,
-    }, ({data, error}) => {
-        hideAlert();
-        if(data) {
-            globalGroups.clear();
-            globalFields.clear();
-            elmClicked = false;
+        search,
+      },
+      updateRows);
+}
 
-            const {groups, fields} = data;
-
-            let table = '';
-            try {
-                if(groups) {
-                    for (const group of groups) {
-                        globalGroups.set(group.id, group);
-                        table += buildRow(ROW, FieldType.GROUP, group);
-                    }
-                }
-
-                if(fields) {
-                    for (const field of fields) {
-                        globalFields.set(field.id, field);
-                        table += buildRow(ROW, FieldType.FIELD, field);
-                    }
-                }
-
-            } catch (e) {
-                showAlert(error);
-            }
-
-            dataContainer.innerHTML = table;
-
-            for (const fader of dataContainer.children) {
-                for (const child of fader.children) {
-                    switch (child.getAttribute('data-field')) {
-                        case 'is-hidden':
-                            child.setAttribute('data-hidden', 'true');
-                            const textContent = child.textContent.trim();
-                            child.textContent = '*'.repeat(textContent.length);
-
-                            child.addEventListener('click', () => onToggleHidden(child));
-                            break;
-                        case 'buttons':
-                            for (const img of child.children) {
-                                switch (img.getAttribute('data-field')) {
-                                    case 'note':
-                                        img.addEventListener('click', () => onClickNote(child));
-                                        break;
-                                    case 'delete':
-                                        img.addEventListener('click', () => onClickDelete(img));
-                                        break;
-                                    case 'edit':
-                                        img.addEventListener('click', () => onClickEdit(img));
-                                        break;
-                                    case 'copy':
-                                        if (child.getAttribute('data-type') === 'group') {
-                                            img.classList.add('collapse');
-                                        } else {
-                                            img.addEventListener('click', () => onClickCopy(img));
-                                        }
-                                        break;
-                                }
-                            }
-                            break;
-                        default:
-                            child.addEventListener('click', () => onClick(child));
-                            break;
-                    }
-                }
-            }
-        } else if(error) {
-            showAlert(error);
-        } else {
-            showAlert('unhandled error');
+function updateRows({data, error}) {
+    hideAlert();
+    if(data) {
+        const dataContainer = document.getElementById('data-container');
+        if(!dataContainer) {
+            throw new DOMException('data-container not found', 'home.mjs');
         }
-    });
+        const ROW = dataContainer.innerHTML;
 
+        globalGroups.clear();
+        globalFields.clear();
+        elmClicked = false;
 
+        const {groups, fields} = data;
+
+        let table = '';
+        try {
+            if(groups) {
+                for (const group of groups) {
+                    globalGroups.set(group.id, group);
+                    table += buildRow(ROW, FieldType.GROUP, group);
+                }
+            }
+
+            if(fields) {
+                for (const field of fields) {
+                    globalFields.set(field.id, field);
+                    table += buildRow(ROW, FieldType.FIELD, field);
+                }
+            }
+
+        } catch (e) {
+            showAlert(error);
+        }
+
+        dataContainer.innerHTML = table;
+
+        for (const fader of dataContainer.children) {
+            for (const child of fader.children) {
+                switch (child.getAttribute('data-field')) {
+                    case 'is-hidden':
+                        child.setAttribute('data-hidden', 'true');
+                        const textContent = child.textContent.trim();
+                        child.textContent = '*'.repeat(textContent.length);
+
+                        child.addEventListener('click', () => onToggleHidden(child));
+                        break;
+                    case 'buttons':
+                        for (const img of child.children) {
+                            switch (img.getAttribute('data-field')) {
+                                case 'note':
+                                    img.addEventListener('click', () => onClickNote(child));
+                                    break;
+                                case 'delete':
+                                    img.addEventListener('click', () => onClickDelete(img));
+                                    break;
+                                case 'edit':
+                                    img.addEventListener('click', () => onClickEdit(img));
+                                    break;
+                                case 'copy':
+                                    if (child.getAttribute('data-type') === 'group') {
+                                        img.classList.add('collapse');
+                                    } else {
+                                        img.addEventListener('click', () => onClickCopy(img));
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
+                    default:
+                        child.addEventListener('click', () => onClick(child));
+                        break;
+                }
+            }
+        }
+    } else if(error) {
+        showAlert(error);
+    } else {
+        showAlert('unhandled error');
+    }
 
 }

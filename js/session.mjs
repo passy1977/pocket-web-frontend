@@ -13,7 +13,7 @@ export class StackNavigator {
     }
 
     this.#stack = [];
-    this.push({id: 0, note: ''});
+    this.push({id: 0, search: ''});
     this.#index = 0;
   }
 

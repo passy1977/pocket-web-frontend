@@ -93,7 +93,7 @@ class ServerAPI {
         .catch(error => callback({data: null, error}));
     }
 
-    login({email, passwd, callback}) {
+    login({email, passwd}, callback) {
         if(this.#sessionId === null) {
             throw new Error(`Session not valid`);
         }
@@ -127,7 +127,7 @@ class ServerAPI {
         .catch(error => callback({data: null, error}));
     }
 
-    registration({jsonConfig, email, passwd, confirmPasswd, callback}) {
+    registration({jsonConfig, email, passwd, confirmPasswd}, callback) {
         if(this.#sessionId === null) {
             throw new Error(`Session not valid`);
         }
@@ -229,6 +229,44 @@ class ServerAPI {
           .then(data => callback({ data: data, error: null }))
           .catch(error => callback({data: null, error}));
     }
+
+    data({groups, groupFields, fields}, callback) {
+        if(typeof groups !== 'object') {
+            throw new TypeError(`group it's not a object`);
+        }
+
+        if(typeof groupFields !== 'object') {
+            throw new TypeError(`groupFields it's not a object`);
+        }
+
+        if(typeof fields !== 'object') {
+            throw new TypeError(`fields it's not a object`);
+        }
+
+        if(typeof callback !== 'function') {
+            throw new TypeError(`callback it's not a function`);
+        }
+
+        fetch(this.#enterPoint + '/data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...this.#defaultDataTransfer,
+                path: '/data',
+                title: '',
+                session_id: this.#sessionId,
+                groups,
+                group_fields: groupFields,
+                fields
+            })
+        })
+          .then(response => response.json())
+          .then(data => callback({ data: data, error: null }))
+          .catch(error => callback({data: null, error}));
+    }
+
 }
 
 

@@ -7,9 +7,24 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="/lib/bootstrap-5.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
     <body>
+
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-label"></h5>
+                        <button id="modal-header-close" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="modal-body" class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+                        <button id="modal-confirm" type="button" class="btn btn-primary" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container">
             <section class="main-container">
