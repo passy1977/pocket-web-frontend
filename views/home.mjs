@@ -182,7 +182,9 @@ function onClickDelete(elm) {
                 group.synchronized = false;
                 group.deleted = true;
 
-                serverAPI.data({groups: [group]}, updateRows);
+                const currentGroup = globalSession.getStackNavigator.get();
+
+                serverAPI.data( {groupId: currentGroup.id, search: currentGroup.search}, {groups: [group]}, updateRows);
             }
         });
 

@@ -230,7 +230,19 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
-    data({groups = null, groupFields = null, fields = null}, callback) {
+    data({groupId, search}, {groups = null, groupFields = null, fields = null}, callback) {
+        if(groupId && typeof groupId !== 'number') {
+            throw new TypeError(`groupId it's not a number`);
+        }
+
+        if(search && typeof search !== 'string') {
+            throw new TypeError(`search it's not a string`);
+        }
+
+        if(groups && typeof groups !== 'object') {
+            throw new TypeError(`group it's not a object`);
+        }
+
         if(groups && typeof groups !== 'object') {
             throw new TypeError(`group it's not a object`);
         }
@@ -259,7 +271,8 @@ class ServerAPI {
                 session_id: this.#sessionId,
                 groups,
                 group_fields: groupFields,
-                fields
+                fields,
+                data: `${groupId}|${search}`
             })
         })
           .then(response => response.json())
