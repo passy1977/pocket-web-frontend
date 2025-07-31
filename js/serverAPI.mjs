@@ -230,7 +230,12 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
-    data({groupId, search}, {groups = null, groupFields = null, fields = null}, callback) {
+    data(from, {groupId, search}, {groups = null, groupFields = null, fields = null}, callback) {
+
+        if(from && typeof from !== 'string') {
+            throw new TypeError(`from it's not a string`);
+        }
+
         if(groupId && typeof groupId !== 'number') {
             throw new TypeError(`groupId it's not a number`);
         }
@@ -266,7 +271,7 @@ class ServerAPI {
             },
             body: JSON.stringify({
                 ...this.#defaultDataTransfer,
-                path: '/data',
+                path: from,
                 title: '',
                 session_id: this.#sessionId,
                 groups,

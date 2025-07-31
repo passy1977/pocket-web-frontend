@@ -182,9 +182,9 @@ function onClickDelete(elm) {
                 group.synchronized = false;
                 group.deleted = true;
 
-                const currentGroup = globalSession.getStackNavigator.get();
+                const {group: currentGroup, search}= globalSession.getStackNavigator.get();
 
-                serverAPI.data( {groupId: currentGroup.id, search: currentGroup.search}, {groups: [group]}, updateRows);
+                serverAPI.data( '/home/group/delete', {groupId: currentGroup.id, search: search}, {groups: [group]}, updateRows);
             }
         });
 
@@ -264,20 +264,25 @@ export function onUpdateGui(session) {
         document.title = group.title;
         session.getGui.title.innerHTML = group.title;
         buttonLeftImage0.src = '/images/ic_back.svg';
+
+        buttonLeftImage0.addEventListener('click', () => {
+            if(elmClicked) {
+                return;
+            }
+            elmClicked = true;
+            const data = session.getStackNavigator.pop();
+            if(data) {
+                globalSession.loadSync({
+                    path: '/home',
+                    title: 'Home',
+                });
+            }
+
+        });
+
     } else {
         buttonLeftImage0.src = '/images/ic_menu.svg';
     }
-    buttonLeftImage0.addEventListener('click', () => {
-        if(elmClicked) {
-            return;
-        }
-        elmClicked = true;
-        session.getStackNavigator.pop();
-        globalSession.loadSync({
-            path: '/home',
-            title: 'Home',
-        });
-    });
 
     session?.getGui?.buttonRight0.classList.remove('collapse');
     const buttonRightImage0 = session?.getGui?.buttonRightImage0;

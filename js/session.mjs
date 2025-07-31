@@ -13,7 +13,7 @@ export class StackNavigator {
     }
 
     this.#stack = [];
-    this.push({id: 0, search: ''});
+    this.#stack.push({group: {id: 0}, search: ''});
     this.#index = 0;
   }
 
@@ -30,8 +30,13 @@ export class StackNavigator {
   }
 
   pop() {
-    this.#index--;
-    return this.#stack.pop();
+    if(this.#index > 0) {
+      this.#index--;
+      return this.#stack.pop();
+    } else {
+      return null;
+    }
+
   }
 
   get(index = this.#index) {
