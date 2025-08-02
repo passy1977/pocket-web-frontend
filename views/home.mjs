@@ -171,43 +171,39 @@ function onClickNote(elm) {
 
 function onClickDelete(elm) {
     const id = parseInt(elm.getAttribute('data-type-id'));
-    const dataType = elm.getAttribute('data-type');
-    if(dataType === 'group') {
-        showModal({
-            title: 'Delete group',
-            message: `Do you really want to delete <i>${globalGroups.get(id).title}</i> group and all depenencies?`,
-            close: 'No',
-            confirm: 'Yes',
-        }, (confirm) => {
-            if (confirm) {
+    showModal({
+        title: 'Delete group',
+        message: `Do you really want to delete <i>${globalGroups.get(id).title}</i> group and all depenencies?`,
+        close: 'No',
+        confirm: 'Yes',
+        data: {id, type: elm.getAttribute('data-type')}
+    }, (confirm, {id, type}) => {
+        if (confirm) {
+            if(type === 'group') {
                 const group = globalGroups?.get(id);
                 group.synchronized = false;
                 group.deleted = true;
 
-                const {group: currentGroup, search} = globalSession.getStackNavigator.get();
+                const { group: currentGroup, search } = globalSession.getStackNavigator.get();
 
-                serverAPI.data( '/home/group/delete', {groupId: currentGroup.id, search: search}, {groups: [group]}, updateRows);
-            }
-        });
-
-    } else {
-        showModal({
-            title: 'Delete field',
-            message: `Do you really want to delete <i>${globalFields.get(id).title}</i> field?`,
-            close: 'No',
-            confirm: 'Yes',
-        }, (confirm) => {
-            if (confirm) {
+                serverAPI.data('/home/group/delete', {
+                    groupId: currentGroup.id,
+                    search: search
+                }, { groups: [group] }, updateRows);
+            } else if(type === 'field') {
                 const field = globalFields?.get(id);
                 field.synchronized = false;
                 field.deleted = true;
 
                 const {group: currentGroup, search} = globalSession.getStackNavigator.get();
 
-                serverAPI.data( '/home/field/delete', {groupId: currentGroup.id, search: search}, {fields: [field]}, updateRows);
+                serverAPI.data( '/home/field/delete', {
+                    groupId: currentGroup.id,
+                    search: search
+                }, {fields: [field]}, updateRows);
             }
-        });
-    }
+        }
+    });
 }
 
 function onClickEdit(elm) {

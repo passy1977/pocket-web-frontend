@@ -99,7 +99,7 @@ export function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function showModal({title, message, close, confirm}, callback) {
+export function showModal({title, message, close, confirm, data = null}, callback) {
   if(typeof title !== 'string') {
     throw new TypeError(`title it's not a string`);
   }
@@ -130,19 +130,19 @@ export function showModal({title, message, close, confirm}, callback) {
   if (closeEl.onclick) {
     closeEl.removeEventListener('click', closeEl.onclick);
   }
-  closeEl.addEventListener('click', () => callback(false));
+  closeEl.addEventListener('click', () => callback(false, data));
 
   if (closeHeaderEl.onclick) {
     closeHeaderEl.removeEventListener('click', closeEl.onclick);
   }
-  closeHeaderEl.addEventListener('click', () => callback(false));
+  closeHeaderEl.addEventListener('click', () => callback(false, data));
 
   if(confirm !== null && typeof confirm === 'string') {
     confirmEl.innerHTML = confirm;
     if (confirmEl.onclick) {
       confirmEl.removeEventListener('click', closeEl.onclick);
     }
-    confirmEl.addEventListener('click', () => callback(true));
+    confirmEl.addEventListener('click', () => callback(true, data));
     confirmEl.classList.remove('collapse');
   } else {
     confirmEl.classList.add('collapse');
