@@ -12,6 +12,8 @@ let elmClicked = false;
 const globalGroups = new Map();
 const globalFields = new Map();
 let globalSession = null;
+let globalDataContainer = null;
+let globalTemplateRow = '';
 
 function buildRow(ROW, type, {
     id,
@@ -127,8 +129,8 @@ function onToggleHidden(elm) {
 
     const id = parseInt(elm.getAttribute('data-type-id'));
 
-    const dataContainer = document.getElementById('data-container');
-    for (const fader of dataContainer.children) {
+    //const dataContainer = document.getElementById('data-container');
+    for (const fader of globalDataContainer.children) {
         for (const child of fader.children) {
             if(child?.getAttribute('data-field') === 'is-hidden' && parseInt(child?.getAttribute('data-type-id')) === id) {
                 const field = globalFields.get(id);
@@ -182,7 +184,7 @@ function onClickDelete(elm) {
                 group.synchronized = false;
                 group.deleted = true;
 
-                const {group: currentGroup, search}= globalSession.getStackNavigator.get();
+                const {group: currentGroup, search} = globalSession.getStackNavigator.get();
 
                 serverAPI.data( '/home/group/delete', {groupId: currentGroup.id, search: search}, {groups: [group]}, updateRows);
             }
@@ -199,6 +201,10 @@ function onClickDelete(elm) {
                 const field = globalFields?.get(id);
                 field.synchronized = false;
                 field.deleted = true;
+
+                const {group: currentGroup, search} = globalSession.getStackNavigator.get();
+
+                serverAPI.data( '/home/field/delete', {groupId: currentGroup.id, search: search}, {fields: [field]}, updateRows);
             }
         });
     }
@@ -251,6 +257,12 @@ async function onClickCopy(elm) {
 
 export function onUpdateGui(session) {
     hideAlert();
+
+    globalDataContainer = document.getElementById('data-container');
+    if(!globalDataContainer) {
+        throw new DOMException('data-container not found', 'home.mjs');
+    }
+    globalTemplateRow = globalDataContainer.innerHTML;
 
     globalSession = session;
 
@@ -336,11 +348,7 @@ export function onUpdateGui(session) {
 function updateRows({data, error}) {
     hideAlert();
     if(data) {
-        const dataContainer = document.getElementById('data-container');
-        if(!dataContainer) {
-            throw new DOMException('data-container not found', 'home.mjs');
-        }
-        const ROW = dataContainer.innerHTML;
+        globalDataContainer.innerHTML = '';
 
         globalGroups.clear();
         globalFields.clear();
@@ -353,14 +361,14 @@ function updateRows({data, error}) {
             if(groups) {
                 for (const group of groups) {
                     globalGroups.set(group.id, group);
-                    table += buildRow(ROW, FieldType.GROUP, group);
+                    table += buildRow(globalTemplateRow, FieldType.GROUP, group);
                 }
             }
 
             if(fields) {
                 for (const field of fields) {
                     globalFields.set(field.id, field);
-                    table += buildRow(ROW, FieldType.FIELD, field);
+                    table += buildRow(globalTemplateRow, FieldType.FIELD, field);
                 }
             }
 
@@ -368,9 +376,9 @@ function updateRows({data, error}) {
             showAlert(error);
         }
 
-        dataContainer.innerHTML = table;
+        globalDataContainer.innerHTML = table;
 
-        for (const fader of dataContainer.children) {
+        for (const fader of globalDataContainer.children) {
             for (const child of fader.children) {
                 switch (child.getAttribute('data-field')) {
                     case 'is-hidden':
