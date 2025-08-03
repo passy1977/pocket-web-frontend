@@ -285,6 +285,37 @@ class ServerAPI {
           .catch(error => callback({data: null, error}));
     }
 
+
+    groupDetail({id = -1}, callback) {
+        if(this.#sessionId === null) {
+            throw new Error(`Session not valid`);
+        }
+
+        if(typeof id !== 'number') {
+            throw new TypeError(`id it's not a number`);
+        }
+
+        if(typeof callback !== 'function') {
+            throw new TypeError(`callback it's not a function`);
+        }
+
+        fetch(this.#enterPoint + '/registration', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...this.#defaultDataTransfer,
+                path: '/registration',
+                session_id: this.#sessionId,
+                data: `${jsonConfig}|${email}|${passwd}|${confirmPasswd}`,
+            })
+        })
+          .then(response => response.json())
+          .then(data => this.#handleData(data, callback))
+          .catch(error => callback({data: null, error}));
+    }
+
 }
 
 

@@ -293,7 +293,9 @@ function onButtonRightImage1Click() {
         return;
     }
     globalElmClicked = true;
-    console.log('buttonRightImage1');
+
+    serverAPI.groupDetail();
+
     globalElmClicked = false;
 }
 
@@ -315,11 +317,11 @@ function onSearchElmKeyUp(e) {
 export function onUpdateGui(session) {
     hideAlert();
 
-    globalDataContainer = document.getElementById('data-container');
+    globalDataContainer = Object.freeze(document.getElementById('data-container'));
     if(!globalDataContainer) {
         throw new DOMException('data-container not found', 'home.mjs');
     }
-    globalTemplateRow = globalDataContainer.innerHTML;
+    globalTemplateRow = Object.freeze(globalDataContainer.innerHTML);
 
     globalSession = session;
 
