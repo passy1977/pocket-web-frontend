@@ -4,9 +4,7 @@ import serverAPI from './serverAPI.mjs';
 import Session from './session.mjs';
 
 let session = null;
-
 const debug = null;
-
 let globalCallback = null;
 let globalData = null;
 

@@ -8,7 +8,7 @@ const FieldType = Object.freeze({
     FIELD: 1
 });
 
-let elmClicked = false;
+let globalElmClicked = false;
 const globalGroups = new Map();
 const globalFields = new Map();
 let globalSession = null;
@@ -91,7 +91,7 @@ function onClick(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(elmClicked) {
+    if(globalElmClicked) {
         return;
     }
 
@@ -123,7 +123,7 @@ function onToggleHidden(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(elmClicked) {
+    if(globalElmClicked) {
         return;
     }
 
@@ -151,7 +151,7 @@ function onClickNote(elm) {
     if(typeof elm !== 'object') {
         throw new TypeError(`elm it's not a object`);
     }
-    if(elmClicked) {
+    if(globalElmClicked) {
         return;
     }
 
@@ -163,13 +163,23 @@ function onClickNote(elm) {
         message: group.note,
         close: 'Close',
     }, () => {
-        elmClicked = false;
+        globalElmClicked = false;
     });
 
-    elmClicked = true;
+    globalElmClicked = true;
 }
 
 function onClickDelete(elm) {
+    if(typeof elm !== 'object') {
+        throw new TypeError(`elm it's not a object`);
+    }
+
+    if(globalElmClicked) {
+        return;
+    }
+
+    globalElmClicked = true;
+
     const id = parseInt(elm.getAttribute('data-type-id'));
     const type = elm.getAttribute('data-type');
     showModal({
@@ -204,10 +214,21 @@ function onClickDelete(elm) {
                 }, {fields: [field]}, updateRows);
             }
         }
+        globalElmClicked = false;
     });
 }
 
 function onClickEdit(elm) {
+    if(typeof elm !== 'object') {
+        throw new TypeError(`elm it's not a object`);
+    }
+
+    if(globalElmClicked) {
+        return;
+    }
+
+    globalElmClicked = true;
+
     const id = parseInt(elm.getAttribute('data-type-id'));
     const type = elm.getAttribute('data-type');
     showModal({
@@ -228,6 +249,7 @@ function onClickEdit(elm) {
                 alert('Todo');
             }
         }
+        globalElmClicked = false;
     });
 }
 
@@ -238,6 +260,56 @@ async function onClickCopy(elm) {
     } catch (err) {
         console.error(err);
     }
+}
+
+function onButtonLeftImage0Click() {
+    if(globalElmClicked) {
+        return;
+    }
+    globalElmClicked = true;
+    const data = globalSession.getStackNavigator.pop();
+    if(data) {
+        globalSession.loadSync({
+            path: '/home',
+            title: 'Home',
+        });
+    } else {
+        console.log('Todo open menu');
+    }
+    globalElmClicked = false;
+}
+
+function onButtonRightImage0Click() {
+    if(globalElmClicked) {
+        return;
+    }
+    globalElmClicked = true;
+    console.log('buttonRightImage0');
+    globalElmClicked = false;
+}
+
+function onButtonRightImage1Click() {
+    if(globalElmClicked) {
+        return;
+    }
+    globalElmClicked = true;
+    console.log('buttonRightImage1');
+    globalElmClicked = false;
+}
+
+function onSearchElmKeyUp(e) {
+    if(typeof e !== 'object') {
+        throw new TypeError(`event it's not a object`);
+    }
+    if(globalElmClicked) {
+        return;
+    }
+
+    globalSession.loadSync({
+        path: '/home',
+        title: 'Home',
+    });
+    
 }
 
 export function onUpdateGui(session) {
@@ -253,7 +325,7 @@ export function onUpdateGui(session) {
 
     const {group, search} = session.getStackNavigator.get();
 
-    elmClicked = false;
+    globalElmClicked = false;
 
     session?.getGui?.buttonLeft0.classList.remove('collapse');
     const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
@@ -261,22 +333,9 @@ export function onUpdateGui(session) {
         document.title = group.title;
         session.getGui.title.innerHTML = group.title;
         buttonLeftImage0.src = '/images/ic_back.svg';
-
-        buttonLeftImage0.addEventListener('click', () => {
-            if(elmClicked) {
-                return;
-            }
-            elmClicked = true;
-            const data = session.getStackNavigator.pop();
-            if(data) {
-                globalSession.loadSync({
-                    path: '/home',
-                    title: 'Home',
-                });
-            }
-
-        });
-
+        if(!buttonLeftImage0.onclick) {
+            buttonLeftImage0.addEventListener('click', onButtonLeftImage0Click);
+        }
     } else {
         buttonLeftImage0.src = '/images/ic_menu.svg';
     }
@@ -285,42 +344,23 @@ export function onUpdateGui(session) {
     const buttonRightImage0 = session?.getGui?.buttonRightImage0;
     buttonRightImage0.classList.remove('collapse');
     buttonRightImage0.src = '/images/ic_add_field.svg';
-    buttonRightImage0.addEventListener('click', () => {
-        if(elmClicked) {
-            return;
-        }
-        elmClicked = true;
-        console.log('buttonRightImage0');
-    });
+    if(!buttonRightImage0.onclick) {
+        buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
+    }
 
     session?.getGui?.buttonRight1.classList.remove('collapse');
     const buttonRightImage1 = session?.getGui?.buttonRightImage1;
     buttonRightImage1.classList.remove('collapse');
     buttonRightImage1.src = '/images/ic_add_group.svg';
-    buttonRightImage1.addEventListener('click', () => {
-        if(elmClicked) {
-            return;
-        }
-        elmClicked = true;
-        console.log('buttonRightImage1');
-    });
+    if(!buttonRightImage1.onclick) {
+        buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
+    }
 
     const searchElm = document.getElementById(`search`);
     searchElm.textContent = search;
-    searchElm.addEventListener('keyup', event => {
-        if(typeof event !== 'object') {
-            throw new TypeError(`event it's not a object`);
-        }
-        if(elmClicked) {
-            return;
-        }
-
-        globalSession.loadSync({
-            path: '/home',
-            title: 'Home',
-        });
-
-    });
+    if(!searchElm.onkeyup) {
+        searchElm.addEventListener('keyup', onSearchElmKeyUp);
+    }
 
 
     serverAPI.home({
@@ -337,7 +377,7 @@ function updateRows({data, error}) {
 
         globalGroups.clear();
         globalFields.clear();
-        elmClicked = false;
+        globalElmClicked = false;
 
         const {groups, fields} = data;
 

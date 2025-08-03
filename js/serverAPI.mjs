@@ -226,7 +226,7 @@ class ServerAPI {
             })
         })
           .then(response => response.json())
-          .then(data => callback({ data: data, error: null }))
+          .then(data => callback({ data, error: null }))
           .catch(error => callback({data: null, error}));
     }
 
@@ -281,7 +281,7 @@ class ServerAPI {
             })
         })
           .then(response => response.json())
-          .then(data => callback({ data: data, error: null }))
+          .then(data => callback({ data, error: null }))
           .catch(error => callback({data: null, error}));
     }
 
