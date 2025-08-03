@@ -74,8 +74,8 @@ export default function showAlert(msg) {
       return false;
     }
 
-    if(msg === 'TypeError: Failed to fetch') {
-      msg = 'No server API connection';
+    if(msg.includes('Failed to fetch')) {
+      msg = 'No server API connection available';
     }
 
     session?.getGui?.alert.classList.remove('visually-hidden');
@@ -116,7 +116,9 @@ export function showModal({title, message, close, confirm, data = null}, callbac
     throw new TypeError(`callback it's not a function`);
   }
 
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal'));
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal'), {
+    focus: true
+  });
   const titleEl = document.getElementById('modal-label');
   const messageEl = document.getElementById('modal-body');
   const closeHeaderEl = document.getElementById('modal-header-close');
@@ -127,22 +129,23 @@ export function showModal({title, message, close, confirm, data = null}, callbac
   messageEl.innerHTML = message;
   closeEl.innerHTML = close;
 
-  if (closeEl.onclick) {
+  closeEl.addEventListener('click', (e) => {
+    callback(false, data);
     closeEl.removeEventListener('click', closeEl.onclick);
-  }
-  closeEl.addEventListener('click', () => callback(false, data));
+  });
 
-  if (closeHeaderEl.onclick) {
-    closeHeaderEl.removeEventListener('click', closeEl.onclick);
-  }
-  closeHeaderEl.addEventListener('click', () => callback(false, data));
+  closeHeaderEl.addEventListener('click', () => {
+    callback(false, data);
+    closeHeaderEl.removeEventListener('click', closeHeaderEl.onclick);
+  });
 
   if(confirm !== null && typeof confirm === 'string') {
     confirmEl.innerHTML = confirm;
-    if (confirmEl.onclick) {
-      confirmEl.removeEventListener('click', closeEl.onclick);
-    }
-    confirmEl.addEventListener('click', () => callback(true, data));
+
+    confirmEl.addEventListener('click', () => {
+      callback(true, data);
+      confirmEl.removeEventListener('click', confirmEl.onclick);
+    });
     confirmEl.classList.remove('collapse');
   } else {
     confirmEl.classList.add('collapse');

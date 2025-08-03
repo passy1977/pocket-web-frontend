@@ -171,12 +171,13 @@ function onClickNote(elm) {
 
 function onClickDelete(elm) {
     const id = parseInt(elm.getAttribute('data-type-id'));
+    const type = elm.getAttribute('data-type');
     showModal({
         title: 'Delete group',
-        message: `Do you really want to delete <i>${globalGroups.get(id).title}</i> group and all depenencies?`,
+        message: `Do you really want to delete <i>${(type=== 'group' ? globalGroups : globalFields).get(id).title}</i> ${(type=== 'group' ? 'group' : 'field')} and all depenencies?`,
         close: 'No',
         confirm: 'Yes',
-        data: {id, type: elm.getAttribute('data-type')}
+        data: {id, type}
     }, (confirm, {id, type}) => {
         if (confirm) {
             if(type === 'group') {
@@ -208,38 +209,26 @@ function onClickDelete(elm) {
 
 function onClickEdit(elm) {
     const id = parseInt(elm.getAttribute('data-type-id'));
-    const dataType = elm.getAttribute('data-type');
-    if(dataType === 'group') {
-        showModal({
-            title: 'Edit Group',
-            message: `Do you really want to edit <i>${globalGroups.get(id).title}</i>`,
-            close: 'No',
-            confirm: 'Yes',
-        }, (confirm) => {
-            if (confirm) {
+    const type = elm.getAttribute('data-type');
+    showModal({
+        title: 'Edit Group',
+        message: `Do you really want to edit <i>${(type=== 'group' ? globalGroups : globalFields).get(id).title}</i>`,
+        close: 'No',
+        confirm: 'Yes',
+        data: {id, type}
+    }, (confirm, {id, type}) => {
+        if (confirm) {
+            if(type === 'group') {
                 const group = globalGroups?.get(id);
 
-                // serverAPI.da({
-                //       groupId: group.id,
-                //       search,
-                //   },
-                //   updateRows);
-            };
-        })
-
-    } else {
-        showModal({
-            title: 'Edit field',
-            message: `Do you really want to edit <i>${globalFields.get(id).title}</i> field?`,
-            close: 'No',
-            confirm: 'Yes',
-        }, (confirm) => {
-            if (confirm) {
+                alert('Todo');
+            } else if(type === 'field') {
                 const field = globalFields?.get(id);
 
+                alert('Todo');
             }
-        });
-    }
+        }
+    });
 }
 
 async function onClickCopy(elm) {
