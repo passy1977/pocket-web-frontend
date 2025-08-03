@@ -7,6 +7,9 @@ let session = null;
 
 const debug = null;
 
+let globalCallback = null;
+let globalData = null;
+
 window.onload = () => {
     try {
         session = new Session({
@@ -99,6 +102,24 @@ export function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function callbackHandlerFalse(e) {
+  if(globalCallback) {
+    globalCallback(false, globalData);
+    e.target.removeEventListener('click', callbackHandlerFalse);
+  }
+  globalCallback = null;
+  globalData = null;
+}
+
+function callbackHandlerTrue(e) {
+  if(globalCallback) {
+    globalCallback(true, globalData);
+    e.target.removeEventListener('click', callbackHandlerTrue);
+  }
+  globalCallback = null;
+  globalData = null;
+}
+
 export function showModal({title, message, close, confirm, data = null}, callback) {
   if(typeof title !== 'string') {
     throw new TypeError(`title it's not a string`);
@@ -116,6 +137,9 @@ export function showModal({title, message, close, confirm, data = null}, callbac
     throw new TypeError(`callback it's not a function`);
   }
 
+  globalCallback = callback;
+  globalData = data;
+
   const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal'), {
     focus: true
   });
@@ -129,23 +153,13 @@ export function showModal({title, message, close, confirm, data = null}, callbac
   messageEl.innerHTML = message;
   closeEl.innerHTML = close;
 
-  closeEl.addEventListener('click', (e) => {
-    callback(false, data);
-    closeEl.removeEventListener('click', closeEl.onclick);
-  });
-
-  closeHeaderEl.addEventListener('click', () => {
-    callback(false, data);
-    closeHeaderEl.removeEventListener('click', closeHeaderEl.onclick);
-  });
+  closeEl.addEventListener('click', callbackHandlerFalse);
+  closeHeaderEl.addEventListener('click', callbackHandlerFalse);
 
   if(confirm !== null && typeof confirm === 'string') {
     confirmEl.innerHTML = confirm;
 
-    confirmEl.addEventListener('click', () => {
-      callback(true, data);
-      confirmEl.removeEventListener('click', confirmEl.onclick);
-    });
+    confirmEl.addEventListener('click', callbackHandlerTrue);
     confirmEl.classList.remove('collapse');
   } else {
     confirmEl.classList.add('collapse');
