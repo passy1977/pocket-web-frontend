@@ -57,7 +57,7 @@ function buildRow(ROW, type, {
 
     let row = ROW.replaceAll('{type}', type === FieldType.GROUP ? 'group' : 'field');
     row = row.replaceAll('{id}', id);
-    row = row.replaceAll('{icon}', type === FieldType.GROUP ? 'images/ic_group.svg' : 'images/ic_field.svg');
+    row = row.replaceAll('{icon}', type === FieldType.GROUP ? '/images/ic_group.svg' : '/images/ic_field.svg');
     row = row.replaceAll('{icon-alt}', type === FieldType.GROUP ? 'Group icon' : 'Field icon');
     row = row.replaceAll('{title}', title);
 

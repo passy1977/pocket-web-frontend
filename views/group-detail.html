@@ -1,1 +1,33 @@
-group-detail
+<div class="input-group mb-3">
+  <span class="input-group-text" id="group-title"><img src="/images/ic_group.svg" alt="Group icon"></span>
+  <input type="text" class="form-control" placeholder="Group title" aria-label="Group title" aria-describedby="group-title">
+</div>
+
+<div class="form-floating">
+  <textarea class="form-control" placeholder="Note" id="note-textarea"></textarea>
+  <label for="note-textarea">Note</label>
+</div>
+
+<div class="container text-center">
+  <div class="row">
+    <div class="col col-md-auto">
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="field-title"><img src="/images/ic_field.svg" alt="FIeld icon"></span>
+        <input type="text" class="form-control" placeholder="Field title" aria-label="Field title" aria-describedby="field-title">
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="check-is-hidden">
+        <label class="form-check-label" for="check-is-hidden">
+          Field is hidden
+        </label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<link href="/views/group-detail.css" rel="stylesheet">

@@ -1,0 +1,5 @@
+.input-group img {
+    width: 24px;
+    max-width: 24px;
+    filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
+}

@@ -4,7 +4,7 @@ import serverAPI from './serverAPI.mjs';
 import Session from './session.mjs';
 
 let session = null;
-const debug = null;
+const debug = '/group-detail';
 let globalCallback = null;
 let globalData = null;
 
