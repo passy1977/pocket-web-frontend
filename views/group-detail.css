@@ -1,5 +1,18 @@
-.input-group img {
+.container img {
     width: 24px;
     max-width: 24px;
     filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
+}
+
+.mouse-hover {
+    cursor: pointer;
+}
+
+.row .no-padding {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.col b {
+    font-size: calc(var(--bs-gutter-x) * .75);
 }

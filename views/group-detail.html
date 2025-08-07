@@ -8,22 +8,66 @@
   <label for="note-textarea">Note</label>
 </div>
 
-<div class="container text-center">
+<div class="container text-center pt-3">
   <div class="row">
-    <div class="col col-md-auto">
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="field-title"><img src="/images/ic_field.svg" alt="FIeld icon"></span>
+
+    <div class="col no-padding">
+      <div class="input-group">
+        <span class="input-group-text" id="field-title"><img src="/images/ic_field.svg" alt="Field icon"></span>
         <input type="text" class="form-control" placeholder="Field title" aria-label="Field title" aria-describedby="field-title">
       </div>
     </div>
 
-    <div class="col">
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="check-is-hidden">
         <label class="form-check-label" for="check-is-hidden">
           Field is hidden
         </label>
       </div>
+    </div>
+
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
+      <img src="/images/ic_add_black.svg" class="mouse-hover" id="add" alt="Add field group"/>
+      <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="clear"  alt="Clear all data insert"/>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="container text-center pt-3">
+  <div class="row">
+
+    <div class="col w-auto d-flex align-items-center justify-content-center">
+      <b>Field title</b>
+    </div>
+
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
+      <b>Field is hidden</b>
+    </div>
+
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
+      <b>Actions</b>
+    </div>
+
+  </div>
+</div>
+
+<div class="container text-center pt-3 overflow-x-auto" id="data-container">
+  <div class="row" id="data-row">
+
+    <div class="col w-auto" id="col-title-{id}">
+      {title}
+    </div>
+
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
+      <input class="form-check-input" type="checkbox" value="" disabled {checked}>
+    </div>
+
+    <div class="col col-md-auto d-flex align-items-center justify-content-center">
+      <img src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group"/>
+      <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}"  alt="Delete field group"/>
     </div>
 
   </div>
