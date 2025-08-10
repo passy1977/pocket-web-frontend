@@ -102,7 +102,8 @@ nav .btn:disabled {
     border-color: var(--secondary-active-color);
 }
 
-.form-control:focus {
+.form-floating input:focus,
+.form-floating textarea:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 1px var(--primary-color);
 }
@@ -144,3 +145,8 @@ nav .btn:disabled {
     justify-content: center;
 }
 
+img.ico {
+    width: 24px;
+    max-width: 24px;
+    filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
+}

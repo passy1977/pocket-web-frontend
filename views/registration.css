@@ -2,4 +2,9 @@
 h3 {
     margin-top: 10px;
     font-size: large;
+    text-align: center;
+}
+
+.json-config-height {
+    height: 20em !important;
 }

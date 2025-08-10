@@ -1,31 +1,35 @@
 <div class="d-flex justify-content-center my-3">
-    <form id="form" class="mx-auto">
-        <!-- SERVER JSON CONFIGURATION -->
-        <div class="form-section">
-            <label for="jsonConfig">SERVER JSON CONFIGURATION</label>
-            <textarea id="jsonConfig" class="form-control" rows="10"></textarea>
-            <div class="invalid-feedback">
-                Please provide server configuration
-            </div>
-        </div>
+  <form id="form" class="mx-auto">
+    <!-- SERVER JSON CONFIGURATION -->
+    <h3 class="mt-3">Please provide server configuration</h3>
+    <div class="form-floating has-validation">
+      <textarea class="form-control json-config-height" placeholder="Note" id="json-config"></textarea>
+      <label for="json-config">Group note</label>
+      <div class="invalid-feedback">
+        This field is required
+      </div>
+    </div>
 
-        <!-- SERVER USER CONFIGURATION -->
-        <div class="form-section mt-5">
-            <h3>SERVER USER CONFIGURATION</h3>
-            <div class="mb-3">
-                <label for="inputPasswd" class="form-label">Enter password</label>
-                <input type="password" class="form-control" id="inputPasswd">
-            </div>
-            <div class="mb-3">
-                <label for="inputPasswdConfirm" class="form-label">Confirm password</label>
-                <input type="password" class="form-control" id="inputPasswdConfirm">
-            </div>
-        </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-full-width">Register</button>
-    </form>
 
+    <h3 class="mt-3">Insert the password used for server account</h3>
+    <div class="form-floating has-validation mb-3">
+      <input type="password" class="form-control" id="passwd" placeholder="Password">
+      <label for="passwd">Password</label>
+      <div class="invalid-feedback" id="passwd-invalid-feedback">
+        This field is required
+      </div>
+    </div>
+    <div class="form-floating has-validation mb-3">
+      <input type="password" class="form-control" id="passwd-confirm" placeholder="Password">
+      <label for="passwd-confirm">Confirm password</label>
+      <div class="invalid-feedback" id="passwd-confirm-invalid-feedback">
+        This field is required
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-full-width">Register</button>
+  </form>
 </div>
 
 <link href="/views/registration.css" rel="stylesheet">

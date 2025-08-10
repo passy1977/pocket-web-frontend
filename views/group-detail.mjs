@@ -77,7 +77,7 @@ export function onUpdateGui(session) {
 
   globalElmClicked = false;
 
-  session?.getGui?.buttonLeft0.classList.add('collapse');
+  session?.getGui?.buttonLeft0.classList.remove('collapse');
   session?.getGui?.buttonRight0.classList.add('collapse');
   session?.getGui?.buttonRight1.classList.add('collapse');
 

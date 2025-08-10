@@ -12,12 +12,6 @@
     text-align: center;
 }
 
-.container img {
-    width: 24px;
-    max-width: 24px;
-    filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
-}
-
 .mouse-hover {
     cursor: pointer;
 }
@@ -31,3 +25,6 @@
     font-size: calc(var(--bs-gutter-x) * .75);
 }
 
+.group-note-height {
+    height: 10em !important;
+}

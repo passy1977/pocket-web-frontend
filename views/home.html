@@ -3,14 +3,21 @@
 </div>
 
 <div class="input-group mb-3">
-  <input type="text" id="search" class="form-control" placeholder="Filter the data below" aria-label="Filter the data below" aria-describedby="button-search">
-  <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
+  <div class="input-group mb-3">
+    <span class="input-group-text">
+      <img class="ico" src="/images/ic_search.svg" alt="Search icon">
+    </span>
+    <div class="form-floating">
+      <input type="text" class="form-control" id="search" placeholder="Search">
+      <label for="search">Filter the data below</label>
+    </div>
+  </div>
 </div>
 
 <div id="data-container" class="container">
   <div id="row-{type}-{id}" class="row row-{type}">
     <div class="col-md-auto" data-type="{type}" data-type-id="{id}">
-      <img src="{icon}" alt="{icon-alt}">
+      <img class="ico" src="{icon}" alt="{icon-alt}">
     </div>
     <div class="col {no-child}" data-type="{type}" data-type-id="{id}">
       {title}
@@ -22,11 +29,11 @@
     is-hidden-->
     <div class="col-md-auto" data-field="buttons" data-type="{type}" data-type-id="{id}">
       <!--note
-      <img src="/images/ic_note.svg" class="small-ico" data-field="note" data-type="{type}" data-type-id="{id}" alt="{note-alt}">
+      <img class="ico" src="/images/ic_note.svg" class="small-ico" data-field="note" data-type="{type}" data-type-id="{id}" alt="{note-alt}">
       note-->
-      <img src="/images/ic_copy.svg" data-field="copy" data-type="{type}" data-type-id="{id}" alt="Copy {type}"/>
-      <img src="/images/ic_delete.svg" data-field="delete" data-type="{type}" data-type-id="{id}" alt="Delete {type}"/>
-      <img src="/images/ic_edit.svg" data-field="edit" data-type="{type}" data-type-id="{id}" alt="Edit {type}"/>
+      <img class="ico" src="/images/ic_copy.svg" data-field="copy" data-type="{type}" data-type-id="{id}" alt="Copy {type}"/>
+      <img class="ico" src="/images/ic_delete.svg" data-field="delete" data-type="{type}" data-type-id="{id}" alt="Delete {type}"/>
+      <img class="ico" src="/images/ic_edit.svg" data-field="edit" data-type="{type}" data-type-id="{id}" alt="Edit {type}"/>
     </div>
   </div>
   <div class="row row-separator"></div>
