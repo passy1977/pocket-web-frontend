@@ -1,3 +1,17 @@
+#data-container {
+    overflow-y: auto;
+}
+
+.col-is-hidden {
+    width: 180px;
+    text-align: center;
+}
+
+.col-actions {
+    width: 100px;
+    text-align: center;
+}
+
 .container img {
     width: 24px;
     max-width: 24px;
@@ -16,3 +30,4 @@
 .col b {
     font-size: calc(var(--bs-gutter-x) * .75);
 }
+

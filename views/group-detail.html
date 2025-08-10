@@ -1,11 +1,11 @@
 <div class="input-group mb-3">
-  <span class="input-group-text" id="group-title"><img src="/images/ic_group.svg" alt="Group icon"></span>
-  <input type="text" class="form-control" placeholder="Group title" aria-label="Group title" aria-describedby="group-title">
+  <span class="input-group-text" id="group-title-ico"><img src="/images/ic_group.svg" alt="Group icon"></span>
+  <input type="text" class="form-control" placeholder="Group title" aria-label="Group title" aria-describedby="group-title-ico" id="group-title">
 </div>
 
 <div class="form-floating">
-  <textarea class="form-control" placeholder="Note" id="note-textarea"></textarea>
-  <label for="note-textarea">Note</label>
+  <textarea class="form-control" placeholder="Note" id="group-note-txt-area" id="group-note"></textarea>
+  <label for="group-note-txt-area">Note</label>
 </div>
 
 <div class="container text-center pt-3">
@@ -13,65 +13,52 @@
 
     <div class="col no-padding">
       <div class="input-group">
-        <span class="input-group-text" id="field-title"><img src="/images/ic_field.svg" alt="Field icon"></span>
-        <input type="text" class="form-control" placeholder="Field title" aria-label="Field title" aria-describedby="field-title">
+        <span class="input-group-text" id="field-title-ico"><img src="/images/ic_field.svg" alt="Field icon"></span>
+        <input type="text" class="form-control" placeholder="Field title" aria-label="Field title" aria-describedby="field-title-ico" id="field-title">
       </div>
     </div>
 
     <div class="col col-md-auto d-flex align-items-center justify-content-center">
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="check-is-hidden">
-        <label class="form-check-label" for="check-is-hidden">
+        <input class="form-check-input" type="checkbox" value="" id="field-is-hidden">
+        <label class="form-check-label" for="field-is-hidden">
           Field is hidden
         </label>
       </div>
     </div>
 
     <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <img src="/images/ic_add_black.svg" class="mouse-hover" id="add" alt="Add field group"/>
-      <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="clear"  alt="Clear all data insert"/>
+      <img src="/images/ic_add_black.svg" class="mouse-hover" alt="Add field group" id="field-add"/>
+      <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" alt="Clear all data insert" id="field-clean"/>
     </div>
 
   </div>
 </div>
 
 
-<div class="container text-center pt-3">
-  <div class="row">
-
-    <div class="col w-auto d-flex align-items-center justify-content-center">
-      <b>Field title</b>
-    </div>
-
-    <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <b>Field is hidden</b>
-    </div>
-
-    <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <b>Actions</b>
-    </div>
-
-  </div>
-</div>
-
-<div class="container text-center pt-3 overflow-x-auto" id="data-container">
-  <div class="row" id="data-row">
-
-    <div class="col w-auto" id="col-title-{id}">
-      {title}
-    </div>
-
-    <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <input class="form-check-input" type="checkbox" value="" disabled {checked}>
-    </div>
-
-    <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <img src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group"/>
-      <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}"  alt="Delete field group"/>
-    </div>
-
-  </div>
-</div>
+<table class="table table-hover mt-3">
+  <thead>
+    <tr>
+      <th>Field title</th>
+      <th class="col-is-hidden">Field is hidden</th>
+      <th class="col-actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="data-container">
+    <tr id="data-row-{id}" data-type-id="{id}">
+      <td id="col-title-{id}">
+        {title}
+      </td>
+      <td class="col-is-hidden" id="col-is-hidden-{id}">
+        <input class="form-check-input" type="checkbox" value="" id="checkbox-{id}" disabled>
+      </td>
+      <td class="col-actions" id="col-actions-{id}">
+        <img src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group"/>
+        <img src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}"  alt="Delete field group"/>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 
 <link href="/views/group-detail.css" rel="stylesheet">
