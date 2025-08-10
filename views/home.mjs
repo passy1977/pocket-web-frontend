@@ -240,9 +240,29 @@ function onClickEdit(elm) {
     }, (confirm, {id, type}) => {
         if (confirm) {
             if(type === 'group') {
-                const group = globalGroups?.get(id);
 
-                alert('Todo');
+              const { search } = globalSession.getStackNavigator.get();
+
+              const group = globalGroups?.get(id);
+
+              serverAPI.groupDetail(
+                {
+                  id: group.id,
+                  idGroup: group.groupId,
+                  search
+                },
+                ({data, error}) => {
+                  if (data) {
+                    globalSession.loadSync(data);
+                  } else {
+                    if (error) {
+                      showAlert(error);
+                    } else {
+                      showAlert('unhandled error');
+                    }
+                  }
+                });
+
             } else if(type === 'field') {
                 const field = globalFields?.get(id);
 
@@ -294,7 +314,25 @@ function onButtonRightImage1Click() {
     }
     globalElmClicked = true;
 
-    serverAPI.groupDetail();
+    const { group: currentGroup, search } = globalSession.getStackNavigator.get();
+
+    serverAPI.groupDetail(
+      {
+        id: 0,
+        idGroup: currentGroup.id,
+        search
+      },
+      ({data, error}) => {
+          if (data) {
+            globalSession.loadSync(data);
+          } else {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
+            }
+          }
+      });
 
     globalElmClicked = false;
 }
