@@ -148,5 +148,16 @@ nav .btn:disabled {
 img.ico {
     width: 24px;
     max-width: 24px;
+    max-height: none;
     filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
+}
+
+img.ico-input {
+    width: 24px;
+    max-width: 24px;
+    filter: invert(72%) sepia(31%) saturate(7309%) hue-rotate(323deg) brightness(98%) contrast(91%);
+}
+
+.input-group-text {
+    color: var(--primary-color);
 }

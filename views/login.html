@@ -1,24 +1,38 @@
-<img src="/images/ic_pocket.svg" alt="Pocket 5 logo" />
+<img src="/images/ic_pocket.svg" alt="Pocket 5 logo" class="pocket-logo"/>
 
 <div class="d-flex justify-content-center">
   <h2>Pocket 5</h2>
 </div>
+
 <div class="d-flex justify-content-center my-3">
   <form id="form" class="mx-auto">
-    <div class="form-floating has-validation mb-3">
-      <input type="email" class="form-control" id="email" placeholder="Email address" aria-describedby="addon-email">
-      <label id="addon-email">Insert email</label>
-      <div class="invalid-feedback" id="email-invalid-feedback">
+
+    <div class="input-group has-validation mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_email.svg" alt="Password icon" class="ico" />
+      </span>
+      <div class="form-floating">
+        <input type="email" class="form-control" id="email" placeholder="Email address" aria-describedby="addon-email">
+        <label id="addon-email">Insert email</label>
+      </div>
+      <div class="invalid-feedback">
         This field is required
       </div>
     </div>
-    <div class="form-floating has-validation mb-3">
-      <input type="password" class="form-control" id="passwd" placeholder="Password" aria-describedby="addon-passwd">
-      <label id="addon-passwd">Insert password</label>
-      <div class="invalid-feedback" id="passwd-invalid-feedback">
+
+    <div class="input-group has-validation mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_passwd.svg" alt="Password icon" class="ico" />
+      </span>
+      <div class="form-floating">
+        <input type="password" class="form-control" id="passwd" placeholder="Password" aria-describedby="addon-passwd">
+        <label id="addon-passwd">Insert password</label>
+      </div>
+      <div class="invalid-feedback">
         This field is required
       </div>
     </div>
+
     <button type="submit" class="btn btn-primary btn-full-width">Login</button>
   </form>
 </div>

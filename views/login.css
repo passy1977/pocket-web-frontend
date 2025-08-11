@@ -3,9 +3,49 @@ h2 {
     margin-top: 10px;
 }
 
-img {
+.pocket-logo {
     max-width: 30%;
     max-height: 30%;
     display: block;
     margin: auto;
 }
+
+.input-group {
+    max-width: 700px;
+}
+
+@media (min-width: 576px) {
+    .input-group {
+        width: 48vw;
+    }
+}
+
+@media (min-width: 768px) {
+    .input-group {
+        width: 45vw;
+    }
+}
+
+
+@media (min-width: 992px) {
+    .input-group {
+        width: 44vw;
+    }
+}
+
+
+@media (min-width: 1200px) {
+    .input-group {
+        width: 41vw;
+    }
+}
+
+
+@media (min-width: 1400px) {
+    .input-group {
+        width: 38vw;
+        max-width: 700px;
+    }
+}
+
+

@@ -307,6 +307,7 @@ function buildRow(ROW, type, {
     row = row.replaceAll('note-->', '');
   } else {
     row = row.replaceAll('{note}', '');
+    row = row.replaceAll('{note-alt}', '');
   }
 
   if (isHidden) {
