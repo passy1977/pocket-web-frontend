@@ -69,7 +69,7 @@ function onButtonLeftImage0Click() {
     globalSession.loadSync({
       path: '/home',
       title: 'Home'
-    });
+    }, false);
   } else {
     console.log('Todo open menu');
   }

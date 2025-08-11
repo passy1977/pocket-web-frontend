@@ -209,7 +209,7 @@ function onButtonLeftImage0Click() {
     globalSession.loadSync({
       path: '/home',
       title: 'Home'
-    });
+    }, false);
   } else {
     console.log('Todo open menu');
   }
@@ -344,7 +344,7 @@ function onClick(elm) {
         globalSession.loadSync({
           path: '/home',
           title: 'Home'
-        });
+        }, false);
       }
       break;
     case 'field':
@@ -456,9 +456,11 @@ export function onUpdateGui(session) {
   globalElmClicked = false;
 
   if (session.getStackNavigator.getIndex > 0) {
-    document.title = globalGroup.title;
+    document.title = `Pocket 5 - ${ globalGroup.title }`;
+    globalSession.getGui.title.innerHTML = globalGroup.title;
   } else {
-    document.title = 'Home';
+    document.title = `Pocket 5 - Home`;
+    globalSession.getGui.title.innerHTML = 'Home';
   }
 
   session?.getGui?.buttonLeft0.classList.remove('collapse');

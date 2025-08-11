@@ -184,7 +184,7 @@ export default class Session {
     }
   }
 
-  async load(data) {
+  async load(data, showTitle = true) {
     if(data === undefined || data === null) {
       return false;
     }
@@ -206,8 +206,10 @@ export default class Session {
       title = 'Login';
     }
 
-    document.title = title;
-    this.#gui.title.innerHTML = title;
+    if(showTitle) {
+      document.title = `Pocket 5 - ${ title }`;
+      this.#gui.title.innerHTML = title;
+    }
 
     try {
       await this.#loadHtml(path);
@@ -220,7 +222,7 @@ export default class Session {
     }
   }
 
-  loadSync(data) {
+  loadSync(data, showTitle = true) {
     if(data === undefined || data === null) {
       return false;
     }
@@ -230,7 +232,7 @@ export default class Session {
     }
 
     try {
-      this.load(data)                
+      this.load(data, showTitle)
       .catch(err => {
           showAlert(err);
       })
