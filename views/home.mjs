@@ -111,7 +111,7 @@ function onClickDelete(elm) {
         group.synchronized = false;
         group.deleted = true;
 
-        const {id: _id, group_id: groupId} = group;
+        const { id: _id, group_id: groupId } = group;
 
         serverAPI.data('/home/group/delete', {
           id: _id,
@@ -124,7 +124,7 @@ function onClickDelete(elm) {
         field.synchronized = false;
         field.deleted = true;
 
-        const {_id, group_id: groupId} = field;
+        const { _id, group_id: groupId } = field;
 
         serverAPI.data('/home/field/delete', {
           id: _id,
@@ -458,7 +458,7 @@ export function onUpdateGui(session) {
   if (session.getStackNavigator.getIndex > 0) {
     document.title = globalGroup.title;
   } else {
-    document.title = "Home";
+    document.title = 'Home';
   }
 
   session?.getGui?.buttonLeft0.classList.remove('collapse');

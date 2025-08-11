@@ -48,7 +48,7 @@ export function onUpdateGui(session) {
       passwd.classList.add('is-invalid');
       exit = true;
     } else {
-      passwdInvalidFeedback.innerText = "This field is required";
+      passwdInvalidFeedback.innerText = 'This field is required';
       passwd?.classList.remove('is-invalid');
     }
 
@@ -56,7 +56,7 @@ export function onUpdateGui(session) {
       passwdConfirm.classList.add('is-invalid');
       exit = true;
     } else {
-      passwdConfirmInvalidFeedback.innerText = "This field is required";
+      passwdConfirmInvalidFeedback.innerText = 'This field is required';
       passwdConfirm?.classList.remove('is-invalid');
     }
 
@@ -66,11 +66,11 @@ export function onUpdateGui(session) {
 
     if (passwd?.value !== passwdConfirm?.value) {
       passwd.value = '';
-      passwdInvalidFeedback.innerText = "Passwords mismatch";
+      passwdInvalidFeedback.innerText = 'Passwords mismatch';
       passwd.classList.add('is-invalid');
 
       passwdConfirm.value = '';
-      passwdConfirmInvalidFeedback.innerText = "Passwords mismatch";
+      passwdConfirmInvalidFeedback.innerText = 'Passwords mismatch';
       passwdConfirm.classList.add('is-invalid');
       return;
     }

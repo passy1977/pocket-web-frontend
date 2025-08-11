@@ -28,8 +28,9 @@
     </div>
 
     <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <img class="ico" src="/images/ic_add_black.svg" class="mouse-hover" alt="Add field group" id="field-add"/>
-      <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" alt="Clear all data insert" id="field-clean"/>
+      <img class="ico" src="/images/ic_add_black.svg" class="mouse-hover" alt="Add field group" id="field-add" />
+      <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" alt="Clear all data insert"
+           id="field-clean" />
     </div>
 
   </div>
@@ -38,25 +39,25 @@
 
 <table class="table table-hover mt-3">
   <thead>
-    <tr>
-      <th>Field title</th>
-      <th class="col-is-hidden">Field is hidden</th>
-      <th class="col-actions">Actions</th>
-    </tr>
+  <tr>
+    <th>Field title</th>
+    <th class="col-is-hidden">Field is hidden</th>
+    <th class="col-actions">Actions</th>
+  </tr>
   </thead>
   <tbody id="data-container">
-    <tr id="data-row-{id}" data-type-id="{id}">
-      <td id="col-title-{id}">
-        {title}
-      </td>
-      <td class="col-is-hidden" id="col-is-hidden-{id}">
-        <input class="form-check-input" type="checkbox" value="" id="checkbox-{id}" disabled>
-      </td>
-      <td class="col-actions" id="col-actions-{id}">
-        <img class="ico" src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group"/>
-        <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}"  alt="Delete field group"/>
-      </td>
-    </tr>
+  <tr id="data-row-{id}" data-type-id="{id}">
+    <td id="col-title-{id}">
+      {title}
+    </td>
+    <td class="col-is-hidden" id="col-is-hidden-{id}">
+      <input class="form-check-input" type="checkbox" value="" id="checkbox-{id}" disabled>
+    </td>
+    <td class="col-actions" id="col-actions-{id}">
+      <img class="ico" src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group" />
+      <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}" alt="Delete field group" />
+    </td>
+  </tr>
   </tbody>
 </table>
 

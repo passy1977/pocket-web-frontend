@@ -77,20 +77,19 @@ function onButtonLeftImage0Click() {
 }
 
 
-
 function buildRow(ROW, {
   id,
   title
 }) {
-  if(typeof ROW !== 'string') {
+  if (typeof ROW !== 'string') {
     throw new TypeError(`ROW it's not a string`);
   }
 
-  if(typeof id !== 'number') {
+  if (typeof id !== 'number') {
     throw new TypeError(`id it's not a number`);
   }
 
-  if(typeof title !== 'string') {
+  if (typeof title !== 'string') {
     throw new TypeError(`title it's not a string`);
   }
 
@@ -100,21 +99,21 @@ function buildRow(ROW, {
   return row;
 }
 
-function updateRows({data, error}) {
+function updateRows({ data, error }) {
   hideAlert();
 
-  if(data) {
+  if (data) {
     globalDataContainer.innerHTML = '';
 
     globalGroupFields.clear();
 
     globalElmClicked = false;
 
-    const {group_fields: groupFields} = data;
+    const { group_fields: groupFields } = data;
 
     let table = '';
     try {
-      if(groupFields) {
+      if (groupFields) {
         for (const groupField of groupFields) {
           globalGroupFields.set(groupField.id, groupField);
           table += buildRow(globalTemplateRow, groupField);
@@ -127,21 +126,21 @@ function updateRows({data, error}) {
     globalDataContainer.innerHTML = table;
 
 
-    for (const {id, is_hidden: isHidden} of groupFields) {
+    for (const { id, is_hidden: isHidden } of groupFields) {
       document.getElementById(`checkbox-${id}`).checked = isHidden;
 
       const edit = document.getElementById(`edit-${id}`);
-      if(edit && !edit.onclick) {
+      if (edit && !edit.onclick) {
         edit.addEventListener('click', onEdit);
       }
 
       const _delete = document.getElementById(`delete-${id}`);
-      if(_delete && !_delete.onclick) {
+      if (_delete && !_delete.onclick) {
         _delete.addEventListener('click', onDelete);
       }
     }
 
-  } else if(error) {
+  } else if (error) {
     showAlert(error);
   } else {
     showAlert('unhandled error');
@@ -153,7 +152,7 @@ export function onUpdateGui(session) {
   hideAlert();
 
   globalDataContainer = Object.freeze(document.getElementById('data-container'));
-  if(!globalDataContainer) {
+  if (!globalDataContainer) {
     throw new DOMException('data-container not found', 'home.mjs');
   }
 
@@ -161,7 +160,7 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  const {group, search} = session.getStackNavigator.get();
+  const { group, search } = session.getStackNavigator.get();
 
   globalElmClicked = false;
 
@@ -176,12 +175,12 @@ export function onUpdateGui(session) {
   session?.getGui?.buttonRight1.classList.add('collapse');
 
   globalGroupTitle = document.getElementById('group-title');
-  if(group && group.title) {
+  if (group && group.title) {
     globalGroupTitle.value = group.title;
   }
 
   globalGroupNote = document.getElementById('group-note');
-  if(group && group.note) {
+  if (group && group.note) {
     globalGroupNote.value = group.note;
   }
 
@@ -189,12 +188,12 @@ export function onUpdateGui(session) {
   globalFieldIsHidden = document.getElementById('field-is-hidden');
 
   const fieldAdd = document.getElementById('field-add');
-  if(!fieldAdd.onclick) {
+  if (!fieldAdd.onclick) {
     fieldAdd.addEventListener('click', onFieldAdd);
   }
 
   const fieldClean = document.getElementById('field-clean');
-  if(!fieldClean.onclick) {
+  if (!fieldClean.onclick) {
     fieldClean.addEventListener('click', onFieldClean);
   }
 
@@ -203,7 +202,7 @@ export function onUpdateGui(session) {
       group_fields: [{
         id: 1,
         title: 'test',
-        is_hidden: true,
+        is_hidden: true
       }]
     }
   });
