@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { hideAlert } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resetGuiCallbacks } from '../js/pocket.mjs';
 
 const CollumType = Object.freeze({
   TITLE: 0,
@@ -19,14 +19,69 @@ let globalGroupNote = null;
 let globalFieldTitle = null;
 let globalFieldIsHidden = null;
 
-
+let globalGroup = null;
 const globalGroupFields = new Map();
+
+function onFieldAdd(e) {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  console.log('onFieldAdd', e);
+  globalElmClicked = false;
+}
+
+function onFieldClean(e) {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  console.log('onFieldClean', e);
+  globalElmClicked = false;
+}
+
+function onEdit(e) {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  console.log('onEdit', e);
+  globalElmClicked = false;
+}
+
+function onDelete(e) {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  console.log('onDelete', e);
+  globalElmClicked = false;
+}
+
+function onButtonLeftImage0Click() {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  const data = globalSession.getStackNavigator.pop();
+  if (data) {
+    resetGuiCallbacks();
+    globalSession.loadSync({
+      path: '/home',
+      title: 'Home'
+    });
+  } else {
+    console.log('Todo open menu');
+  }
+  globalElmClicked = false;
+}
+
 
 
 function buildRow(ROW, {
-                    id,
-                    title
-                  }) {
+  id,
+  title
+}) {
   if(typeof ROW !== 'string') {
     throw new TypeError(`ROW it's not a string`);
   }
@@ -44,77 +99,6 @@ function buildRow(ROW, {
   row = row.replaceAll('{title}', title);
   return row;
 }
-
-function onFieldAdd(e) {
-  console.log('onFieldAdd', e);
-}
-
-function onFieldClean(e) {
-  console.log('onFieldClean', e);
-}
-
-function onEdit(e) {
-  console.log('onEdit', e);
-}
-
-function onDelete(e) {
-  console.log('onDelete', e);
-}
-
-export function onUpdateGui(session) {
-  hideAlert();
-
-  globalDataContainer = Object.freeze(document.getElementById('data-container'));
-  if(!globalDataContainer) {
-    throw new DOMException('data-container not found', 'home.mjs');
-  }
-
-  globalTemplateRow = Object.freeze(globalDataContainer.innerHTML);
-
-  globalSession = session;
-
-  const {group, search} = session.getStackNavigator.get();
-
-  globalElmClicked = false;
-
-  session?.getGui?.buttonLeft0.classList.remove('collapse');
-  session?.getGui?.buttonRight0.classList.add('collapse');
-  session?.getGui?.buttonRight1.classList.add('collapse');
-
-  globalGroupTitle = document.getElementById('group-title');
-  if(group && group.title) {
-    globalGroupTitle.value = group.title;
-  }
-
-  globalGroupNote = document.getElementById('group-note');
-  if(group && group.note) {
-    globalGroupNote.value = group.note;
-  }
-
-  globalFieldTitle = document.getElementById('field-title');
-  globalFieldIsHidden = document.getElementById('field-is-hidden');
-
-  const fieldAdd = document.getElementById('field-add');
-  if(!fieldAdd.onclick) {
-    fieldAdd.addEventListener('click', onFieldAdd);
-  }
-
-  const fieldClean = document.getElementById('field-clean');
-  if(!fieldClean.onclick) {
-    fieldClean.addEventListener('click', onFieldClean);
-  }
-
-  updateRows({
-    data: {
-      group_fields: [{
-        id: 1,
-        title: 'test',
-        is_hidden: true,
-      }]
-    }
-  });
-}
-
 
 function updateRows({data, error}) {
   hideAlert();
@@ -163,4 +147,64 @@ function updateRows({data, error}) {
     showAlert('unhandled error');
   }
 
+}
+
+export function onUpdateGui(session) {
+  hideAlert();
+
+  globalDataContainer = Object.freeze(document.getElementById('data-container'));
+  if(!globalDataContainer) {
+    throw new DOMException('data-container not found', 'home.mjs');
+  }
+
+  globalTemplateRow = Object.freeze(globalDataContainer.innerHTML);
+
+  globalSession = session;
+
+  const {group, search} = session.getStackNavigator.get();
+
+  globalElmClicked = false;
+
+  session?.getGui?.buttonLeft0.classList.remove('collapse');
+  session.getGui.title.innerHTML = group.title;
+  session.getGui.buttonLeftImage0.src = '/images/ic_back.svg';
+  if (!session?.getGui?.buttonLeftImage0.onclick) {
+    session?.getGui?.buttonLeftImage0.addEventListener('click', onButtonLeftImage0Click);
+  }
+
+  session?.getGui?.buttonRight0.classList.add('collapse');
+  session?.getGui?.buttonRight1.classList.add('collapse');
+
+  globalGroupTitle = document.getElementById('group-title');
+  if(group && group.title) {
+    globalGroupTitle.value = group.title;
+  }
+
+  globalGroupNote = document.getElementById('group-note');
+  if(group && group.note) {
+    globalGroupNote.value = group.note;
+  }
+
+  globalFieldTitle = document.getElementById('field-title');
+  globalFieldIsHidden = document.getElementById('field-is-hidden');
+
+  const fieldAdd = document.getElementById('field-add');
+  if(!fieldAdd.onclick) {
+    fieldAdd.addEventListener('click', onFieldAdd);
+  }
+
+  const fieldClean = document.getElementById('field-clean');
+  if(!fieldClean.onclick) {
+    fieldClean.addEventListener('click', onFieldClean);
+  }
+
+  updateRows({
+    data: {
+      group_fields: [{
+        id: 1,
+        title: 'test',
+        is_hidden: true,
+      }]
+    }
+  });
 }

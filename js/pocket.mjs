@@ -168,3 +168,14 @@ export function showModal({title, message, close, confirm, data = null}, callbac
 
   modal.show();
 }
+
+export function resetGuiCallbacks() {
+  session?.getGui?.buttonLeft0?.classList.add('collapse');
+  session?.getGui?.buttonLeftImage0?.removeEventListener('click', onButtonLeftImage0Click);
+
+  session?.getGui?.buttonRight0.classList.add('collapse');
+  session?.getGui?.buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
+
+  session?.getGui?.buttonRight1.classList.add('collapse');
+  session?.getGui?.buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
+}
