@@ -160,16 +160,16 @@ function onClickEdit(elm) {
     if (confirm) {
       if (type === 'group') {
 
-        const group = globalGroups?.get(id);
+        const {id: _id, group_id: groupId} = globalGroups?.get(id);
 
         serverAPI.groupDetail(
           {
-            id: group.id,
-            groupId: group.groupId
+            id: _id,
+            groupId
           },
           ({ data, error }) => {
             if (data) {
-              resetGuiCallbacks();
+              resetGuiCallbacks(onButtonLeftImage0Click, onButtonRightImage0Click, onButtonRightImage1Click);
               globalSession.loadSync(data);
             } else {
               if (error) {
@@ -181,9 +181,9 @@ function onClickEdit(elm) {
           });
 
       } else if (type === 'field') {
-        const field = globalFields?.get(id);
+        const {id: _id, group_id: groupId} = globalFields?.get(id);
 
-        console.log('TODO: edit field');
+        console.log(`TODO: edit field id:${ _id }, group_id:${ groupId }`);
 
       }
     }
@@ -241,7 +241,7 @@ function onButtonRightImage1Click() {
     },
     ({ data, error }) => {
       if (data) {
-        resetGuiCallbacks();
+        resetGuiCallbacks(onButtonLeftImage0Click, onButtonRightImage0Click, onButtonRightImage1Click);
         globalSession.loadSync(data);
       } else {
         if (error) {
@@ -371,6 +371,11 @@ function updateRows({ data, error }) {
 
     const { groups, fields } = data;
 
+    if(groups.length === 0 && fields.length === 0) {
+      globalDataContainer.innerHTML = '';
+      return;
+    }
+
     let table = '';
     try {
       if (groups) {
@@ -442,11 +447,12 @@ function updateRows({ data, error }) {
 export function onUpdateGui(session) {
   hideAlert();
 
-  globalDataContainer = Object.freeze(document.getElementById('data-container'));
+  globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
     throw new DOMException('data-container not found', 'home.mjs');
   }
-  globalTemplateRow = Object.freeze(globalDataContainer.innerHTML);
+  globalTemplateRow = globalDataContainer.innerHTML;
+  globalDataContainer.innerHTML = '';
 
   globalSession = session;
 

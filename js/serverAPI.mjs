@@ -74,9 +74,7 @@ class ServerAPI {
     };
   }
 
-  #dbg() {
-    const foo = 1;
-  }
+  #dbg() {}
 
   hello(callback) {
     this.#dbg();
@@ -321,6 +319,27 @@ class ServerAPI {
 
     if (typeof callback !== 'function') {
       throw new TypeError(`callback it's not a function`);
+    }
+
+    if (id === 0 && groupId === 0) {
+      callback({
+        data: {
+          ...this.#defaultDataTransfer,
+          path: '/group-detail',
+          title: 'New group',
+          groups: [{
+            id,
+            group_id: groupId,
+            title: '',
+            note: '',
+            synchronized: false,
+          }],
+          group_fields: [],
+          session_id: this.#sessionId
+        },
+        error: null
+      });
+      return;
     }
 
     fetch(this.#enterPoint + '/group_detail', {

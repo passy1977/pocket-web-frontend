@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { hideAlert, resetGuiCallbacks } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resetGuiCallbacks, showModal } from '../js/pocket.mjs';
 
 const CollumType = Object.freeze({
   TITLE: 0,
@@ -36,8 +36,18 @@ function onFieldClean(e) {
     return;
   }
   globalElmClicked = true;
-  console.log('onFieldClean', e);
-  globalElmClicked = false;
+  showModal({
+    title: 'Clean field data',
+    message: `Do you want to clean all field data?`,
+    close: 'No',
+    confirm: 'Yes',
+  }, (confirm) => {
+    if(confirm) {
+      globalFieldTitle.value = '';
+      globalFieldIsHidden.checked = false;
+    }
+    globalElmClicked = false;
+  });
 }
 
 function onEdit(e) {
@@ -65,7 +75,7 @@ function onButtonLeftImage0Click() {
   globalElmClicked = true;
   const data = globalSession.getStackNavigator.pop();
   if (data) {
-    resetGuiCallbacks();
+    resetGuiCallbacks(onButtonLeftImage0Click);
     globalSession.loadSync({
       path: '/home',
       title: 'Home'
@@ -151,12 +161,13 @@ function updateRows({ data, error }) {
 export function onUpdateGui(session) {
   hideAlert();
 
-  globalDataContainer = Object.freeze(document.getElementById('data-container'));
+  globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
     throw new DOMException('data-container not found', 'home.mjs');
   }
 
-  globalTemplateRow = Object.freeze(globalDataContainer.innerHTML);
+  globalTemplateRow = globalDataContainer.innerHTML;
+  globalDataContainer.innerHTML = '';
 
   globalSession = session;
 
@@ -196,14 +207,4 @@ export function onUpdateGui(session) {
   if (!fieldClean.onclick) {
     fieldClean.addEventListener('click', onFieldClean);
   }
-
-  updateRows({
-    data: {
-      group_fields: [{
-        id: 1,
-        title: 'test',
-        is_hidden: true
-      }]
-    }
-  });
 }

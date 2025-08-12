@@ -169,13 +169,20 @@ export function showModal({ title, message, close, confirm, data = null }, callb
   modal.show();
 }
 
-export function resetGuiCallbacks() {
+export function resetGuiCallbacks(onButtonLeftImage0Click = null, onButtonRightImage0Click = null, onButtonRightImage1Click = null) {
+
   session?.getGui?.buttonLeft0?.classList.add('collapse');
-  session?.getGui?.buttonLeftImage0?.removeEventListener('click', onButtonLeftImage0Click);
+  if (onButtonLeftImage0Click) {
+    session?.getGui?.buttonLeftImage0?.removeEventListener('click', onButtonLeftImage0Click);
+  }
 
   session?.getGui?.buttonRight0.classList.add('collapse');
-  session?.getGui?.buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
+  if (onButtonRightImage0Click) {
+    session?.getGui?.buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
+  }
 
   session?.getGui?.buttonRight1.classList.add('collapse');
-  session?.getGui?.buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
+  if (onButtonRightImage1Click) {
+    session?.getGui?.buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
+  }
 }

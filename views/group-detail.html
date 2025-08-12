@@ -1,6 +1,15 @@
-<div class="form-floating mb-3 ">
-  <input type="text" class="form-control" placeholder="Group title" id="group-title">
-  <label for="group-title">Group title</label>
+<div class="input-group has-validation mb-3">
+    <span class="input-group-text">
+      <img src="/images/ic_group.svg" alt="Password icon" class="ico" />
+    </span>
+  <div class="form-floating">
+    <input placeholder="Group title" class="form-control" id="group-title" placeholder="Group title"
+           aria-describedby="addon-group-title" required>
+    <label id="addon-group-title">Insert or modify the group name</label>
+  </div>
+  <div class="invalid-feedback">
+    This field is required
+  </div>
 </div>
 
 <div class="form-floating">
@@ -12,9 +21,15 @@
   <div class="row">
 
     <div class="col no-padding">
-      <div class="form-floating">
-        <input type="text" class="form-control" placeholder="Field title" id="field-title">
-        <label for="field-title">Field note</label>
+
+      <div class="input-group mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_field.svg" alt="Password icon" class="ico" />
+      </span>
+        <div class="form-floating">
+          <input placeholder="Field title" class="form-control" id="field-title" aria-describedby="addon-field-title">
+          <label id="addon-field-title">Field name</label>
+        </div>
       </div>
     </div>
 
@@ -28,8 +43,8 @@
     </div>
 
     <div class="col col-md-auto d-flex align-items-center justify-content-center">
-      <img class="ico" src="/images/ic_add_black.svg" class="mouse-hover" alt="Add field group" id="field-add" />
-      <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" alt="Clear all data insert"
+      <img src="/images/ic_add_black.svg" class="ico mouse-hover" alt="Add field group" id="field-add" />
+      <img src="/images/ic_clear.svg" class="ico ms-1 mouse-hover" alt="Clear all data insert"
            id="field-clean" />
     </div>
 
@@ -54,8 +69,8 @@
       <input class="form-check-input" type="checkbox" value="" id="checkbox-{id}" disabled>
     </td>
     <td class="col-actions" id="col-actions-{id}">
-      <img class="ico" src="/images/ic_edit.svg" class="mouse-hover" id="edit-{id}" alt="Edit field group" />
-      <img class="ico" src="/images/ic_clear.svg" class="ms-1 mouse-hover" id="delete-{id}" alt="Delete field group" />
+      <img src="/images/ic_edit.svg" class="ico mouse-hover" id="edit-{id}" alt="Edit field group" />
+      <img src="/images/ic_clear.svg" class="ico ms-1 mouse-hover" id="delete-{id}" alt="Delete field group" />
     </td>
   </tr>
   </tbody>
