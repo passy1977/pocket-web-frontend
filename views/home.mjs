@@ -237,7 +237,7 @@ function onButtonRightImage1Click() {
     {
       id: 0,
       groupId: globalGroup.id,
-      search: globalSearch
+      group: globalGroup
     },
     ({ data, error }) => {
       if (data) {

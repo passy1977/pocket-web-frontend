@@ -1,4 +1,5 @@
 import BACKEND_URL from './constants.mjs';
+import { EmptyGroup } from './pocket.mjs';
 
 
 class ServerAPI {
@@ -299,7 +300,7 @@ class ServerAPI {
   }
 
 
-  groupDetail({ id, groupId, search = '' }, callback) {
+  groupDetail({ id, groupId, search = ''}, callback) {
     this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
@@ -321,19 +322,13 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
-    if (id === 0 && groupId === 0) {
+    if (id === 0 && groupId == 0) {
       callback({
         data: {
           ...this.#defaultDataTransfer,
           path: '/group-detail',
           title: 'New group',
-          groups: [{
-            id,
-            group_id: groupId,
-            title: '',
-            note: '',
-            synchronized: false,
-          }],
+          groups: [{...EmptyGroup}],
           group_fields: [],
           session_id: this.#sessionId
         },

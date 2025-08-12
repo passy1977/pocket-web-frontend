@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { hideAlert, resetGuiCallbacks, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyGroup, EmptyGroupField, hideAlert, resetGuiCallbacks, showModal } from '../js/pocket.mjs';
 
 const CollumType = Object.freeze({
   TITLE: 0,
@@ -16,22 +16,74 @@ let globalTemplateRow = '';
 
 let globalGroupTitle = null;
 let globalGroupNote = null;
-let globalFieldTitle = null;
+let globalFieldTitle = null
+let globalFieldTitleContainer = null;
+let globalFieldTitleInvalid = null;
 let globalFieldIsHidden = null;
 
 let globalGroup = null;
-const globalGroupFields = new Map();
+let globalGroupFields = new Map();
+let globalGroupFieldsNewIndex = 0;
 
-function onFieldAdd(e) {
+
+function onFieldAdd() {
   if (globalElmClicked) {
     return;
   }
+
+  globalFieldTitleContainer.classList.remove('is-invalid');
+  if(globalFieldTitle.value.trim() === '') {
+    globalFieldTitleInvalid.text = 'This field is required';
+    globalFieldTitleContainer.classList.add('is-invalid');
+    return;
+  }
+
   globalElmClicked = true;
-  console.log('onFieldAdd', e);
+
+  const newGroupField = {
+    ...EmptyGroupField,
+    id: --globalGroupFieldsNewIndex,
+    group_id: globalGroup?.id ?? 0,
+    title: globalFieldTitle.value,
+    is_hidden: globalFieldIsHidden.checked,
+    newGroupField: true,
+  };
+
+  const values = [...globalGroupFields.values()];
+  for(const idx in values) {
+    const groupField = values[idx];
+    if (groupField.title.toLowerCase() === newGroupField.title.toLowerCase()) {
+      globalFieldTitleInvalid.innerHTML = 'Another field insert with same name';
+      globalFieldTitleContainer.classList.add('is-invalid');
+      globalElmClicked = false;
+      return;
+    }
+  }
+
+
+  globalGroupFields[newGroupField.id] = newGroupField;
+
+  let newGlobalGroupFields = [];
+
+  [...Object.values(globalGroupFields)]
+    .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+    .forEach(groupField => newGlobalGroupFields.push(groupField));
+
+  globalFieldTitle.value = '';
+  globalFieldIsHidden.checked = false;
+
+  updateRows({
+    data: {
+      group: globalGroup,
+      group_fields: newGlobalGroupFields
+    },
+    error: null,
+  });
+
   globalElmClicked = false;
 }
 
-function onFieldClean(e) {
+function onFieldClean() {
   if (globalElmClicked) {
     return;
   }
@@ -137,7 +189,11 @@ function updateRows({ data, error }) {
 
 
     for (const { id, is_hidden: isHidden } of groupFields) {
-      document.getElementById(`checkbox-${id}`).checked = isHidden;
+      const checkbox = document.getElementById(`checkbox-is-hidden-${id}`);
+      if(checkbox) {
+        checkbox.checked = isHidden;
+      }
+
 
       const edit = document.getElementById(`edit-${id}`);
       if (edit && !edit.onclick) {
@@ -155,7 +211,7 @@ function updateRows({ data, error }) {
   } else {
     showAlert('unhandled error');
   }
-
+  globalElmClicked = false;
 }
 
 export function onUpdateGui(session) {
@@ -171,12 +227,16 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  const { group, search } = session.getStackNavigator.get();
-
-  globalElmClicked = false;
+  if (session?.getLastData?.groups.length === 0) {
+    globalGroup = {
+      ...EmptyGroup
+    };
+  } else {
+    globalGroup = session?.getLastData?.groups.at(0);
+  }
 
   session?.getGui?.buttonLeft0.classList.remove('collapse');
-  session.getGui.title.innerHTML = group.title;
+  session.getGui.title.innerHTML = globalGroup.title;
   session.getGui.buttonLeftImage0.src = '/images/ic_back.svg';
   if (!session?.getGui?.buttonLeftImage0.onclick) {
     session?.getGui?.buttonLeftImage0.addEventListener('click', onButtonLeftImage0Click);
@@ -186,25 +246,27 @@ export function onUpdateGui(session) {
   session?.getGui?.buttonRight1.classList.add('collapse');
 
   globalGroupTitle = document.getElementById('group-title');
-  if (group && group.title) {
+  if (globalGroup && globalGroup.title) {
     globalGroupTitle.value = group.title;
   }
 
   globalGroupNote = document.getElementById('group-note');
-  if (group && group.note) {
+  if (globalGroup && globalGroup.note) {
     globalGroupNote.value = group.note;
   }
 
   globalFieldTitle = document.getElementById('field-title');
+  globalFieldTitleContainer = document.getElementById('field-title-container');
+  globalFieldTitleInvalid = document.getElementById('field-title-invalid');
   globalFieldIsHidden = document.getElementById('field-is-hidden');
 
   const fieldAdd = document.getElementById('field-add');
-  if (!fieldAdd.onclick) {
-    fieldAdd.addEventListener('click', onFieldAdd);
-  }
+  fieldAdd.removeEventListener('click', onFieldAdd);
+  fieldAdd.addEventListener('click', onFieldAdd);
+
 
   const fieldClean = document.getElementById('field-clean');
-  if (!fieldClean.onclick) {
-    fieldClean.addEventListener('click', onFieldClean);
-  }
+  fieldClean.removeEventListener('click', onFieldClean);
+  fieldClean.addEventListener('click', onFieldClean);
+
 }

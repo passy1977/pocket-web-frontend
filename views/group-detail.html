@@ -17,18 +17,23 @@
   <label for="group-note">Group note</label>
 </div>
 
+<p class="border-top mt-4 pt-1 d-flex justify-content-center">This session allows the addition of fields that will appear by default in the subgroups view.</p>
+
 <div class="container text-center pt-3">
   <div class="row">
 
     <div class="col no-padding">
 
-      <div class="input-group mb-3">
+      <div class="input-group has-validation mb-3">
       <span class="input-group-text">
         <img src="/images/ic_field.svg" alt="Password icon" class="ico" />
       </span>
-        <div class="form-floating">
+        <div class="form-floating" id="field-title-container">
           <input placeholder="Field title" class="form-control" id="field-title" aria-describedby="addon-field-title">
           <label id="addon-field-title">Field name</label>
+        </div>
+        <div class="invalid-feedback" id="field-title-invalid">
+          This field is required
         </div>
       </div>
     </div>
@@ -52,7 +57,7 @@
 </div>
 
 
-<table class="table table-hover mt-3">
+<table class="table mt-3">
   <thead>
   <tr>
     <th>Field title</th>
@@ -66,7 +71,7 @@
       {title}
     </td>
     <td class="col-is-hidden" id="col-is-hidden-{id}">
-      <input class="form-check-input" type="checkbox" value="" id="checkbox-{id}" disabled>
+      <input type="checkbox" value="" class="form-check-input" id="checkbox-is-hidden-{id}" disabled>
     </td>
     <td class="col-actions" id="col-actions-{id}">
       <img src="/images/ic_edit.svg" class="ico mouse-hover" id="edit-{id}" alt="Edit field group" />
