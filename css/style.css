@@ -49,7 +49,7 @@ nav .btn-secondary {
 }
 
 nav .btn-primary:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: color-mix(in srgb, var(--primary-color) 100%, black 10%);
 }
 
 nav h1 {
@@ -80,6 +80,8 @@ nav .btn:disabled {
     border-radius: var(--border-radius);
     border: solid 1px var(--primary-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 95%;
+    height: 95%;
 }
 
 .btn-primary {

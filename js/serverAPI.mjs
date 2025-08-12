@@ -74,7 +74,12 @@ class ServerAPI {
     };
   }
 
+  #dbg() {
+    const foo = 1;
+  }
+
   hello(callback) {
+    this.#dbg();
     fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
       method: 'GET',
       headers: {
@@ -94,6 +99,7 @@ class ServerAPI {
   }
 
   login({ email, passwd }, callback) {
+    this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
     }
@@ -128,6 +134,7 @@ class ServerAPI {
   }
 
   registration({ jsonConfig, email, passwd, confirmPasswd }, callback) {
+    this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
     }
@@ -170,6 +177,7 @@ class ServerAPI {
   }
 
   home({ groupId, search }, callback) {
+    this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
     }
@@ -204,6 +212,7 @@ class ServerAPI {
   }
 
   debug({ path, callback }) {
+    this.#dbg();
     if (typeof path !== 'string') {
       throw new TypeError(`path it's not a string`);
     }
@@ -231,6 +240,7 @@ class ServerAPI {
   }
 
   data(from, { id, groupId, search = '' }, { groups = null, groupFields = null, fields = null }, callback) {
+    this.#dbg();
 
     if (from && typeof from !== 'string') {
       throw new TypeError(`from it's not a string`);
@@ -292,6 +302,7 @@ class ServerAPI {
 
 
   groupDetail({ id, groupId, search = '' }, callback) {
+    this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
     }

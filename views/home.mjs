@@ -183,7 +183,8 @@ function onClickEdit(elm) {
       } else if (type === 'field') {
         const field = globalFields?.get(id);
 
-        alert('Todo');
+        console.log('TODO: edit field');
+
       }
     }
     globalElmClicked = false;
@@ -211,7 +212,7 @@ function onButtonLeftImage0Click() {
       title: 'Home'
     }, false);
   } else {
-    console.log('Todo open menu');
+    console.log('TODO: open menu');
   }
   globalElmClicked = false;
 }
@@ -221,7 +222,7 @@ function onButtonRightImage0Click() {
     return;
   }
   globalElmClicked = true;
-  console.log('buttonRightImage0');
+  console.log('TODO: new field');
   //resetGuiCallbacks();
   globalElmClicked = false;
 }
@@ -356,7 +357,6 @@ function onClick(elm) {
       break;
 
   }
-  console.log('click', elm);
 }
 
 
