@@ -192,16 +192,11 @@ function onButtonLeftImage0Click() {
     return;
   }
   globalElmClicked = true;
-  const data = globalSession.getStackNavigator.pop();
-  if (data) {
-    resetGuiCallbacks(onButtonLeftImage0Click);
-    globalSession.loadSync({
-      path: '/home',
-      title: 'Home'
-    }, false);
-  } else {
-    console.log('Todo open menu');
-  }
+  resetGuiCallbacks(onButtonLeftImage0Click);
+  globalSession.loadSync({
+    path: '/home',
+    title: 'Home'
+  }, false);
   globalElmClicked = false;
 }
 
