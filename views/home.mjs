@@ -342,7 +342,7 @@ function onClick(elm) {
   switch (type) {
     case 'group':
       if (globalSession && globalGroups.has(id)) {
-        globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch);
+        globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch, globalSession.getLastPath);
         globalSession.loadSync({
           path: '/home',
           title: 'Home'

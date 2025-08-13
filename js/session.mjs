@@ -13,11 +13,11 @@ export class StackNavigator {
     }
 
     this.#stack = [];
-    this.#stack.push({group: {id: 0, group_id: 0}, search: ''});
+    this.#stack.push({group: {id: 0, group_id: 0}, search: '', path: ''});
     this.#index = 0;
   }
 
-  push(group, search = '') {
+  push(group, search = '', path = '') {
     if(typeof group !== 'object') {
       throw new TypeError(`group it's not a object`);
     }
@@ -26,7 +26,7 @@ export class StackNavigator {
       throw new TypeError(`search it's not a string`);
     }
     this.#index++;
-    this.#stack.push({group, search});
+    this.#stack.push({group, search, path});
   }
 
   pop() {
@@ -60,7 +60,7 @@ export default class Session {
   #gui;
   #stackNavigator;
   #lastData;
-
+  #lastPath;
 
   constructor(gui, callbackUpdate) {
 
@@ -123,6 +123,10 @@ export default class Session {
 
   get getLastData() {
     return this.#lastData;
+  }
+
+  get getLastPath() {
+    return this.#lastPath;
   }
 
   get getGui() {
@@ -210,6 +214,8 @@ export default class Session {
       document.title = `Pocket 5 - ${ title }`;
       this.#gui.title.innerHTML = title;
     }
+
+    this.#lastPath = path;
 
     try {
       await this.#loadHtml(path);

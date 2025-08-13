@@ -11,3 +11,12 @@ if (!String.prototype.includes) {
     }
   };
 }
+
+window.addEventListener('beforeunload', () => {
+
+});
+
+
+export default function setSession(session) {
+
+}

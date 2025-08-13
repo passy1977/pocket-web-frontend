@@ -307,6 +307,8 @@ export function onUpdateGui(session) {
     globalGroup = session?.getLastData?.groups.at(0);
   }
 
+  globalSession.getStackNavigator.push(globalGroup, session?.getLastData?.data ?? "", globalSession.getLastPath);
+
   session?.getGui?.buttonLeft0.classList.remove('collapse');
   session.getGui.title.innerHTML = globalGroup.title;
   session.getGui.buttonLeftImage0.src = '/images/ic_back.svg';
