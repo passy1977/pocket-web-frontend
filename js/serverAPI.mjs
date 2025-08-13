@@ -322,7 +322,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
-    if (id === 0 && groupId == 0) {
+    if (id === 0 && groupId === 0) {
       callback({
         data: {
           ...this.#defaultDataTransfer,

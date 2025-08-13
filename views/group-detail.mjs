@@ -75,21 +75,26 @@ function onFieldAddOrModify() {
   }
 
   globalGroupField = localGroupField;
-  globalGroupFields[globalGroupField.id] = globalGroupField;
+  if(globalGroupField.id > 0 && globalGroupFields.has(globalGroupField.id)) {
+    globalGroupFields.delete(globalGroupField.id);
+  }
+  globalGroupFields.set(globalGroupField.id, globalGroupField);
 
   let newGlobalGroupFields = [];
 
-  [...Object.values(globalGroupFields)]
-    .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
-    .forEach(groupField => newGlobalGroupFields.push(groupField));
+  globalGroupFields.forEach( (groupField, key) => {
+    //console.log(key, groupField);
+    newGlobalGroupFields.push(groupField);
+  });
 
   globalFieldTitle.value = '';
   globalFieldIsHidden.checked = false;
 
+  globalGroupField = null;
   updateRows({
     data: {
       group: globalGroup,
-      group_fields: newGlobalGroupFields
+      group_fields: newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
     },
     error: null,
   });
@@ -162,14 +167,16 @@ function onDelete(e) {
       globalGroupField.synchronized = false;
       globalGroupField.deleted = true;
     } else {
-      delete globalGroupFields[id];
+      globalGroupFields.delete(globalGroupField.id);
     }
 
     let newGlobalGroupFields = [];
 
-    [...Object.values(globalGroupFields)]
-      .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
-      .forEach(groupField => newGlobalGroupFields.push(groupField));
+    globalGroupFields.forEach( (groupField, key) => {
+      //console.log(key, groupField);
+      newGlobalGroupFields.push(groupField);
+    });
+
 
     globalFieldTitle.value = '';
     globalFieldIsHidden.checked = false;
@@ -177,7 +184,7 @@ function onDelete(e) {
     updateRows({
       data: {
         group: globalGroup,
-        group_fields: newGlobalGroupFields
+        group_fields: newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
       },
       error: null,
     });
@@ -239,6 +246,9 @@ function updateRows({ data, error }) {
     try {
       if (groupFields) {
         for (const groupField of groupFields) {
+          if(groupField.deleted) {
+            continue;
+          }
           globalGroupFields.set(groupField.id, groupField);
           table += buildRow(globalTemplateRow, groupField);
         }
@@ -309,12 +319,12 @@ export function onUpdateGui(session) {
 
   globalGroupTitle = document.getElementById('group-title');
   if (globalGroup && globalGroup.title) {
-    globalGroupTitle.value = group.title;
+    globalGroupTitle.value = globalGroup.title;
   }
 
   globalGroupNote = document.getElementById('group-note');
   if (globalGroup && globalGroup.note) {
-    globalGroupNote.value = group.note;
+    globalGroupNote.value = globalGroup.note;
   }
 
   globalFieldTitle = document.getElementById('field-title');
@@ -331,4 +341,6 @@ export function onUpdateGui(session) {
   fieldClean.removeEventListener('click', onFieldClean);
   fieldClean.addEventListener('click', onFieldClean);
 
+
+  updateRows({data: session?.getLastData, error: null});
 }
