@@ -142,37 +142,49 @@ function onDelete(e) {
 
   globalElmClicked = true;
 
+
+
   const elm = e.target;
 
   const id = parseInt(elm.getAttribute('data-type-id'));
 
-  globalGroupField = globalGroupFields.get(id);
+  showModal({
+    title: 'Delete field',
+    message: `Do you really want to delete this element?`,
+    close: 'No',
+    confirm: 'Yes',
+    data: { id }
+  }, (confirm, { id, elm }) => {
 
-  if (globalGroupField.id > 0) {
-    globalGroupField.synchronized = false;
-    globalGroupField.deleted = true;
-  } else {
-    delete globalGroupFields[id];
-  }
+    globalGroupField = globalGroupFields.get(id);
 
-  let newGlobalGroupFields = [];
+    if (globalGroupField.id > 0) {
+      globalGroupField.synchronized = false;
+      globalGroupField.deleted = true;
+    } else {
+      delete globalGroupFields[id];
+    }
 
-  [...Object.values(globalGroupFields)]
-    .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
-    .forEach(groupField => newGlobalGroupFields.push(groupField));
+    let newGlobalGroupFields = [];
 
-  globalFieldTitle.value = '';
-  globalFieldIsHidden.checked = false;
+    [...Object.values(globalGroupFields)]
+      .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+      .forEach(groupField => newGlobalGroupFields.push(groupField));
 
-  updateRows({
-    data: {
-      group: globalGroup,
-      group_fields: newGlobalGroupFields
-    },
-    error: null,
+    globalFieldTitle.value = '';
+    globalFieldIsHidden.checked = false;
+
+    updateRows({
+      data: {
+        group: globalGroup,
+        group_fields: newGlobalGroupFields
+      },
+      error: null,
+    });
+
+    globalElmClicked = false;
+
   });
-
-  globalElmClicked = false;
 }
 
 function onButtonLeftImage0Click() {
