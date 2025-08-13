@@ -22,11 +22,13 @@ let globalFieldTitleInvalid = null;
 let globalFieldIsHidden = null;
 
 let globalGroup = null;
+let globalGroupField = null;
+
 let globalGroupFields = new Map();
 let globalGroupFieldsNewIndex = 0;
 
 
-function onFieldAdd() {
+function onFieldAddOrModify() {
   if (globalElmClicked) {
     return;
   }
@@ -40,19 +42,31 @@ function onFieldAdd() {
 
   globalElmClicked = true;
 
-  const newGroupField = {
-    ...EmptyGroupField,
-    id: --globalGroupFieldsNewIndex,
-    group_id: globalGroup?.id ?? 0,
-    title: globalFieldTitle.value,
-    is_hidden: globalFieldIsHidden.checked,
-    newGroupField: true,
-  };
+
+  let localGroupField = null;
+  if(globalGroupField) {
+    localGroupField = {
+      ...globalGroupField,
+      title: globalFieldTitle.value,
+      is_hidden: globalFieldIsHidden.checked,
+      synchronized: false
+    };
+  } else {
+    localGroupField = {
+      ...EmptyGroupField,
+      id: --globalGroupFieldsNewIndex,
+      group_id: globalGroup?.id ?? 0,
+      title: globalFieldTitle.value,
+      is_hidden: globalFieldIsHidden.checked,
+      synchronized: false
+    };
+  }
+
 
   const values = [...globalGroupFields.values()];
   for(const idx in values) {
     const groupField = values[idx];
-    if (groupField.title.toLowerCase() === newGroupField.title.toLowerCase()) {
+    if (groupField.title.toLowerCase() === localGroupField.title.toLowerCase()) {
       globalFieldTitleInvalid.innerHTML = 'Another field insert with same name';
       globalFieldTitleContainer.classList.add('is-invalid');
       globalElmClicked = false;
@@ -60,8 +74,8 @@ function onFieldAdd() {
     }
   }
 
-
-  globalGroupFields[newGroupField.id] = newGroupField;
+  globalGroupField = localGroupField;
+  globalGroupFields[globalGroupField.id] = globalGroupField;
 
   let newGlobalGroupFields = [];
 
@@ -106,8 +120,18 @@ function onEdit(e) {
   if (globalElmClicked) {
     return;
   }
+
   globalElmClicked = true;
-  console.log('onEdit', e);
+
+  const elm = e.target;
+
+  const id = parseInt(elm.getAttribute('data-type-id'));
+
+  globalGroupField = globalGroupFields.get(id);
+
+  globalFieldTitle.value = globalGroupField.title;
+  globalFieldIsHidden.checked = globalGroupField.is_hidden;
+
   globalElmClicked = false;
 }
 
@@ -115,8 +139,39 @@ function onDelete(e) {
   if (globalElmClicked) {
     return;
   }
+
   globalElmClicked = true;
-  console.log('onDelete', e);
+
+  const elm = e.target;
+
+  const id = parseInt(elm.getAttribute('data-type-id'));
+
+  globalGroupField = globalGroupFields.get(id);
+
+  if (globalGroupField.id > 0) {
+    globalGroupField.synchronized = false;
+    globalGroupField.deleted = true;
+  } else {
+    delete globalGroupFields[id];
+  }
+
+  let newGlobalGroupFields = [];
+
+  [...Object.values(globalGroupFields)]
+    .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+    .forEach(groupField => newGlobalGroupFields.push(groupField));
+
+  globalFieldTitle.value = '';
+  globalFieldIsHidden.checked = false;
+
+  updateRows({
+    data: {
+      group: globalGroup,
+      group_fields: newGlobalGroupFields
+    },
+    error: null,
+  });
+
   globalElmClicked = false;
 }
 
@@ -261,8 +316,8 @@ export function onUpdateGui(session) {
   globalFieldIsHidden = document.getElementById('field-is-hidden');
 
   const fieldAdd = document.getElementById('field-add');
-  fieldAdd.removeEventListener('click', onFieldAdd);
-  fieldAdd.addEventListener('click', onFieldAdd);
+  fieldAdd.removeEventListener('click', onFieldAddOrModify);
+  fieldAdd.addEventListener('click', onFieldAddOrModify);
 
 
   const fieldClean = document.getElementById('field-clean');
