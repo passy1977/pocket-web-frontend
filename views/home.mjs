@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, resetGuiCallbacks, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, showModal } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -158,6 +158,7 @@ function onClickEdit(elm) {
     data: { id, type }
   }, (confirm, { id, type }) => {
     if (confirm) {
+      globalSession?.resetGui();
       if (type === 'group') {
 
         const {id: _id, group_id: groupId} = globalGroups?.get(id);
@@ -169,7 +170,6 @@ function onClickEdit(elm) {
           },
           ({ data, error }) => {
             if (data) {
-              resetGuiCallbacks(onButtonLeftImage0Click, onButtonRightImage0Click, onButtonRightImage1Click);
               globalSession.loadSync(data);
             } else {
               if (error) {
@@ -233,6 +233,8 @@ function onButtonRightImage1Click() {
   }
   globalElmClicked = true;
 
+  globalSession?.resetGui();
+
   serverAPI.groupDetail(
     {
       id: 0,
@@ -241,7 +243,6 @@ function onButtonRightImage1Click() {
     },
     ({ data, error }) => {
       if (data) {
-        resetGuiCallbacks(onButtonLeftImage0Click, onButtonRightImage0Click, onButtonRightImage1Click);
         globalSession.loadSync(data);
       } else {
         if (error) {
@@ -342,7 +343,7 @@ function onClick(elm) {
   switch (type) {
     case 'group':
       if (globalSession && globalGroups.has(id)) {
-        globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch, globalSession.getLastPath);
+        globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch);
         globalSession.loadSync({
           path: '/home',
           title: 'Home'
@@ -462,7 +463,7 @@ export function onUpdateGui(session) {
 
   globalElmClicked = false;
 
-  if (session.getStackNavigator.getIndex > 0) {
+  if (globalSession.getStackNavigator.getIndex > 0) {
     document.title = `Pocket 5 - ${ globalGroup.title }`;
     globalSession.getGui.title.innerHTML = globalGroup.title;
   } else {
@@ -470,30 +471,16 @@ export function onUpdateGui(session) {
     globalSession.getGui.title.innerHTML = 'Home';
   }
 
-  session?.getGui?.buttonLeft0.classList.remove('collapse');
-  if (session.getStackNavigator.getIndex > 0) {
-    session.getGui.title.innerHTML = globalGroup.title;
-    session.getGui.buttonLeftImage0.src = '/images/ic_back.svg';
-    if (!session?.getGui?.buttonLeftImage0.onclick) {
-      session?.getGui?.buttonLeftImage0.addEventListener('click', onButtonLeftImage0Click);
-    }
+
+  if (globalSession.getStackNavigator.getIndex > 0) {
+    globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   } else {
-    session.getGui.buttonLeftImage0.src = '/images/ic_menu.svg';
+    globalSession.getGui?.buttonLeft0.classList.remove('collapse');
+    globalSession.getGui.buttonLeftImage0.src = '/images/ic_menu.svg';
   }
 
-  session?.getGui?.buttonRight0.classList.remove('collapse');
-  session?.getGui?.buttonRightImage0.classList.remove('collapse');
-  session.getGui.buttonRightImage0.src = '/images/ic_add_field.svg';
-  if (!session?.getGui?.buttonRightImage0.onclick) {
-    session?.getGui?.buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
-  }
-
-  session?.getGui?.buttonRight1.classList.remove('collapse');
-  session?.getGui?.buttonRightImage1.classList.remove('collapse');
-  session.getGui.buttonRightImage1.src = '/images/ic_add_group.svg';
-  if (!session?.getGui?.buttonRightImage1.onclick) {
-    session?.getGui?.buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
-  }
+  globalSession.setButtonRight0Callback('/images/ic_add_field.svg', onButtonRightImage0Click);
+  globalSession.setButtonRight1Callback('/images/ic_add_group.svg', onButtonRightImage1Click);
 
   const searchElm = document.getElementById(`search`);
   searchElm.textContent = globalSearch;

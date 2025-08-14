@@ -12,11 +12,15 @@ if (!String.prototype.includes) {
   };
 }
 
-window.addEventListener('beforeunload', () => {
+window.addEventListener('beforeunload', event => {
+
+  const data = globalSession?.getStackNavigator.pop();
+  if(data) {
+    globalSession.loadSync(data);
+    event.preventDefault();
+    event.returnValue = "";
+    return "";
+  }
+
 
 });
-
-
-export default function setSession(session) {
-
-}

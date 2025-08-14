@@ -31,7 +31,6 @@ window.onload = () => {
         }
       }
     );
-
   } catch (error) {
     console.error('Failed to initialize session:', error);
     showAlert('An error occurred while initializing the session mechanism.');
@@ -167,24 +166,6 @@ export function showModal({ title, message, close, confirm, data = null }, callb
 
 
   modal.show();
-}
-
-export function resetGuiCallbacks(onButtonLeftImage0Click = null, onButtonRightImage0Click = null, onButtonRightImage1Click = null) {
-
-  session?.getGui?.buttonLeft0?.classList.add('collapse');
-  if (onButtonLeftImage0Click) {
-    session?.getGui?.buttonLeftImage0?.removeEventListener('click', onButtonLeftImage0Click);
-  }
-
-  session?.getGui?.buttonRight0.classList.add('collapse');
-  if (onButtonRightImage0Click) {
-    session?.getGui?.buttonRightImage0.addEventListener('click', onButtonRightImage0Click);
-  }
-
-  session?.getGui?.buttonRight1.classList.add('collapse');
-  if (onButtonRightImage1Click) {
-    session?.getGui?.buttonRightImage1.addEventListener('click', onButtonRightImage1Click);
-  }
 }
 
 export const EmptyGroup = {

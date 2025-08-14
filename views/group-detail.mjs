@@ -1,6 +1,7 @@
 'use strict';
 
-import showAlert, { EmptyGroup, EmptyGroupField, hideAlert, resetGuiCallbacks, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyGroup, EmptyGroupField, hideAlert, showModal } from '../js/pocket.mjs';
+import serverAPI from '../js/serverAPI.mjs';
 
 const CollumType = Object.freeze({
   TITLE: 0,
@@ -26,7 +27,6 @@ let globalGroupField = null;
 
 let globalGroupFields = new Map();
 let globalGroupFieldsNewIndex = 0;
-
 
 function onFieldAddOrModify() {
   if (globalElmClicked) {
@@ -199,7 +199,7 @@ function onButtonLeftImage0Click() {
     return;
   }
   globalElmClicked = true;
-  resetGuiCallbacks(onButtonLeftImage0Click);
+  globalSession?.resetGui();
   globalSession.loadSync({
     path: '/home',
     title: 'Home'
@@ -207,6 +207,66 @@ function onButtonLeftImage0Click() {
   globalElmClicked = false;
 }
 
+function onButtonRightImage1Click() {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+
+  showModal({
+    title: globalGroup.server_id > 0 ? 'Update this element?' : 'Insert this element?',
+    message: globalGroup.server_id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
+    close: 'No',
+    confirm: 'Yes',
+  }, (confirm) => {
+    if(confirm) {
+
+      const { group: currentGroup, search } = globalSession.getStackNavigator.get();
+      globalSession?.resetGui();
+
+      let newGlobalGroupFields = [];
+
+      globalGroupFields.forEach( (groupField, _) => {
+        if (!groupField.synchronized) {
+          newGlobalGroupFields.push(groupField);
+        }
+      });
+
+      const group_fields = newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+
+      globalGroup.synchronized = false;
+
+      if(globalGroup.server_id > 0) {
+        //update
+        serverAPI.data(`/home/group_detail/update`, {
+          id: globalGroup.id,
+          groupId: globalGroup.group_id,
+          search
+        }, {
+          groups: [globalGroup],
+          group_fields
+        }, updateRows);
+      } else {
+        //insert
+
+        globalGroup.id = 0;
+        globalGroup.group_id = currentGroup.id;
+        globalGroup.server_group_id = currentGroup.server_id;
+
+        serverAPI.data(`/home/group_detail/update`, {
+          id: globalGroup.id,
+          groupId: currentGroup.group_id,
+          search
+        }, {
+          groups: [globalGroup],
+          group_fields
+        }, updateRows);
+      }
+    }
+    globalElmClicked = false;
+  });
+
+}
 
 function buildRow(ROW, {
   id,
@@ -236,7 +296,7 @@ function updateRows({ data, error }) {
   if (data) {
     globalDataContainer.innerHTML = '';
 
-    globalGroupFields.clear();
+    // globalGroupFields.clear();
 
     globalElmClicked = false;
 
@@ -307,17 +367,14 @@ export function onUpdateGui(session) {
     globalGroup = session?.getLastData?.groups.at(0);
   }
 
-  globalSession.getStackNavigator.push(globalGroup, session?.getLastData?.data ?? "", globalSession.getLastPath);
+  globalSession.getStackNavigator.push(globalGroup, session?.getLastData?.data ?? "");
 
-  session?.getGui?.buttonLeft0.classList.remove('collapse');
-  session.getGui.title.innerHTML = globalGroup.title;
-  session.getGui.buttonLeftImage0.src = '/images/ic_back.svg';
-  if (!session?.getGui?.buttonLeftImage0.onclick) {
-    session?.getGui?.buttonLeftImage0.addEventListener('click', onButtonLeftImage0Click);
-  }
+  globalSession.getGui.title.innerHTML = globalGroup.title;
 
-  session?.getGui?.buttonRight0.classList.add('collapse');
-  session?.getGui?.buttonRight1.classList.add('collapse');
+  globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
+  globalSession.getGui?.buttonRight0.classList.add('collapse');
+  globalSession.setButtonRight0Callback('/images/ic_add_group.svg', onButtonRightImage1Click);
+
 
   globalGroupTitle = document.getElementById('group-title');
   if (globalGroup && globalGroup.title) {

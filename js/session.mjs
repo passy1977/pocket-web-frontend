@@ -1,4 +1,3 @@
-
 'use strict';
 
 import showAlert from './pocket.mjs';
@@ -13,24 +12,24 @@ export class StackNavigator {
     }
 
     this.#stack = [];
-    this.#stack.push({group: {id: 0, group_id: 0}, search: '', path: ''});
+    this.#stack.push({ group: { id: 0, group_id: 0 }, search: '', path: '' });
     this.#index = 0;
   }
 
-  push(group, search = '', path = '') {
-    if(typeof group !== 'object') {
+  push(group, search = '') {
+    if (typeof group !== 'object') {
       throw new TypeError(`group it's not a object`);
     }
 
-    if(typeof search !== 'string') {
+    if (typeof search !== 'string') {
       throw new TypeError(`search it's not a string`);
     }
     this.#index++;
-    this.#stack.push({group, search, path});
+    this.#stack.push({ group, search });
   }
 
   pop() {
-    if(this.#index > 0) {
+    if (this.#index > 0) {
       this.#index--;
       return this.#stack.pop();
     } else {
@@ -40,7 +39,7 @@ export class StackNavigator {
   }
 
   get(index = this.#index) {
-    if(typeof index !== 'number') {
+    if (typeof index !== 'number') {
       throw new TypeError(`index it's not a number`);
     }
     return this.#stack[index];
@@ -61,6 +60,10 @@ export default class Session {
   #stackNavigator;
   #lastData;
   #lastPath;
+  #buttonLeft0Callback = {};
+  #buttonRight0Callback = {};
+  #buttonRight1Callback = {};
+
 
   constructor(gui, callbackUpdate) {
 
@@ -68,57 +71,62 @@ export default class Session {
       throw new TypeError(`calling Session constructor without new is invalid`);
     }
 
-    if(typeof gui.alert !== 'object') {
+    if (typeof gui.alert !== 'object') {
       throw new TypeError(`alert it's not a object`);
     }
 
-    if(typeof gui.context !== 'object') {
+    if (typeof gui.context !== 'object') {
       throw new TypeError(`context it's not a object`);
     }
 
-    if(typeof gui.buttonLeft0 !== 'object') {
+    if (typeof gui.buttonLeft0 !== 'object') {
       throw new TypeError(`buttonLeft0 it's not a object`);
     }
 
-    if(typeof gui.buttonLeftImage0 !== 'object') {
+    if (typeof gui.buttonLeftImage0 !== 'object') {
       throw new TypeError(`buttonLeftImage0 it's not a object`);
     }
 
-    if(typeof gui.buttonLeft1 !== 'object') {
+    if (typeof gui.buttonLeft1 !== 'object') {
       throw new TypeError(`buttonLeft1 it's not a object`);
     }
 
-    if(typeof gui.buttonLeftImage1 !== 'object') {
+    if (typeof gui.buttonLeftImage1 !== 'object') {
       throw new TypeError(`buttonLeftImage1 it's not a object`);
     }
 
-    if(typeof gui.title !== 'object') {
+    if (typeof gui.title !== 'object') {
       throw new TypeError(`title it's not a object`);
     }
 
-    if(typeof gui.buttonRight0!== 'object') {
+    if (typeof gui.buttonRight0 !== 'object') {
       throw new TypeError(`buttonRight0 it's not a object`);
     }
 
-    if(typeof gui.buttonRightImage0 !== 'object') {
+    if (typeof gui.buttonRightImage0 !== 'object') {
       throw new TypeError(`buttonRightImage0 it's not a object`);
     }
 
-    if(typeof gui.buttonRight1 !== 'object') {
+    if (typeof gui.buttonRight1 !== 'object') {
       throw new TypeError(`buttonRight1 it's not a object`);
     }
 
-    if(typeof gui.buttonRightImage1 !== 'object') {
+    if (typeof gui.buttonRightImage1 !== 'object') {
       throw new TypeError(`buttonRightImage1 it's not a object`);
     }
 
-    if(typeof callbackUpdate !== 'function') {
+    if (typeof callbackUpdate !== 'function') {
       throw new TypeError(`callbackUpdate it's not a function`);
     }
 
     this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
     this.#stackNavigator = new StackNavigator();
+
+    this.#gui.buttonLeftImage0.addEventListener('click', e => this.#buttonLeft0Callback(e));
+    this.#gui.buttonRightImage0.addEventListener('click', e => this.#buttonRight0Callback(e));
+    this.#gui.buttonRightImage1.addEventListener('click', e => this.#buttonRight1Callback(e));
+
   }
 
   get getLastData() {
@@ -135,6 +143,77 @@ export default class Session {
 
   get getStackNavigator() {
     return this.#stackNavigator;
+  }
+
+  setButtonLeft0Callback(src, callback) {
+    if (src != null && typeof src !== 'string') {
+      throw new TypeError(`src it's not a string`);
+    }
+
+    if (callback !== null && typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+    if(callback) {
+      this.#gui?.buttonLeft0?.classList.remove('collapse');
+    } else {
+      this.#gui?.buttonLeft0?.classList.add('collapse');
+    }
+
+    if(src) {
+      this.#gui.buttonLeftImage0.src = src;
+    }
+
+    this.#gui?.buttonLeft0?.classList.remove('collapse');
+    this.#buttonLeft0Callback = callback;
+  }
+
+  setButtonRight0Callback(src, callback) {
+    if (src != null && typeof src !== 'string') {
+      throw new TypeError(`src it's not a string`);
+    }
+
+    if (callback !== null && typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+    if(callback) {
+      this.#gui?.buttonRight0?.classList.remove('collapse');
+    } else {
+      this.#gui?.buttonRight0?.classList.add('collapse');
+    }
+
+    if(src) {
+      this.#gui.buttonRightImage0.src = src;
+    }
+
+    this.#gui?.buttonRight0?.classList.remove('collapse');
+    this.#buttonRight0Callback = callback;
+  }
+
+  setButtonRight1Callback(src, callback) {
+    if (src != null && typeof src !== 'string') {
+      throw new TypeError(`src it's not a string`);
+    }
+
+    if (callback !== null && typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+    if(callback) {
+      this.#gui?.buttonRight1?.classList.remove('collapse');
+    } else {
+      this.#gui?.buttonRight1?.classList.add('collapse');
+    }
+
+    if(src) {
+      this.#gui.buttonRightImage1.src = src;
+    }
+
+    this.#buttonRight1Callback = callback;
+  }
+
+  resetGui() {
+    this.setButtonLeft0Callback(null, null);
+    this.setButtonRight0Callback(null, null);
+    this.setButtonRight1Callback(null, null);
   }
 
   async #loadHtml(path) {
@@ -172,13 +251,13 @@ export default class Session {
           console.log(`Script load successfully: ${fullPath}`);
 
           import(fullPath)
-          .then(module => module.onUpdateGui(this))
-          .catch(err => showAlert(err.message));
+            .then(module => module.onUpdateGui(this))
+            .catch(err => showAlert(err.message));
         };
 
-        script.onerror = err => showAlert(err.message)
-        
-        
+        script.onerror = err => showAlert(err.message);
+
+
         this.#gui.context.appendChild(script);
       } catch (error) {
         throw new Error(`Failed to load JavaScript for ${fullPath}: ${error}`);
@@ -189,29 +268,29 @@ export default class Session {
   }
 
   async load(data, showTitle = true) {
-    if(data === undefined || data === null) {
+    if (data === undefined || data === null) {
       return false;
     }
 
-    if(typeof data !== 'object') {
+    if (typeof data !== 'object') {
       throw new TypeError(`data it's not a object`);
     }
-    
+
     this.#lastData = data;
 
-    let {path, title} = this.#lastData;
+    let { path, title } = this.#lastData;
 
-    if(path.startsWith('http')) {
+    if (path.startsWith('http')) {
       throw new Error(`path can't start with "http"`);
     }
 
-    if(path === '/') {
+    if (path === '/') {
       path = '/login';
       title = 'Login';
     }
 
-    if(showTitle) {
-      document.title = `Pocket 5 - ${ title }`;
+    if (showTitle) {
+      document.title = `Pocket 5 - ${title}`;
       this.#gui.title.innerHTML = title;
     }
 
@@ -229,28 +308,28 @@ export default class Session {
   }
 
   loadSync(data, showTitle = true) {
-    if(data === undefined || data === null) {
+    if (data === undefined || data === null) {
       return false;
     }
 
-    if(typeof data !== 'object') {
+    if (typeof data !== 'object') {
       throw new TypeError(`data it's not a object`);
     }
 
     try {
       this.load(data, showTitle)
-      .catch(err => {
+        .catch(err => {
           showAlert(err);
-      })
-      .then(ret => {
+        })
+        .then(ret => {
           if (ret) {
-              console.log('Session loaded successfully:', ret);
+            console.log('Session loaded successfully:', ret);
           } else {
-              throw Error('Failed to load route');
+            throw Error('Failed to load route');
           }
-      });
+        });
     } catch (error) {
-        throw Error(error);
+      throw Error(error);
     }
   }
 };

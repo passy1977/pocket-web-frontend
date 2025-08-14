@@ -1,5 +1,11 @@
 #data-container {
-    overflow-y: auto;
+    overflow: auto;
+
+}
+
+#data-container tr {
+    position: sticky;
+    top: 0;
 }
 
 .col-is-hidden {
