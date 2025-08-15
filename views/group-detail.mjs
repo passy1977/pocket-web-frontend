@@ -213,6 +213,16 @@ function onButtonRightImage1Click() {
   }
   globalElmClicked = true;
 
+  //group-title-elm
+  const groupTitleElm = document.getElementById("group-title-elm");
+  if(globalGroupTitle.value === '') {
+    groupTitleElm.classList.add('is-invalid');
+    globalElmClicked = false;
+    return;
+  } else {
+    groupTitleElm.classList.remove('is-invalid');
+  }
+
   showModal({
     title: globalGroup.server_id > 0 ? 'Update this element?' : 'Insert this element?',
     message: globalGroup.server_id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
@@ -232,9 +242,11 @@ function onButtonRightImage1Click() {
         }
       });
 
-      const group_fields = newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+      const groupFields = newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
 
       globalGroup.synchronized = false;
+      globalGroup.title = globalGroupTitle.value;
+      globalGroup.note = globalGroupNote.value;
 
       if(globalGroup.server_id > 0) {
         //update
@@ -244,7 +256,7 @@ function onButtonRightImage1Click() {
           search
         }, {
           groups: [globalGroup],
-          group_fields
+          groupFields
         }, updateRows);
       } else {
         //insert
@@ -253,7 +265,7 @@ function onButtonRightImage1Click() {
         globalGroup.group_id = currentGroup.id;
         globalGroup.server_group_id = currentGroup.server_id;
 
-        serverAPI.data(`/home/group_detail/update`, {
+        serverAPI.data(`/home/group_detail/insert`, {
           id: globalGroup.id,
           groupId: currentGroup.group_id,
           search
@@ -366,8 +378,6 @@ export function onUpdateGui(session) {
   } else {
     globalGroup = session?.getLastData?.groups.at(0);
   }
-
-  globalSession.getStackNavigator.push(globalGroup, session?.getLastData?.data ?? "");
 
   globalSession.getGui.title.innerHTML = globalGroup.title;
 

@@ -13,14 +13,8 @@ if (!String.prototype.includes) {
 }
 
 window.addEventListener('beforeunload', event => {
-
-  const data = globalSession?.getStackNavigator.pop();
-  if(data) {
-    globalSession.loadSync(data);
-    event.preventDefault();
-    event.returnValue = "";
-    return "";
-  }
-
-
+  const message = "Do you want really exit from Pocket 5";
+  event.preventDefault();
+  event.returnValue = message;
+  return message;
 });
