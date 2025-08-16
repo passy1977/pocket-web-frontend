@@ -66,7 +66,7 @@ function onFieldAddOrModify() {
   const values = [...globalGroupFields.values()];
   for(const idx in values) {
     const groupField = values[idx];
-    if (groupField.title.toLowerCase() === localGroupField.title.toLowerCase()) {
+    if (groupField.id !== localGroupField.id && groupField.title.toLowerCase() === localGroupField.title.toLowerCase()) {
       globalFieldTitleInvalid.innerHTML = 'Another field insert with same name';
       globalFieldTitleContainer.classList.add('is-invalid');
       globalElmClicked = false;
