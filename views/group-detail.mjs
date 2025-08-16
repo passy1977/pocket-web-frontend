@@ -250,7 +250,7 @@ function onButtonRightImage1Click() {
 
       if(globalGroup.server_id > 0) {
         //update
-        serverAPI.data(`/home/group_detail/update`, {
+        serverAPI.data(`/group_detail/group/update`, {
           id: globalGroup.id,
           groupId: globalGroup.group_id,
           search
@@ -265,7 +265,7 @@ function onButtonRightImage1Click() {
         globalGroup.group_id = currentGroup.id;
         globalGroup.server_group_id = currentGroup.server_id;
 
-        serverAPI.data(`/home/group_detail/insert`, {
+        serverAPI.data(`/group_detail/group/insert`, {
           id: globalGroup.id,
           groupId: currentGroup.group_id,
           search
