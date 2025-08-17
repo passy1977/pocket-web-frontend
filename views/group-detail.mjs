@@ -244,9 +244,15 @@ function onButtonRightImage1Click() {
 
       const groupFields = newGlobalGroupFields.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
 
-      globalGroup.synchronized = false;
-      globalGroup.title = globalGroupTitle.value;
-      globalGroup.note = globalGroupNote.value;
+      if (globalGroup.title !== globalGroupTitle.value) {
+        globalGroup.title = globalGroupTitle.value;
+        globalGroup.synchronized = false;
+      }
+
+      if (globalGroup.note !== globalGroupNote.value) {
+        globalGroup.note = globalGroupNote.value;
+        globalGroup.synchronized = false;
+      }
 
       if(globalGroup.server_id > 0) {
         //update
@@ -257,7 +263,13 @@ function onButtonRightImage1Click() {
         }, {
           groups: [globalGroup],
           groupFields
-        }, updateRows);
+        }, ({ data, error }) => {
+          if (data) {
+            globalSession.loadSync(data);
+          } else {
+            showAlert(error);
+          }
+        });
       } else {
         //insert
 
@@ -271,8 +283,14 @@ function onButtonRightImage1Click() {
           search
         }, {
           groups: [globalGroup],
-          group_fields
-        }, updateRows);
+          groupFields
+        }, ({ data, error }) => {
+          if (data) {
+            globalSession.loadSync(data);
+          } else {
+            showAlert(error);
+          }
+        });
       }
     }
     globalElmClicked = false;
