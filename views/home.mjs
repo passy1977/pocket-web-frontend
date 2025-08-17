@@ -36,6 +36,28 @@ function onSearchElmKeyUp(e) {
 
 }
 
+function onCleanSearchClick(e) {
+  if (typeof e !== 'object') {
+    throw new TypeError(`event it's not a object`);
+  }
+  if (globalElmClicked) {
+    return;
+  }
+
+  globalElmClicked = true;
+
+  document.getElementById(`search`).value = '';
+  globalSearch = '';
+
+  serverAPI.home({
+      groupId: globalGroup.id,
+      search: globalSearch
+    },
+    updateRows);
+
+  globalElmClicked = false;
+}
+
 
 function onToggleHidden(elm) {
   if (typeof elm !== 'object') {
@@ -486,6 +508,11 @@ export function onUpdateGui(session) {
   searchElm.textContent = globalSearch;
   if (!searchElm.onkeyup) {
     searchElm.addEventListener('keyup', onSearchElmKeyUp);
+  }
+
+  const cleanSearchElm = document.getElementById(`clean-search`);
+  if (!cleanSearchElm.onkeyup) {
+    cleanSearchElm.addEventListener('click', onCleanSearchClick);
   }
 
   serverAPI.home({
