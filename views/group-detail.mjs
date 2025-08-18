@@ -345,18 +345,27 @@ function updateRows({ data, error }) {
 
     globalElmClicked = false;
 
-    const { group_fields: groupFields, cleanMemory } = data;
+    const { group_fields: groupFields, insert } = data;
 
-    if(cleanMemory) {
+    if(insert) {
       resetMemory();
     }
 
     let table = '';
     try {
       if (groupFields) {
+        let idx = 0;
         for (const groupField of groupFields) {
           if(groupField.deleted) {
             continue;
+          }
+          if(insert) {
+            idx--;
+            groupField.id = idx;
+            groupField.server_id = 0;
+            groupField.group_id = 0;
+            groupField.server_group_id = 0;
+            groupField.synchronized = false;
           }
           globalGroupFields.set(groupField.id, groupField);
           table += buildRow(globalTemplateRow, groupField);
