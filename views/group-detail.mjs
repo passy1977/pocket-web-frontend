@@ -65,6 +65,7 @@ function onFieldAddOrModify() {
       ...EmptyGroupField,
       id: --globalGroupFieldsNewIndex,
       group_id: globalGroup?.id ?? 0,
+      server_group_id: globalGroup?.server_id ?? 0,
       title: globalFieldTitle.value,
       is_hidden: globalFieldIsHidden.checked,
       synchronized: false
@@ -285,7 +286,12 @@ function onButtonRightImage1Click() {
 
         globalGroup.id = 0;
         globalGroup.group_id = currentGroup.id;
-        globalGroup.server_group_id = currentGroup.server_id;
+        if(currentGroup.server_id) {
+          globalGroup.server_group_id = currentGroup.server_id;
+        } else {
+          globalGroup.server_group_id = 0;
+        }
+        globalGroup.has_child = false;
 
         serverAPI.data(`/group_detail/group/insert`, {
           id: globalGroup.id,
@@ -402,7 +408,7 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  if (session?.getLastData?.groups.length === 0) {
+  if (!session?.getLastData?.groups || session?.getLastData?.groups.length === 0) {
     globalGroup = {
       ...EmptyGroup
     };

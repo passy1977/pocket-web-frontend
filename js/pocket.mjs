@@ -76,9 +76,12 @@ export default function showAlert(msg) {
     return false;
   }
 
-  if (msg.includes('Failed to fetch')) {
-    msg = 'No server API connection available';
+  if (msg.constructor.name === "String") {
+    if (msg.includes('Failed to fetch')) {
+      msg = 'No server API connection available';
+    }
   }
+
 
   session?.getGui?.alert.classList.remove('visually-hidden');
   const div = document.createElement('div');

@@ -1,5 +1,6 @@
+'use strict';
+
 import BACKEND_URL from './constants.mjs';
-import { EmptyGroup } from './pocket.mjs';
 
 
 class ServerAPI {
@@ -277,23 +278,21 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
-    const body = JSON.stringify({
-      ...this.#defaultDataTransfer,
-      path: from,
-      title: '',
-      session_id: this.#sessionId,
-      groups,
-      group_fields: groupFields,
-      fields,
-      data: `${groupId}|${search}|${id}`
-    });
-
     fetch(this.#enterPoint + '/data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body
+      body: JSON.stringify({
+        ...this.#defaultDataTransfer,
+        path: from,
+        title: '',
+        session_id: this.#sessionId,
+        groups,
+        group_fields: groupFields,
+        fields,
+        data: `${groupId}|${search}|${id}`
+      })
     })
       .then(response => response.json())
       .then(data => callback({ data, error: null }))
@@ -329,7 +328,7 @@ class ServerAPI {
           ...this.#defaultDataTransfer,
           path: '/group-detail',
           title: 'New group',
-          groups: [{...EmptyGroup}],
+          groups: null,
           group_fields: [],
           session_id: this.#sessionId
         },
