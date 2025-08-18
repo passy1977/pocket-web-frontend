@@ -3,8 +3,7 @@
       <img src="/images/ic_group.svg" alt="Password icon" class="ico" />
     </span>
   <div class="form-floating">
-    <input class="form-control" id="group-title" placeholder="Group title"
-           aria-describedby="addon-group-title" required>
+    <input autocomplete="off" class="form-control" id="group-title" placeholder="Group title" aria-describedby="addon-group-title" required>
     <label id="addon-group-title">Insert or modify the group name</label>
   </div>
   <div class="invalid-feedback justify-content-center">
@@ -29,7 +28,7 @@
         <img src="/images/ic_field.svg" alt="Password icon" class="ico" />
       </span>
         <div class="form-floating" id="field-title-container">
-          <input placeholder="Field title" class="form-control" id="field-title" aria-describedby="addon-field-title">
+          <input autocomplete="off" placeholder="Field title" class="form-control" id="field-title" aria-describedby="addon-field-title">
           <label id="addon-field-title">Field name</label>
         </div>
         <div class="invalid-feedback" id="field-title-invalid">
@@ -40,7 +39,7 @@
 
     <div class="col col-md-auto d-flex align-items-center justify-content-center">
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="field-is-hidden">
+        <input autocomplete="off" class="form-check-input" type="checkbox" value="" id="field-is-hidden">
         <label class="form-check-label" for="field-is-hidden">
           Field is hidden
         </label>
@@ -70,7 +69,7 @@
       {title}
     </td>
     <td class="col-is-hidden" id="col-is-hidden-{id}">
-      <input type="checkbox" value="" class="form-check-input" id="checkbox-is-hidden-{id}" disabled>
+      <input autocomplete="off" type="checkbox" value="" class="form-check-input" id="checkbox-is-hidden-{id}" disabled>
     </td>
     <td class="col-actions" id="col-actions-{id}">
       <img src="/images/ic_edit.svg" class="ico mouse-hover" data-type-id="{id}" id="edit-{id}" alt="Edit field group" />
