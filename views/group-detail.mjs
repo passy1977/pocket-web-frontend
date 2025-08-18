@@ -28,19 +28,28 @@ let globalGroupField = null;
 let globalGroupFields = new Map();
 let globalGroupFieldsNewIndex = 0;
 
+function resetMemory() {
+  globalElmClicked = false;
+  globalGroupField = null;
+
+  globalGroupFields.clear();
+  globalGroupFieldsNewIndex = 0;
+}
+
 function onFieldAddOrModify() {
   if (globalElmClicked) {
     return;
   }
 
+  globalElmClicked = true;
+
   globalFieldTitleContainer.classList.remove('is-invalid');
   if(globalFieldTitle.value.trim() === '') {
     globalFieldTitleInvalid.text = 'This field is required';
     globalFieldTitleContainer.classList.add('is-invalid');
+    globalElmClicked = false;
     return;
   }
-
-  globalElmClicked = true;
 
 
   let localGroupField = null;
@@ -265,6 +274,7 @@ function onButtonRightImage1Click() {
           groupFields
         }, ({ data, error }) => {
           if (data) {
+            resetMemory();
             globalSession.loadSync(data);
           } else {
             showAlert(error);
@@ -286,6 +296,7 @@ function onButtonRightImage1Click() {
           groupFields
         }, ({ data, error }) => {
           if (data) {
+            resetMemory();
             globalSession.loadSync(data);
           } else {
             showAlert(error);
@@ -326,11 +337,13 @@ function updateRows({ data, error }) {
   if (data) {
     globalDataContainer.innerHTML = '';
 
-    // globalGroupFields.clear();
-
     globalElmClicked = false;
 
-    const { group_fields: groupFields } = data;
+    const { group_fields: groupFields, cleanMemory } = data;
+
+    if(cleanMemory) {
+      resetMemory();
+    }
 
     let table = '';
     try {

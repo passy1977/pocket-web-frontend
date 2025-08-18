@@ -192,6 +192,7 @@ function onClickEdit(elm) {
           },
           ({ data, error }) => {
             if (data) {
+              data['cleanMemory'] = false;
               globalSession.loadSync(data);
             } else {
               if (error) {
@@ -265,6 +266,7 @@ function onButtonRightImage1Click() {
     },
     ({ data, error }) => {
       if (data) {
+        data['cleanMemory'] = true;
         globalSession.loadSync(data);
       } else {
         if (error) {
