@@ -354,14 +354,13 @@ function updateRows({ data, error }) {
     let table = '';
     try {
       if (groupFields) {
-        let idx = 0;
         for (const groupField of groupFields) {
           if(groupField.deleted) {
             continue;
           }
           if(insert) {
-            idx--;
-            groupField.id = idx;
+            globalGroupFieldsNewIndex--;
+            groupField.id = globalGroupFieldsNewIndex;
             groupField.server_id = 0;
             groupField.group_id = 0;
             groupField.server_group_id = 0;
