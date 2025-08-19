@@ -362,8 +362,6 @@ function updateRows({ data, error }) {
             globalGroupFieldsNewIndex--;
             groupField.id = globalGroupFieldsNewIndex;
             groupField.server_id = 0;
-            groupField.group_id = 0;
-            groupField.server_group_id = 0;
             groupField.synchronized = false;
           }
           globalGroupFields.set(groupField.id, groupField);
