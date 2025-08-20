@@ -123,9 +123,15 @@ export default class Session {
     this.#gui = gui;
     this.#stackNavigator = new StackNavigator();
 
-    this.#gui.buttonLeftImage0.addEventListener('click', e => this.#buttonLeft0Callback(e));
-    this.#gui.buttonRightImage0.addEventListener('click', e => this.#buttonRight0Callback(e));
-    this.#gui.buttonRightImage1.addEventListener('click', e => this.#buttonRight1Callback(e));
+    this.#gui.buttonLeftImage0.addEventListener('click', e => {
+      if (this.#buttonLeft0Callback) this.#buttonLeft0Callback(e);
+    });
+    this.#gui.buttonRightImage0.addEventListener('click', e => {
+      if (this.#buttonRight0Callback) this.#buttonRight0Callback(e);
+    });
+    this.#gui.buttonRightImage1.addEventListener('click', e => {
+      if (this.#buttonRight1Callback) this.#buttonRight1Callback(e);
+    });
 
   }
 
