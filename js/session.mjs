@@ -60,9 +60,9 @@ export default class Session {
   #stackNavigator;
   #lastData;
   #lastPath;
-  #buttonLeft0Callback = {};
-  #buttonRight0Callback = {};
-  #buttonRight1Callback = {};
+  #buttonLeft0Callback = null;
+  #buttonRight0Callback = null;
+  #buttonRight1Callback = null;
 
 
   constructor(gui, callbackUpdate) {

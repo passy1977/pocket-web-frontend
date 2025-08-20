@@ -234,8 +234,8 @@ function onButtonRightImage1Click() {
   }
 
   showModal({
-    title: globalGroup.server_id > 0 ? 'Update this element?' : 'Insert this element?',
-    message: globalGroup.server_id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
+    title: globalGroup.id > 0 ? 'Update this element?' : 'Insert this element?',
+    message: globalGroup.id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
     close: 'No',
     confirm: 'Yes',
   }, (confirm) => {
@@ -264,7 +264,7 @@ function onButtonRightImage1Click() {
         globalGroup.synchronized = false;
       }
 
-      if(globalGroup.server_id > 0) {
+      if(globalGroup.id > 0) {
         //update
         serverAPI.data(`/group_detail/group/update`, {
           id: globalGroup.id,
@@ -426,7 +426,7 @@ export function onUpdateGui(session) {
 
   globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   globalSession.getGui?.buttonRight0.classList.add('collapse');
-  globalSession.setButtonRight0Callback('/images/ic_add_group.svg', onButtonRightImage1Click);
+  globalSession.setButtonRight0Callback('/images/ic_add.svg', onButtonRightImage1Click);
 
 
   globalGroupTitle = document.getElementById('group-title');
