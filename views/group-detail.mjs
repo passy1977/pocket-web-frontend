@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { EmptyGroup, EmptyGroupField, hideAlert, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyField, EmptyGroup, EmptyGroupField, hideAlert, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 const CollumType = Object.freeze({
@@ -245,10 +245,22 @@ function onButtonRightImage1Click() {
       globalSession?.resetGui();
 
       let newGlobalGroupFields = [];
+      let fields = [];
 
       globalGroupFields.forEach( (groupField, _) => {
         if (!groupField.synchronized) {
           newGlobalGroupFields.push(groupField);
+          if(groupField.id < 0) {
+            fields.push({
+              ...EmptyField,
+              group_id: groupField.group_id,
+              server_group_id: groupField.server_group_id,
+              group_field_id: groupField.id,
+              server_group_field_id: groupField.server_id,
+              title: groupField.title,
+              is_hidden: groupField.is_hidden,
+            });
+          }
         }
       });
 
@@ -272,7 +284,8 @@ function onButtonRightImage1Click() {
           search
         }, {
           groups: [globalGroup],
-          groupFields
+          groupFields,
+          fields
         }, ({ data, error }) => {
           if (data) {
             resetMemory();
@@ -299,7 +312,8 @@ function onButtonRightImage1Click() {
           search
         }, {
           groups: [globalGroup],
-          groupFields
+          groupFields,
+          fields
         }, ({ data, error }) => {
           if (data) {
             resetMemory();
