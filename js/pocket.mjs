@@ -142,9 +142,11 @@ export function showModal({ title, message, close, confirm, data = null }, callb
   globalCallback = callback;
   globalData = data;
 
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal'), {
+  const modelElm = document.getElementById('modal');
+  const modal = bootstrap.Modal.getOrCreateInstance(modelElm, {
     focus: true
   });
+
   const titleEl = document.getElementById('modal-label');
   const messageEl = document.getElementById('modal-body');
   const closeHeaderEl = document.getElementById('modal-header-close');
@@ -155,6 +157,7 @@ export function showModal({ title, message, close, confirm, data = null }, callb
   messageEl.innerHTML = message;
   closeEl.innerHTML = close;
 
+  modelElm.addEventListener('hidden.bs.modal',callbackHandlerFalse);
   closeEl.addEventListener('click', callbackHandlerFalse);
   closeHeaderEl.addEventListener('click', callbackHandlerFalse);
 
