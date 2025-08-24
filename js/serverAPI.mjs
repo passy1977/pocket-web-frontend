@@ -277,25 +277,22 @@ class ServerAPI {
     if (typeof callback !== 'function') {
       throw new TypeError(`callback it's not a function`);
     }
-
-
-    const body = JSON.stringify({
-      ...this.#defaultDataTransfer,
-      path: from,
-      title: '',
-      session_id: this.#sessionId,
-      groups,
-      group_fields: groupFields,
-      fields,
-      data: `${groupId}|${search}|${id}`
-    });
-
+    
     fetch(this.#enterPoint + '/data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body
+      body: JSON.stringify({
+        ...this.#defaultDataTransfer,
+        path: from,
+        title: '',
+        session_id: this.#sessionId,
+        groups,
+        group_fields: groupFields,
+        fields,
+        data: `${groupId}|${search}|${id}`
+      })
     })
       .then(response => response.json())
       .then(data => callback({ data, error: null }))
