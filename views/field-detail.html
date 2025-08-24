@@ -1,1 +1,53 @@
-field-detail
+<div class="container pt-3">
+  <div class="row">
+    <div class="col no-padding">
+      <div class="input-group has-validation mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_title.svg" alt="Title icon" class="ico" />
+      </span>
+        <div class="form-floating" id="field-title-container">
+          <input autocomplete="off" placeholder="Field title" class="form-control" id="field-title" aria-describedby="addon-field-title">
+          <label id="addon-field-title">Field title</label>
+        </div>
+        <div class="invalid-feedback" id="field-title-invalid">
+          This field is required
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col no-padding">
+      <div class="input-group mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_value.svg" alt="Text icon" class="ico" />
+      </span>
+        <div class="form-floating" id="field-value-container">
+          <input autocomplete="off" placeholder="Field value" class="form-control" id="field-value" aria-describedby="addon-field-value">
+          <label id="addon-field-value">Field name</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col no-padding">
+      <div class="col col-md-auto d-flex align-items-center justify-content-center">
+        <div class="form-check">
+          <input autocomplete="off" class="form-check-input" type="checkbox" value="" id="field-is-hidden">
+          <label class="form-check-label" for="field-is-hidden">
+            Is hidden
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col no-padding">
+      <button type="submit" class="btn btn-primary btn-full-width mt-2">Generate random value</button>
+    </div>
+  </div>
+
+</div>
+
+

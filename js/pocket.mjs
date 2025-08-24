@@ -3,8 +3,8 @@
 import serverAPI from './serverAPI.mjs';
 import Session from './session.mjs';
 
-//const debug = '/group-detail';
-const debug = null;
+const debug = '/field-detail';
+//const debug = null;
 
 let session = null;
 let globalCallback = null;

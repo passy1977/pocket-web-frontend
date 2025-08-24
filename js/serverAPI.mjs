@@ -277,7 +277,7 @@ class ServerAPI {
     if (typeof callback !== 'function') {
       throw new TypeError(`callback it's not a function`);
     }
-    
+
     fetch(this.#enterPoint + '/data', {
       method: 'POST',
       headers: {
