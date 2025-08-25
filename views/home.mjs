@@ -180,7 +180,7 @@ function onClickEdit(elm) {
     data: { id, type }
   }, (confirm, { id, type }) => {
     if (confirm) {
-      globalSession?.resetGui();
+      globalSession?.resetGuiCallbacks();
       if (type === 'group') {
 
         const {id: _id, group_id: groupId} = globalGroups?.get(id);
@@ -204,9 +204,26 @@ function onClickEdit(elm) {
           });
 
       } else if (type === 'field') {
+
         const {id: _id, group_id: groupId} = globalFields?.get(id);
 
-        console.log(`TODO: edit field id:${ _id }, group_id:${ groupId }`);
+        serverAPI.fieldDetail(
+          {
+            id: _id,
+            groupId
+          },
+          ({ data, error }) => {
+            if (data) {
+              data['insert'] = false;
+              globalSession.loadSync(data);
+            } else {
+              if (error) {
+                showAlert(error);
+              } else {
+                showAlert('unhandled error');
+              }
+            }
+          });
 
       }
     }
@@ -245,8 +262,28 @@ function onButtonRightImage0Click() {
     return;
   }
   globalElmClicked = true;
-  console.log('TODO: new field');
-  //resetGuiCallbacks();
+
+  globalSession?.resetGuiCallbacks();
+
+  serverAPI.fieldDetail(
+    {
+      id: 0,
+      groupId: globalGroup.id,
+      group: globalGroup
+    },
+    ({ data, error }) => {
+      if (data) {
+        data['insert'] = true;
+        globalSession.loadSync(data);
+      } else {
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
+      }
+    });
+
   globalElmClicked = false;
 }
 
@@ -256,7 +293,7 @@ function onButtonRightImage1Click() {
   }
   globalElmClicked = true;
 
-  globalSession?.resetGui();
+  globalSession?.resetGuiCallbacks();
 
   serverAPI.groupDetail(
     {

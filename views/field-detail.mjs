@@ -1,12 +1,98 @@
 'use strict';
 
-import { EmptyField, EmptyGroup, hideAlert } from '../js/pocket.mjs';
+import showAlert, { EmptyField, EmptyGroup, hideAlert, showModal } from '../js/pocket.mjs';
+import serverAPI from '../js/serverAPI.mjs';
+
+const PASSWD_LEN = Object.freeze(12);
 
 let globalElmClicked = false;
 let globalSession = null;
 let globalField = null;
 
-let globalGroupTitle = null;
+let globalFieldTitle = null;
+let globalFieldValue = null;
+let globalFieldIsHidden = null;
+
+function onButtonGenerateRandomClick() {
+
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_-.?^~';
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+
+  globalFieldValue.value = password;
+}
+
+function onButtonLeftImage0Click() {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  globalSession?.resetGuiCallbacks();
+  globalSession.loadSync({
+    path: '/home',
+    title: 'Home'
+  }, false);
+  globalElmClicked = false;
+}
+
+
+function onButtonRightImage1Click() {
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+
+  const fieldTitleElm = document.getElementById("field-title-elm");
+  if(globalFieldTitle.value === '') {
+    fieldTitleElm.classList.add('is-invalid');
+    globalElmClicked = false;
+    return;
+  } else {
+    fieldTitleElm.classList.remove('is-invalid');
+  }
+
+  showModal({
+    title: globalField.id > 0 ? 'Update this element?' : 'Insert this element?',
+    message: globalField.id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
+    close: 'No',
+    confirm: 'Yes',
+  }, confirm => {
+
+    if(confirm) {
+      const { group: currentGroup, search } = globalSession.getStackNavigator.get();
+
+      globalSession?.resetGuiCallbacks();
+
+      globalField.group_id = currentGroup.id;
+      globalField.server_group_id = currentGroup.server_id;
+      globalField.title = globalFieldTitle.value;
+      globalField.value = globalFieldValue.value;
+      globalField.is_hidden = globalFieldIsHidden.value;
+      globalField.synchronized = false;
+
+      serverAPI.data(`/group_detail/group/` + globalField.id > 0 ? "update" : "insert", {
+        id: globalField.id,
+        groupId: globalField.group_id,
+        search
+      }, {
+        fields: [globalField],
+      }, ({ data, error }) => {
+        if (data) {
+          globalSession.loadSync(data);
+        } else {
+          showAlert(error);
+        }
+      });
+
+    }
+    globalElmClicked = false;
+  });
+
+}
 
 export function onUpdateGui(session) {
   hideAlert();
@@ -28,30 +114,22 @@ export function onUpdateGui(session) {
   globalSession.setButtonRight0Callback('/images/ic_add.svg', onButtonRightImage1Click);
 
 
-  globalGroupTitle = document.getElementById('group-title');
-  if (globalField && globalField.title) {
-    globalGroupTitle.value = globalField.title;
-  }
-
-  globalGroupNote = document.getElementById('group-note');
-  if (globalField && globalField.note) {
-    globalGroupNote.value = globalField.note;
-  }
-
   globalFieldTitle = document.getElementById('field-title');
-  globalFieldTitleContainer = document.getElementById('field-title-container');
-  globalFieldTitleInvalid = document.getElementById('field-title-invalid');
+  if (globalField && globalField.title) {
+    globalFieldTitle.value = globalField.title;
+  }
+
+  globalFieldValue = document.getElementById('field-value');
+  if (globalField && globalField.value) {
+    globalFieldValue.value = globalField.value;
+  }
+
   globalFieldIsHidden = document.getElementById('field-is-hidden');
+  if (globalFieldIsHidden && globalField.is_hidden) {
+    globalFieldValue.value = globalField.value;
+  }
 
-  const fieldAdd = document.getElementById('field-add');
-  fieldAdd.removeEventListener('click', onFieldAddOrModify);
-  fieldAdd.addEventListener('click', onFieldAddOrModify);
+  const generateRandom = document.getElementById('field-generate-random');
+  generateRandom.addEventListener('click', onButtonGenerateRandomClick);
 
-
-  const fieldClean = document.getElementById('field-clean');
-  fieldClean.removeEventListener('click', onFieldClean);
-  fieldClean.addEventListener('click', onFieldClean);
-
-
-  updateRows({data: session?.getLastData, error: null});
 }

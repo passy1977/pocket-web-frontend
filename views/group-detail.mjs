@@ -122,7 +122,7 @@ function onFieldClean() {
     message: `Do you want to clean all field data?`,
     close: 'No',
     confirm: 'Yes',
-  }, (confirm) => {
+  }, confirm => {
     if(confirm) {
       globalFieldTitle.value = '';
       globalFieldIsHidden.checked = false;
@@ -209,7 +209,7 @@ function onButtonLeftImage0Click() {
     return;
   }
   globalElmClicked = true;
-  globalSession?.resetGui();
+  globalSession?.resetGuiCallbacks();
   globalSession.loadSync({
     path: '/home',
     title: 'Home'
@@ -238,11 +238,11 @@ function onButtonRightImage1Click() {
     message: globalGroup.id > 0 ? 'Do you really want update this element?' : 'Do you really want insert this element?',
     close: 'No',
     confirm: 'Yes',
-  }, (confirm) => {
+  }, confirm => {
     if(confirm) {
 
       const { group: currentGroup, search } = globalSession.getStackNavigator.get();
-      globalSession?.resetGui();
+      globalSession?.resetGuiCallbacks();
 
       let newGlobalGroupFields = [];
       let fields = [];

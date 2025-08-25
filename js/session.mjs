@@ -216,7 +216,7 @@ export default class Session {
     this.#buttonRight1Callback = callback;
   }
 
-  resetGui() {
+  resetGuiCallbacks() {
     this.setButtonLeft0Callback(null, null);
     this.setButtonRight0Callback(null, null);
     this.setButtonRight1Callback(null, null);
@@ -253,13 +253,10 @@ export default class Session {
         const script = document.createElement('script');
         script.type = 'module';
         script.src = fullPath;
-        script.onload = () => {
-          console.log(`Script load successfully: ${fullPath}`);
-
+        script.onload = () =>
           import(fullPath)
             .then(module => module.onUpdateGui(this))
             .catch(err => showAlert(err.message));
-        };
 
         script.onerror = err => showAlert(err.message);
 
@@ -328,9 +325,7 @@ export default class Session {
           showAlert(err);
         })
         .then(ret => {
-          if (ret) {
-            console.log('Session loaded successfully:', ret);
-          } else {
+          if (!ret) {
             throw Error('Failed to load route');
           }
         });

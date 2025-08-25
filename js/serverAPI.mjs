@@ -354,6 +354,60 @@ class ServerAPI {
       .catch(error => callback({ data: null, error }));
   }
 
+  fieldDetail({ id, groupId, search = ''}, callback) {
+    this.#dbg();
+    if (this.#sessionId === null) {
+      throw new Error(`Session not valid`);
+    }
+
+    if (typeof groupId !== 'number') {
+      throw new TypeError(`groupId it's not a number`);
+    }
+
+    if (typeof id !== 'number') {
+      throw new TypeError(`id it's not a number`);
+    }
+
+    if (typeof search !== 'string') {
+      throw new TypeError(`search it's not a string`);
+    }
+
+    if (typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+
+    if (id === 0 && groupId === 0) {
+      callback({
+        data: {
+          ...this.#defaultDataTransfer,
+          path: '/field-detail',
+          title: 'New field',
+          groups: null,
+          fields: [],
+          session_id: this.#sessionId
+        },
+        error: null
+      });
+      return;
+    }
+
+    fetch(this.#enterPoint + '/field_detail', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...this.#defaultDataTransfer,
+        path: '/field_detail',
+        session_id: this.#sessionId,
+        data: `${groupId}|${search}|${id}`
+      })
+    })
+      .then(response => response.json())
+      .then(data => this.#handleData(data, callback))
+      .catch(error => callback({ data: null, error }));
+  }
+
 }
 
 const serverAPI = new ServerAPI(BACKEND_URL);
