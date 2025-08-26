@@ -25,6 +25,7 @@ window.onload = () => {
         buttonRight1: document.getElementById('right-1'),
         buttonRightImage1: document.getElementById('right-image-1')
       },
+      EmptyGroup,
       data => {
         if (data.path === '/home') {
           console.debug('TODO', data);
@@ -174,7 +175,7 @@ export function showModal({ title, message, close, confirm, data = null }, callb
   modal.show();
 }
 
-export const EmptyGroup = {
+export const EmptyGroup = Object.freeze({
   id: 0,
   server_id: 0,
   user_id: 0,
@@ -186,9 +187,9 @@ export const EmptyGroup = {
   synchronized: false,
   deleted: false,
   timestamp_creation: 0,
-};
+});
 
-export const EmptyGroupField = {
+export const EmptyGroupField = Object.freeze({
   id: 0,
   server_id: 0,
   user_id: 0,
@@ -199,9 +200,9 @@ export const EmptyGroupField = {
   synchronized: false,
   deleted: false,
   timestamp_creation: 0,
-};
+});
 
-export const EmptyField = {
+export const EmptyField = Object.freeze({
   id: 0,
   server_id: 0,
   user_id: 0,
@@ -215,4 +216,4 @@ export const EmptyField = {
   synchronized: false,
   deleted: false,
   timestamp_creation: 0,
-};
+});

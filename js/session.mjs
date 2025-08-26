@@ -1,18 +1,18 @@
 'use strict';
 
-import showAlert from './pocket.mjs';
+import showAlert, { EmptyGroup } from './pocket.mjs';
 
 export class StackNavigator {
   #stack;
   #index;
 
-  constructor() {
+  constructor(defaultGroup) {
     if (!new.target) {
       throw new TypeError(`calling GroupStacked constructor without new is invalid`);
     }
 
     this.#stack = [];
-    this.#stack.push({ group: { id: 0, group_id: 0 }, search: '', path: '' });
+    this.#stack.push({ group: { ...defaultGroup }, search: '', path: '' });
     this.#index = 0;
   }
 
@@ -65,7 +65,7 @@ export default class Session {
   #buttonRight1Callback = null;
 
 
-  constructor(gui, callbackUpdate) {
+  constructor(gui, defaultGroup, callbackUpdate) {
 
     if (!new.target) {
       throw new TypeError(`calling Session constructor without new is invalid`);
@@ -121,7 +121,7 @@ export default class Session {
 
     this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
-    this.#stackNavigator = new StackNavigator();
+    this.#stackNavigator = new StackNavigator(defaultGroup);
 
     this.#gui.buttonLeftImage0.addEventListener('click', e => {
       if (this.#buttonLeft0Callback) this.#buttonLeft0Callback(e);

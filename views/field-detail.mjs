@@ -3,7 +3,7 @@
 import showAlert, { EmptyField, EmptyGroup, hideAlert, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
-const PASSWD_LEN = Object.freeze(12);
+const PASSWD_LEN = Object.freeze(16);
 
 let globalElmClicked = false;
 let globalSession = null;
@@ -18,7 +18,7 @@ function onButtonGenerateRandomClick() {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_-.?^~';
   let password = '';
 
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < PASSWD_LEN; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);
     password += charset[randomIndex];
   }
@@ -71,10 +71,10 @@ function onButtonRightImage1Click() {
       globalField.server_group_id = currentGroup.server_id;
       globalField.title = globalFieldTitle.value;
       globalField.value = globalFieldValue.value;
-      globalField.is_hidden = globalFieldIsHidden.value;
+      globalField.is_hidden = globalFieldIsHidden.checked;
       globalField.synchronized = false;
 
-      serverAPI.data(`/group_detail/group/` + globalField.id > 0 ? "update" : "insert", {
+      serverAPI.data(`/field_detail/field/${globalField.id > 0 ? 'update' : 'insert'}`, {
         id: globalField.id,
         groupId: globalField.group_id,
         search
@@ -126,7 +126,7 @@ export function onUpdateGui(session) {
 
   globalFieldIsHidden = document.getElementById('field-is-hidden');
   if (globalFieldIsHidden && globalField.is_hidden) {
-    globalFieldValue.value = globalField.value;
+    globalFieldValue.checked = globalField.is_hidden;
   }
 
   const generateRandom = document.getElementById('field-generate-random');
