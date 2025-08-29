@@ -15,7 +15,7 @@ body {
     display: flex;
     justify-content: center;
     height: 100vh;
-    margin: 2vh 0 0;
+    padding: 2vh 0 0;
 }
 
 nav {
@@ -79,8 +79,6 @@ nav .btn:disabled {
     border-radius: var(--border-radius);
     border: solid 1px var(--primary-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    min-height: 95%;
-    height: 95%;
 }
 
 .btn-primary {

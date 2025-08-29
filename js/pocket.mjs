@@ -175,6 +175,36 @@ export function showModal({ title, message, close, confirm, data = null }, callb
   modal.show();
 }
 
+export function updateMenuContentHeight() {
+  const menu = document.getElementById('side-menu');
+  const content = document.getElementById('content');
+
+  const contentComputedStyle = window.getComputedStyle(content);
+
+  const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
+  const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
+
+  if(content.clientHeight > menu.clientHeight) {
+    menu.style.height = `${content.clientHeight + top + bottom}px`;
+  } else {
+    content.style.height = `${menu.clientHeight - top - bottom}px`;
+  }
+}
+
+export function toggleMenu() {
+  const menu = document.getElementById('side-menu');
+  // const content = document.getElementById('content');
+  //
+  // const contentComputedStyle = window.getComputedStyle(content);
+  //
+  // const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
+  // const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
+  //
+  // menu.style.height = `${content.clientHeight + top + bottom}px`;
+
+  menu.classList.toggle('open');
+}
+
 export const EmptyGroup = Object.freeze({
   id: 0,
   server_id: 0,

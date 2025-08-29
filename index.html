@@ -7,46 +7,32 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link href="/lib/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/menu.css" rel="stylesheet">
   <script src="js/extensions.js"></script>
 </head>
 <body>
 
-<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modal-label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-label"></h5>
-        <button id="modal-header-close" type="button" class="btn-close" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-      </div>
-      <div id="modal-body" class="modal-body"></div>
-      <div class="modal-footer">
-        <button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
-        <button id="modal-confirm" type="button" class="btn btn-primary" data-bs-dismiss="modal"></button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="container">
   <section class="main-container">
     <nav>
-      <button id="left-0" type="button" class="btn collapse"><img id="left-image-0" src="/images/ic_menu.svg"
-                                                                  alt="Button for open menu" /></button>
-      <button id="left-1" type="button" class="btn collapse" disabled><img id="left-image-1" src="/images/pixel.png"
-                                                                           alt="Empty space" /></button>
+      <button id="left-0" type="button" class="btn collapse"><img id="left-image-0" src="/images/ic_menu.svg" alt="Button for open menu" /></button>
+      <button id="left-1" type="button" class="btn collapse" disabled><img id="left-image-1" src="/images/pixel.png" alt="Empty space" /></button>
       <h1 id="title"></h1>
-      <button id="right-0" type="button" class="btn collapse float-end"><img id="right-image-0"
-                                                                             src="/images/ic_add_field.svg"
-                                                                             alt="Button for create new field" />
-      </button>
-      <button id="right-1" type="button" class="btn collapse float-end"><img id="right-image-1"
-                                                                             src="/images/ic_add_group.svg"
-                                                                             alt="Button for create new group" />
-      </button>
+      <button id="right-0" type="button" class="btn collapse float-end"><img id="right-image-0" src="/images/ic_add_field.svg" alt="Button for create new field" /></button>
+      <button id="right-1" type="button" class="btn collapse float-end"><img id="right-image-1" src="/images/ic_add_group.svg" alt="Button for create new group" /></button>
     </nav>
 
-    <div class="m-3">
+    <div class="menu" id="side-menu">
+      <ul>
+        <li><a href="#"><img class="ico me-1" src="/images/ic_passwd.svg" alt="Change passwd icon">Change passwd</a></li>
+        <li><a href="#"><img class="ico me-1" src="/images/ic_import.svg" alt="Import data icon">Import data</a></li>
+        <li><a href="#"><img class="ico me-1" src="/images/ic_export.svg" alt="Import data icon">Export data</a></li>
+        <li><a href="#"><img class="ico me-1" src="/images/ic_logout.svg" alt="Import data icon">Logout</a></li>
+        <li><a href="#"><img class="ico me-1" src="/images/ic_delete.svg" alt="Import data icon">Delete account</a></li>
+      </ul>
+    </div>
+
+    <div class="m-3" id="content">
       <main id="context"></main>
       <div id="alert" class="alert alert-danger d-flex align-items-center visually-hidden" role="alert"></div>
     </div>

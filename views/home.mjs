@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, showModal, toggleMenu } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -196,7 +196,7 @@ function onClickEdit(elm) {
               globalSession.loadSync(data);
             } else {
               if (error) {
-                showAlert(error);
+                Pocket.showAlert(error);
               } else {
                 showAlert('unhandled error');
               }
@@ -252,7 +252,7 @@ function onButtonLeftImage0Click() {
       title: 'Home'
     }, false);
   } else {
-    console.log('TODO: open menu');
+    toggleMenu();
   }
   globalElmClicked = false;
 }
@@ -536,8 +536,7 @@ export function onUpdateGui(session) {
   if (globalSession.getStackNavigator.getIndex > 0) {
     globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   } else {
-    globalSession.getGui?.buttonLeft0.classList.remove('collapse');
-    globalSession.getGui.buttonLeftImage0.src = '/images/ic_menu.svg';
+    globalSession.setButtonLeft0Callback('/images/ic_menu.svg', onButtonLeftImage0Click);
   }
 
   globalSession.setButtonRight0Callback('/images/ic_add_field.svg', onButtonRightImage0Click);

@@ -1,5 +1,7 @@
 'use strict';
 
+import { updateMenuContentHeight } from './pocket.mjs';
+
 if (!String.prototype.includes) {
   String.prototype.includes = function(search, start) {
     if (typeof start !== 'number') {
@@ -19,4 +21,8 @@ window.addEventListener('beforeunload', event => {
   event.preventDefault();
   event.returnValue = message;
   return message;
+});
+
+window.addEventListener('resize', (e) => {
+  updateMenuContentHeight();
 });
