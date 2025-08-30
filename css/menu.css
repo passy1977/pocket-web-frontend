@@ -1,14 +1,14 @@
 
 
 .menu {
-    color: white;
-    transition: transform 1s ease-in-out, width 500ms ease-in-out;
+    width: 0;
+    transition: transform 500s ease-in-out, width 500ms ease-in-out;
     position: absolute;
     top-bar-button: initial;
-    width: 0;
     overflow: hidden;
     background: var(--background-color);
-    border-right: 1px solid var(--secondary-color);
+    z-index: 99;
+    border-radius: 0 0 0 calc(var(--border-radius) + 1px);
 }
 
 .menu.open {
@@ -23,11 +23,22 @@
     list-style-type: none;
 }
 
+.menu li > img {
+    width: calc(12.1em - 16px);
+    height: calc(12.1em - 16px);
+}
+
+
+.menu li h5 {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .menu li a {
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden; /* Nasconde il testo che esce */
-    text-overflow: ellipsis; /* Aggiunge "..." alla fine del contenuto troncato */
+    overflow: hidden;
     padding: 15px;
     text-decoration: none;
     color: var(--text-color);
@@ -36,3 +47,4 @@
 ol, ul {
     padding-left: 0;
 }
+

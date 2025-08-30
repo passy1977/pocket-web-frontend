@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, showModal, toggleMenu } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resizeMenuOrContent, showModal } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -12,6 +12,7 @@ let globalElmClicked = false;
 let globalSession = null;
 let globalDataContainer = null;
 let globalTemplateRow = '';
+let globalSideMenu = null;
 
 let globalGroup = null;
 let globalSearch = '';
@@ -192,11 +193,13 @@ function onClickEdit(elm) {
           },
           ({ data, error }) => {
             if (data) {
+              globalSideMenu.classList.remove('open');
+
               data['insert'] = false;
               globalSession.loadSync(data);
             } else {
               if (error) {
-                Pocket.showAlert(error);
+                showAlert(error);
               } else {
                 showAlert('unhandled error');
               }
@@ -214,6 +217,8 @@ function onClickEdit(elm) {
           },
           ({ data, error }) => {
             if (data) {
+              globalSideMenu.classList.remove('open');
+
               data['insert'] = false;
               globalSession.loadSync(data);
             } else {
@@ -247,12 +252,13 @@ function onButtonLeftImage0Click() {
   globalElmClicked = true;
   const data = globalSession.getStackNavigator.pop();
   if (data) {
+    globalSideMenu.classList.remove('open');
     globalSession.loadSync({
       path: '/home',
       title: 'Home'
     }, false);
   } else {
-    toggleMenu();
+    globalSideMenu.classList.toggle('open');
   }
   globalElmClicked = false;
 }
@@ -273,6 +279,8 @@ function onButtonRightImage0Click() {
     },
     ({ data, error }) => {
       if (data) {
+        globalSideMenu.classList.remove('open');
+
         data['insert'] = true;
         globalSession.loadSync(data);
       } else {
@@ -303,6 +311,8 @@ function onButtonRightImage1Click() {
     },
     ({ data, error }) => {
       if (data) {
+        globalSideMenu.classList.remove('open');
+
         data['insert'] = true;
         globalSession.loadSync(data);
       } else {
@@ -404,6 +414,8 @@ function onClick(elm) {
   switch (type) {
     case 'group':
       if (globalSession && globalGroups.has(id)) {
+        globalSideMenu.classList.remove('open');
+
         globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch);
         globalSession.loadSync({
           path: '/home',
@@ -503,12 +515,13 @@ function updateRows({ data, error }) {
   } else {
     showAlert('unhandled error');
   }
-
+  resizeMenuOrContent();
 }
 
 export function onUpdateGui(session) {
   hideAlert();
 
+  globalSideMenu = document.getElementById('side-menu');
   globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
     throw new DOMException('data-container not found', 'home.mjs');
