@@ -485,7 +485,38 @@ class ServerAPI {
       });
   }
 
+  changePasswd(newPasswd = null, callback) {
+    //TODO: non implementato
+    console.debug('changePasswd', newPasswd);
+    callback({ data: {}, error: null });
+  }
+
+  importData(path = null, callback) {
+    //TODO: non implementato
+    console.debug('importData', path);
+    callback({ data: {}, error: null });
+  }
+
+  exportData(path = null, callback) {
+    //TODO: non implementato
+    console.debug('exportData', path);
+    callback({ data: {}, error: null });
+  }
+
+  closeSection(callback) {
+    //TODO: non implementato
+    console.debug('closeSection', callback);
+    callback({ data: {}, error: null });
+  }
+
+  logout(callback) {
+    //TODO: non implementato
+    console.debug('logout', callback);
+    callback({ data: {}, error: null });
+  }
 }
+
+
 
 const serverAPI = new ServerAPI(BACKEND_URL);
 
