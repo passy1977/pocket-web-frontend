@@ -33,6 +33,7 @@
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
+    color: var(--text-color);
 }
 
 .menu li a {
