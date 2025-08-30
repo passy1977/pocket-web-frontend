@@ -130,21 +130,25 @@ function callbackHandlerTrue(e) {
   globalData = null;
 }
 
-export function showModal({ title, message, close, confirm, data = null }, callback) {
+export function showModal({ title, message, close = null, confirm = null, data = null }, callback = null) {
   if (typeof title !== 'string') {
     throw new TypeError(`title it's not a string`);
   }
 
-  if (typeof message !== 'string') {
+  if (message && typeof message !== 'string') {
     throw new TypeError(`message it's not a string`);
   }
 
-  if (typeof close !== 'string') {
+  if (close && typeof close !== 'string') {
     throw new TypeError(`close it's not a string`);
   }
 
-  if (typeof callback !== 'function') {
+  if (callback && typeof callback !== 'function') {
     throw new TypeError(`callback it's not a function`);
+  }
+
+  if (close === null) {
+    close = 'Ok';
   }
 
   globalCallback = callback;
@@ -195,7 +199,7 @@ export function resizeMenuOrContent() {
   if(contentFullHeight > menu.clientHeight) {
     menu.style.height = `${content.clientHeight + top + bottom}px`;
   } else {
-    content.style.height = `${menu.clientHeight - top - bottom}px`;
+    content.style.height = `${menu.clientHeight - top - bottom + 1}px`;
   }
 }
 

@@ -240,8 +240,9 @@ async function onClickCopy(elm) {
   const id = parseInt(elm.getAttribute('data-type-id'));
   try {
     await navigator.clipboard.writeText(globalFields?.get(id).value);
+    showModal({title: 'Message', message: 'value copied to clipboard'});
   } catch (err) {
-    console.error(err);
+    showAlert(err);
   }
 }
 

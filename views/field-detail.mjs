@@ -107,8 +107,6 @@ export function onUpdateGui(session) {
     globalField = session?.getLastData?.fields.at(0);
   }
 
-  globalSession.getGui.title.innerHTML = globalField.title;
-
   globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   globalSession.getGui?.buttonRight0.classList.add('collapse');
   globalSession.setButtonRight0Callback('/images/ic_add.svg', onButtonRightImage1Click);
