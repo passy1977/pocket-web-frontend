@@ -447,7 +447,10 @@ function updateRows({ data, error }) {
     const { groups, fields } = data;
 
     if(groups.length === 0 && fields.length === 0) {
-      globalDataContainer.innerHTML = '';
+      const container = document.createElement('div');
+      container.className = 'd-flex justify-content-center align-items-center mt-1 mb-1';
+      container.append(document.createTextNode(' No data available'));
+      globalDataContainer.appendChild(container);
       return;
     }
 
