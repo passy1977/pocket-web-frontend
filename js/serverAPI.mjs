@@ -9,6 +9,8 @@ class ServerAPI {
   #handleData;
   #defaultDataTransfer;
   #fetchData;
+  #showSpinner;
+  #hideSpinner
 
   constructor(url) {
     if (!new.target) {
@@ -76,10 +78,25 @@ class ServerAPI {
     };
   }
 
+  set showSpinner(showSpinner) {
+    if (!showSpinner || typeof showSpinner !== 'function') {
+      throw new TypeError(`showSpinner it's not a function`);
+    }
+    this.#showSpinner = showSpinner;
+  }
+
+  set hideSpinner(hideSpinner) {
+    if (!hideSpinner || typeof hideSpinner !== 'function') {
+      throw new TypeError(`hideSpinner it's not a function`);
+    }
+    this.#hideSpinner = hideSpinner;
+  }
+
   #dbg() {}
 
   hello(callback) {
     this.#dbg();
+    this.#showSpinner();
     fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
       method: 'GET',
       headers: {
@@ -94,8 +111,12 @@ class ServerAPI {
         } else {
           callback({ data: null, error: Error('No valid session_id') });
         }
+        this.#hideSpinner();
       })
-      .catch(error => callback({ data: null, error }));
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   login({ email, passwd }, callback) {
@@ -116,6 +137,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/login', {
       method: 'POST',
       headers: {
@@ -129,8 +151,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => this.#handleData(data, callback))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   registration({ jsonConfig, email, passwd, confirmPasswd }, callback) {
@@ -159,6 +187,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/registration', {
       method: 'POST',
       headers: {
@@ -172,8 +201,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => this.#handleData(data, callback))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   home({ groupId, search }, callback) {
@@ -194,6 +229,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/home', {
       method: 'PUT',
       headers: {
@@ -207,8 +243,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => this.#handleData(data, callback))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   debug({ path, callback }) {
@@ -221,6 +263,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/debug', {
       method: 'POST',
       headers: {
@@ -235,8 +278,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => callback({ data, error: null }))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   data(from, { id, groupId, search = '' }, { groups = null, groupFields = null, fields = null }, callback) {
@@ -278,6 +327,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/data', {
       method: 'POST',
       headers: {
@@ -295,8 +345,20 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => callback({ data, error: null }))
-      .catch(error => callback({ data: null, error }));
+      // .then(data => callback({ data, error: null }))
+      // .catch(error => callback({ data: null, error }));
+      .then(data => {
+        if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id) {
+          callback({ data, error: null });
+        } else {
+          callback({ data: null, error: 'No valid session_id' });
+        }
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
 
@@ -337,6 +399,7 @@ class ServerAPI {
       return;
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/group_detail', {
       method: 'PUT',
       headers: {
@@ -350,8 +413,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => this.#handleData(data, callback))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   fieldDetail({ id, groupId, search = ''}, callback) {
@@ -388,9 +457,11 @@ class ServerAPI {
         },
         error: null
       });
+      this.#hideSpinner();
       return;
     }
 
+    this.#showSpinner();
     fetch(this.#enterPoint + '/field_detail', {
       method: 'PUT',
       headers: {
@@ -404,8 +475,14 @@ class ServerAPI {
       })
     })
       .then(response => response.json())
-      .then(data => this.#handleData(data, callback))
-      .catch(error => callback({ data: null, error }));
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
 }

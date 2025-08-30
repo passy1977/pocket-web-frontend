@@ -160,3 +160,25 @@ img.ico-input {
 .input-group-text {
     color: var(--primary-color);
 }
+
+#spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px) opacity(0.5) !important;
+    visibility: hidden;
+}
+
+#spinner .spinner-border  {
+    margin-top: calc( (50% / 2) - 20rem);
+    --bs-spinner-width: 20rem;
+    --bs-spinner-height: 20rem;
+    --bs-spinner-border-width: 0.75em;
+    opacity: 1 !important;
+    border: var(--bs-spinner-border-width) solid var(--primary-color);
+    border-right-color: transparent;
+}

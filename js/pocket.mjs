@@ -10,6 +10,50 @@ let session = null;
 let globalCallback = null;
 let globalData = null;
 
+
+export const EmptyGroup = Object.freeze({
+  id: 0,
+  server_id: 0,
+  user_id: 0,
+  group_id: 0,
+  server_group_id: 0,
+  title: '',
+  icon: '',
+  note: '',
+  synchronized: false,
+  deleted: false,
+  timestamp_creation: 0,
+});
+
+export const EmptyGroupField = Object.freeze({
+  id: 0,
+  server_id: 0,
+  user_id: 0,
+  group_id: 0,
+  server_group_id: 0,
+  title: '',
+  is_hidden: false,
+  synchronized: false,
+  deleted: false,
+  timestamp_creation: 0,
+});
+
+export const EmptyField = Object.freeze({
+  id: 0,
+  server_id: 0,
+  user_id: 0,
+  group_id: 0,
+  server_group_id: 0,
+  group_field_id: 0,
+  server_group_field_id: 0,
+  title: '',
+  value: '',
+  is_hidden: false,
+  synchronized: false,
+  deleted: false,
+  timestamp_creation: 0,
+});
+
 window.onbeforeunload = event => {
   const message = "Do you want really exit from Pocket 5";
   event.preventDefault();
@@ -19,6 +63,8 @@ window.onbeforeunload = event => {
 
 window.onload = () => {
   try {
+    serverAPI.showSpinner = showSpinner;
+    serverAPI.hideSpinner = hideSpinner;
     session = new Session({
         alert: document.getElementById('alert'),
         context: document.getElementById('context'),
@@ -205,45 +251,11 @@ export function resizeMenuOrContent() {
 
 window.onresize = resizeMenuOrContent;
 
-export const EmptyGroup = Object.freeze({
-  id: 0,
-  server_id: 0,
-  user_id: 0,
-  group_id: 0,
-  server_group_id: 0,
-  title: '',
-  icon: '',
-  note: '',
-  synchronized: false,
-  deleted: false,
-  timestamp_creation: 0,
-});
+export function showSpinner() {
+  document.getElementById('spinner').style.visibility =  'visible';
+}
 
-export const EmptyGroupField = Object.freeze({
-  id: 0,
-  server_id: 0,
-  user_id: 0,
-  group_id: 0,
-  server_group_id: 0,
-  title: '',
-  is_hidden: false,
-  synchronized: false,
-  deleted: false,
-  timestamp_creation: 0,
-});
+export function hideSpinner() {
+  document.getElementById('spinner').style.visibility =  'hidden';
+}
 
-export const EmptyField = Object.freeze({
-  id: 0,
-  server_id: 0,
-  user_id: 0,
-  group_id: 0,
-  server_group_id: 0,
-  group_field_id: 0,
-  server_group_field_id: 0,
-  title: '',
-  value: '',
-  is_hidden: false,
-  synchronized: false,
-  deleted: false,
-  timestamp_creation: 0,
-});
