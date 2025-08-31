@@ -63,7 +63,7 @@ function onButtonRightImage1Click() {
   }, confirm => {
 
     if(confirm) {
-      const { group: currentGroup, search } = globalSession.getStackNavigator.get();
+      const { group: currentGroup, search } = globalSession.stackNavigator.get();
 
       globalSession?.resetGuiCallbacks();
 
@@ -99,16 +99,16 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  if (!session?.getLastData?.fields || session?.getLastData?.fields.length === 0) {
+  if (!session?.lastData?.fields || session?.lastData?.fields.length === 0) {
     globalField = {
       ...EmptyField
     };
   } else {
-    globalField = session?.getLastData?.fields.at(0);
+    globalField = session?.lastData?.fields.at(0);
   }
 
   globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
-  globalSession.getGui?.buttonRight0.classList.add('collapse');
+  globalSession.gui?.buttonRight0.classList.add('collapse');
   globalSession.setButtonRight0Callback('/images/ic_add.svg', onButtonRightImage1Click);
 
 

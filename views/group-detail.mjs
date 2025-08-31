@@ -241,7 +241,7 @@ function onButtonRightImage1Click() {
   }, confirm => {
     if(confirm) {
 
-      const { group: currentGroup, search } = globalSession.getStackNavigator.get();
+      const { group: currentGroup, search } = globalSession.stackNavigator.get();
       globalSession?.resetGuiCallbacks();
 
       let newGlobalGroupFields = [];
@@ -428,18 +428,18 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  if (!session?.getLastData?.groups || session?.getLastData?.groups.length === 0) {
+  if (!session?.lastData?.groups || session?.lastData?.groups.length === 0) {
     globalGroup = {
       ...EmptyGroup
     };
   } else {
-    globalGroup = session?.getLastData?.groups.at(0);
+    globalGroup = session?.lastData?.groups.at(0);
   }
 
-  globalSession.getGui.title.innerHTML = globalGroup.title;
+  globalSession.gui.title.innerHTML = globalGroup.title;
 
   globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
-  globalSession.getGui?.buttonRight0.classList.add('collapse');
+  globalSession.gui?.buttonRight0.classList.add('collapse');
   globalSession.setButtonRight0Callback('/images/ic_add.svg', onButtonRightImage1Click);
 
 
@@ -468,5 +468,5 @@ export function onUpdateGui(session) {
   fieldClean.addEventListener('click', onFieldClean);
 
 
-  updateRows({data: session?.getLastData, error: null});
+  updateRows({data: session?.lastData, error: null});
 }

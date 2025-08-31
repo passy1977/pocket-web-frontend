@@ -45,11 +45,7 @@ export class StackNavigator {
     return this.#stack[index];
   }
 
-  get getIndex() {
-    return this.#index;
-  }
-
-  get getSearch() {
+  get index() {
     return this.#index;
   }
 }
@@ -135,19 +131,19 @@ export default class Session {
 
   }
 
-  get getLastData() {
+  get lastData() {
     return this.#lastData;
   }
 
-  get getLastPath() {
+  get lastPath() {
     return this.#lastPath;
   }
 
-  get getGui() {
+  get gui() {
     return this.#gui;
   }
 
-  get getStackNavigator() {
+  get stackNavigator() {
     return this.#stackNavigator;
   }
 

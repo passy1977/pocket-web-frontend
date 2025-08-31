@@ -137,16 +137,16 @@ export default function showAlert(msg) {
   }
 
 
-  session?.getGui?.alert.classList.remove('visually-hidden');
+  session?.gui?.alert.classList.remove('visually-hidden');
   const div = document.createElement('div');
   div.innerHTML = msg;
-  session?.getGui?.alert.appendChild(div);
+  session?.gui?.alert.appendChild(div);
 }
 
 export function hideAlert() {
-  if (session?.getGui?.alert) {
-    session.getGui.alert.innerHTML = '';
-    session.getGui.alert.classList.add('visually-hidden');
+  if (session?.gui?.alert) {
+    session.gui.alert.innerHTML = '';
+    session.gui.alert.classList.add('visually-hidden');
   }
 }
 

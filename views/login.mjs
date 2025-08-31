@@ -4,16 +4,16 @@ import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert } from '../js/pocket.mjs';
 
 export function onUpdateGui(session) {
-  session?.getGui?.buttonLeft0?.classList.add('collapse');
-  session?.getGui?.buttonLeft1?.classList.add('collapse');
-  session?.getGui?.buttonRight0?.classList.add('collapse');
-  session?.getGui?.buttonRight1?.classList.add('collapse');
+  session?.gui?.buttonLeft0?.classList.add('collapse');
+  session?.gui?.buttonLeft1?.classList.add('collapse');
+  session?.gui?.buttonRight0?.classList.add('collapse');
+  session?.gui?.buttonRight1?.classList.add('collapse');
 
-  if (session.getLastData?.data) {
+  if (session.lastData?.data) {
     const email = document.getElementById('email');
     const passwd = document.getElementById('passwd');
 
-    const dataSplit = session.getLastData.data.split('|');
+    const dataSplit = session.lastData.data.split('|');
 
     email.value = dataSplit[0];
     passwd.value = dataSplit[1];

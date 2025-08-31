@@ -392,7 +392,7 @@ function onButtonLeftImage0Click() {
     return;
   }
   globalElmClicked = true;
-  const data = globalSession.getStackNavigator.pop();
+  const data = globalSession.stackNavigator.pop();
   if (data) {
     globalSideMenu.classList.remove('open');
     globalSession.loadSync({
@@ -558,7 +558,7 @@ function onClick(elm) {
       if (globalSession && globalGroups.has(id)) {
         globalSideMenu.classList.remove('open');
 
-        globalSession.getStackNavigator.push(globalGroups.get(id), globalSearch);
+        globalSession.stackNavigator.push(globalGroups.get(id), globalSearch);
         globalSession.loadSync({
           path: '/home',
           title: 'Home'
@@ -681,22 +681,22 @@ export function onUpdateGui(session) {
 
   globalSession = session;
 
-  const { group: currentGroup, search } = session.getStackNavigator.get();
+  const { group: currentGroup, search } = session.stackNavigator.get();
   globalGroup = currentGroup;
   globalSearch = search;
 
   globalElmClicked = false;
 
-  if (globalSession.getStackNavigator.getIndex > 0) {
+  if (globalSession.stackNavigator.index > 0) {
     document.title = `Pocket 5 - ${ globalGroup.title }`;
-    globalSession.getGui.title.innerHTML = globalGroup.title;
+    globalSession.gui.title.innerHTML = globalGroup.title;
   } else {
     document.title = `Pocket 5 - Home`;
-    globalSession.getGui.title.innerHTML = 'Home';
+    globalSession.gui.title.innerHTML = 'Home';
   }
 
 
-  if (globalSession.getStackNavigator.getIndex > 0) {
+  if (globalSession.stackNavigator.index > 0) {
     globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   } else {
     globalSession.setButtonLeft0Callback('/images/ic_menu.svg', onButtonLeftImage0Click);

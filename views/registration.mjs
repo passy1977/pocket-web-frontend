@@ -5,8 +5,8 @@ import serverAPI from '../js/serverAPI.mjs';
 
 export function onUpdateGui(session) {
 
-  session?.getGui?.buttonLeft0.classList.remove('collapse');
-  const buttonLeftImage0 = session?.getGui?.buttonLeftImage0;
+  session?.gui?.buttonLeft0.classList.remove('collapse');
+  const buttonLeftImage0 = session?.gui?.buttonLeftImage0;
   buttonLeftImage0.src = '/images/ic_back.svg';
   buttonLeftImage0.addEventListener('click', () =>
     session.loadSync({
@@ -15,11 +15,11 @@ export function onUpdateGui(session) {
     })
   );
 
-  session?.getGui?.buttonLeft1?.classList.add('collapse');
-  session?.getGui?.buttonRight0?.classList.add('collapse');
-  session?.getGui?.buttonRight1?.classList.add('collapse');
+  session?.gui?.buttonLeft1?.classList.add('collapse');
+  session?.gui?.buttonRight0?.classList.add('collapse');
+  session?.gui?.buttonRight1?.classList.add('collapse');
 
-  if (!session.getLastData?.data) {
+  if (!session.lastData?.data) {
     throw 'Data null';
   }
 
@@ -75,7 +75,7 @@ export function onUpdateGui(session) {
       return;
     }
 
-    if (!session.getLastData) {
+    if (!session.lastData) {
       showAlert('Email empty');
       await sleep(1000);
       session.loadSync({
@@ -88,7 +88,7 @@ export function onUpdateGui(session) {
     try {
       serverAPI.registration({
           jsonConfig: jsonConfig.value,
-          email: session.getLastData.data,
+          email: session.lastData.data,
           passwd: passwd.value,
           confirmPasswd: passwdConfirm.value
         }, ({ data, error }) => {
