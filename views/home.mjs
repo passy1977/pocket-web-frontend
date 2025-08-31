@@ -88,20 +88,24 @@ function onChangePasswdClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  serverAPI.changePasswd(null,({ data, error }) => {
-    if (data) {
-      globalSideMenu.classList.remove('open');
+  try {
+    serverAPI.changePasswd(null, ({ data, error }) => {
+      if (data) {
+        globalSideMenu.classList.remove('open');
 
-      globalSession.loadSync(data);
-    } else {
-      if (error) {
-        showAlert(error);
+        globalSession.loadSync(data);
       } else {
-        showAlert('unhandled error');
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
       }
-    }
-    globalElmClicked = false;
-  });
+      globalElmClicked = false;
+    });
+  } catch (e) {
+    showAlert(e);
+  }
 }
 
 function onCloseSessionClick(e) {
@@ -116,20 +120,24 @@ function onCloseSessionClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  serverAPI.closeSession(({ data, error }) => {
-    if (data) {
-      globalSideMenu.classList.remove('open');
+  try {
+    serverAPI.closeSession(({ data, error }) => {
+      if (data) {
+        globalSideMenu.classList.remove('open');
 
-      globalSession.loadSync(data);
-    } else {
-      if (error) {
-        showAlert(error);
+        globalSession.loadSync(data);
       } else {
-        showAlert('unhandled error');
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
       }
-    }
-    globalElmClicked = false;
-  });
+      globalElmClicked = false;
+    });
+  } catch (e) {
+    showAlert(e);
+  }
 }
 
 function onLogoutClick(e) {
@@ -144,20 +152,24 @@ function onLogoutClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  serverAPI.logout(({ data, error }) => {
-    if (data) {
-      globalSideMenu.classList.remove('open');
+  try {
+    serverAPI.logout(({ data, error }) => {
+      if (data) {
+        globalSideMenu.classList.remove('open');
 
-      globalSession.loadSync(data);
-    } else {
-      if (error) {
-        showAlert(error);
+        globalSession.loadSync(data);
       } else {
-        showAlert('unhandled error');
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
       }
-    }
-    globalElmClicked = false;
-  });
+      globalElmClicked = false;
+    });
+  } catch (e) {
+    showAlert(e);
+  }
 }
 
 function onSearchElmKeyUp(e) {
@@ -170,12 +182,15 @@ function onSearchElmKeyUp(e) {
 
   globalSearch = e.target.value;
 
-  serverAPI.home({
-      groupId: globalGroup.id,
-      search: globalSearch
-    },
-    updateRows);
-
+  try {
+    serverAPI.home({
+        groupId: globalGroup.id,
+        search: globalSearch
+      },
+      updateRows);
+  } catch (e) {
+    showAlert(e);
+  }
 }
 
 function onCleanSearchClick(e) {
@@ -191,12 +206,15 @@ function onCleanSearchClick(e) {
   document.getElementById(`search`).value = '';
   globalSearch = '';
 
-  serverAPI.home({
-      groupId: globalGroup.id,
-      search: globalSearch
-    },
-    updateRows);
-
+  try {
+    serverAPI.home({
+        groupId: globalGroup.id,
+        search: globalSearch
+      },
+      updateRows);
+  } catch (e) {
+    showAlert(e);
+  }
   globalElmClicked = false;
 }
 
@@ -276,13 +294,15 @@ function onClickDelete(elm) {
         group.deleted = true;
 
         const { id: _id, group_id: groupId } = group;
-
-        serverAPI.data('/home/group/delete', {
-          id: _id,
-          groupId,
-          search: globalSearch
-        }, { groups: [group] }, updateRows);
-
+        try {
+          serverAPI.data('/home/group/delete', {
+            id: _id,
+            groupId,
+            search: globalSearch
+          }, { groups: [group] }, updateRows);
+        } catch (e) {
+          showAlert(e);
+        }
       } else if (type === 'field') {
         const field = globalFields?.get(id);
         field.synchronized = false;
@@ -290,11 +310,15 @@ function onClickDelete(elm) {
 
         const { _id, group_id: groupId } = field;
 
-        serverAPI.data('/home/field/delete', {
-          id: _id,
-          groupId,
-          search: globalSearch
-        }, { fields: [field] }, updateRows);
+        try {
+          serverAPI.data('/home/field/delete', {
+            id: _id,
+            groupId,
+            search: globalSearch
+          }, { fields: [field] }, updateRows);
+        } catch (e) {
+          showAlert(e);
+        }
       }
     }
     globalElmClicked = false;
@@ -325,14 +349,13 @@ function onClickEdit(elm) {
       globalSession?.resetGuiCallbacks();
       if (type === 'group') {
 
-        const {id: _id, group_id: groupId} = globalGroups?.get(id);
+        const { id: _id, group_id: groupId } = globalGroups?.get(id);
 
-        serverAPI.groupDetail(
-          {
+        try {
+          serverAPI.groupDetail({
             id: _id,
             groupId
-          },
-          ({ data, error }) => {
+          }, ({ data, error }) => {
             if (data) {
               globalSideMenu.classList.remove('open');
 
@@ -346,17 +369,17 @@ function onClickEdit(elm) {
               }
             }
           });
-
+        } catch (e) {
+          showAlert(e);
+        }
       } else if (type === 'field') {
 
-        const {id: _id, group_id: groupId} = globalFields?.get(id);
-
-        serverAPI.fieldDetail(
-          {
+        const { id: _id, group_id: groupId } = globalFields?.get(id);
+        try {
+          serverAPI.fieldDetail({
             id: _id,
             groupId
-          },
-          ({ data, error }) => {
+          }, ({ data, error }) => {
             if (data) {
               globalSideMenu.classList.remove('open');
 
@@ -370,7 +393,9 @@ function onClickEdit(elm) {
               }
             }
           });
-
+        } catch (e) {
+          showAlert(e);
+        }
       }
     }
     globalElmClicked = false;
@@ -381,7 +406,7 @@ async function onClickCopy(elm) {
   const id = parseInt(elm.getAttribute('data-type-id'));
   try {
     await navigator.clipboard.writeText(globalFields?.get(id).value);
-    showModal({title: 'Message', message: 'value copied to clipboard'});
+    showModal({ title: 'Message', message: 'value copied to clipboard' });
   } catch (err) {
     showAlert(err);
   }
@@ -413,13 +438,12 @@ function onButtonRightImage0Click() {
 
   globalSession?.resetGuiCallbacks();
 
-  serverAPI.fieldDetail(
-    {
+  try {
+    serverAPI.fieldDetail({
       id: 0,
       groupId: globalGroup.id,
       group: globalGroup
-    },
-    ({ data, error }) => {
+    }, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
 
@@ -433,7 +457,9 @@ function onButtonRightImage0Click() {
         }
       }
     });
-
+  } catch (e) {
+    showAlert(e);
+  }
   globalElmClicked = false;
 }
 
@@ -445,13 +471,12 @@ function onButtonRightImage1Click() {
 
   globalSession?.resetGuiCallbacks();
 
-  serverAPI.groupDetail(
-    {
+  try {
+    serverAPI.groupDetail({
       id: 0,
       groupId: globalGroup.id,
       group: globalGroup
-    },
-    ({ data, error }) => {
+    }, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
 
@@ -465,7 +490,9 @@ function onButtonRightImage1Click() {
         }
       }
     });
-
+  } catch (e) {
+    showAlert(e);
+  }
   globalElmClicked = false;
 }
 
@@ -587,7 +614,7 @@ function updateRows({ data, error }) {
 
     const { groups, fields } = data;
 
-    if(groups.length === 0 && fields.length === 0) {
+    if (groups.length === 0 && fields.length === 0) {
       const container = document.createElement('div');
       container.className = 'd-flex justify-content-center align-items-center mt-1 mb-1';
       container.append(document.createTextNode(' No data available'));
@@ -688,7 +715,7 @@ export function onUpdateGui(session) {
   globalElmClicked = false;
 
   if (globalSession.stackNavigator.index > 0) {
-    document.title = `Pocket 5 - ${ globalGroup.title }`;
+    document.title = `Pocket 5 - ${globalGroup.title}`;
     globalSession.gui.title.innerHTML = globalGroup.title;
   } else {
     document.title = `Pocket 5 - Home`;
@@ -716,9 +743,13 @@ export function onUpdateGui(session) {
     cleanSearchElm.addEventListener('click', onCleanSearchClick);
   }
 
-  serverAPI.home({
-      groupId: globalGroup.id,
-      search: globalSearch
-    },
-    updateRows);
+  try {
+    serverAPI.home({
+        groupId: globalGroup.id,
+        search: globalSearch
+      },
+      updateRows);
+  } catch (e) {
+    showAlert(e);
+  }
 }

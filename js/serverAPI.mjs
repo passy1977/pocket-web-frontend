@@ -279,7 +279,7 @@ class ServerAPI {
     })
       .then(response => response.json())
       .then(data => {
-        this.#handleData(data, callback);
+        callback({ data, error: null });
         this.#hideSpinner();
       })
       .catch(error => {

@@ -1,1 +1,27 @@
-change password
+<form id="form" class="mx-auto">
+  <p class="d-flex justify-content-center">This procedure will allow you to update your password, and all your data will be updated.</p>
+  <p class="d-flex justify-content-center">If you forget your new password, remember that the data will not be recoverable.</p>
+  <div class="form-floating has-validation mb-3">
+    <input type="password" class="form-control" id="passwd" placeholder="Password">
+    <label for="passwd">Password</label>
+    <div class="invalid-feedback" id="passwd-invalid-feedback">
+      This field is required
+    </div>
+  </div>
+  <div class="form-floating has-validation mb-3">
+    <input type="password" class="form-control" id="passwd-new" placeholder="New password">
+    <label for="passwd">New password</label>
+    <div class="invalid-feedback" id="passwd-new-invalid-feedback">
+      This field is required
+    </div>
+  </div>
+  <div class="form-floating has-validation mb-3">
+    <input type="password" class="form-control" id="passwd-confirm" placeholder="Password">
+    <label for="passwd-confirm">Confirm password</label>
+    <div class="invalid-feedback" id="passwd-confirm-invalid-feedback">
+      This field is required
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-full-width">Confirm</button>
+</form>

@@ -3,18 +3,21 @@
 import showAlert, { hideAlert, sleep } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
+let globalSession = null;
+
+function onButtonLeftImage0Click() {
+  globalSession?.loadSync({
+    path: '/login',
+    title: 'Login'
+  })
+}
+
 export function onUpdateGui(session) {
+  hideAlert();
 
-  session?.gui?.buttonLeft0.classList.remove('collapse');
-  const buttonLeftImage0 = session?.gui?.buttonLeftImage0;
-  buttonLeftImage0.src = '/images/ic_back.svg';
-  buttonLeftImage0.addEventListener('click', () =>
-    session.loadSync({
-      path: '/login',
-      title: 'Login'
-    })
-  );
+  globalSession = session;
 
+  session?.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   session?.gui?.buttonLeft1?.classList.add('collapse');
   session?.gui?.buttonRight0?.classList.add('collapse');
   session?.gui?.buttonRight1?.classList.add('collapse');
