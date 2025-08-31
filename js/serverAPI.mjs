@@ -485,12 +485,6 @@ class ServerAPI {
       });
   }
 
-  changePasswd(newPasswd = null, callback) {
-    //TODO: non implementato
-    console.debug('changePasswd', newPasswd);
-    callback({ data: {}, error: null });
-  }
-
   importData(path = null, callback) {
     //TODO: non implementato
     console.debug('importData', path);
@@ -503,9 +497,47 @@ class ServerAPI {
     callback({ data: {}, error: null });
   }
 
-  closeSection(callback) {
+  changePasswd(newPasswd = null, callback) {
+    this.#dbg();
+    if (this.#sessionId === null) {
+      throw new Error(`Session not valid`);
+    }
+
+    if (newPasswd && typeof newPasswd !== 'string') {
+      throw new TypeError(`search it's not a string`);
+    }
+
+    if (typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+
+    this.#showSpinner();
+    fetch(this.#enterPoint + '/change_passwd', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...this.#defaultDataTransfer,
+        path: '/home',
+        session_id: this.#sessionId,
+        data: `${newPasswd ? newPasswd : ''}`
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
+  }
+
+  closeSession(callback) {
     //TODO: non implementato
-    console.debug('closeSection', callback);
+    console.debug('closeSession', callback);
     callback({ data: {}, error: null });
   }
 

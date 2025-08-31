@@ -19,36 +19,6 @@ let globalSearch = '';
 const globalGroups = new Map();
 const globalFields = new Map();
 
-function onChangePasswdClick(e) {
-  if (typeof e !== 'object') {
-    throw new TypeError(`elm it's not a object`);
-  }
-
-  if (globalElmClicked) {
-    return;
-  }
-
-  globalElmClicked = true;
-
-  globalSession?.resetGuiCallbacks();
-  serverAPI.changePasswd(null,({ data, error }) => {
-      if (data) {
-        globalSideMenu.classList.remove('open');
-
-        globalSession.loadSync(data);
-      } else {
-        if (error) {
-          showAlert(error);
-        } else {
-          showAlert('unhandled error');
-        }
-      }
-      globalElmClicked = false;
-    });
-
-
-}
-
 function onImportDataClick(e) {
   if (typeof e !== 'object') {
     throw new TypeError(`elm it's not a object`);
@@ -106,8 +76,7 @@ function onExportDataClick(e) {
   });
 }
 
-
-function onCloseSectionClick(e) {
+function onChangePasswdClick(e) {
   if (typeof e !== 'object') {
     throw new TypeError(`elm it's not a object`);
   }
@@ -119,7 +88,35 @@ function onCloseSectionClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  serverAPI.closeSection(({ data, error }) => {
+  serverAPI.changePasswd(null,({ data, error }) => {
+    if (data) {
+      globalSideMenu.classList.remove('open');
+
+      globalSession.loadSync(data);
+    } else {
+      if (error) {
+        showAlert(error);
+      } else {
+        showAlert('unhandled error');
+      }
+    }
+    globalElmClicked = false;
+  });
+}
+
+function onCloseSessionClick(e) {
+  if (typeof e !== 'object') {
+    throw new TypeError(`elm it's not a object`);
+  }
+
+  if (globalElmClicked) {
+    return;
+  }
+
+  globalElmClicked = true;
+
+  globalSession?.resetGuiCallbacks();
+  serverAPI.closeSession(({ data, error }) => {
     if (data) {
       globalSideMenu.classList.remove('open');
 
@@ -670,11 +667,10 @@ export function onUpdateGui(session) {
   hideAlert();
 
   globalSideMenu = document.getElementById('side-menu');
-  document.getElementById('change-passwd')?.addEventListener('click', onChangePasswdClick);
   document.getElementById('import-data')?.addEventListener('click', onImportDataClick);
   document.getElementById('export-data')?.addEventListener('click', onExportDataClick);
-  document.getElementById('import-data')?.addEventListener('click', onImportDataClick);
-  document.getElementById('close-section')?.addEventListener('click', onCloseSectionClick);
+  document.getElementById('change-passwd')?.addEventListener('click', onChangePasswdClick);
+  document.getElementById('close-session')?.addEventListener('click', onCloseSessionClick);
   document.getElementById('logout')?.addEventListener('click', onLogoutClick);
   globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
