@@ -75,23 +75,19 @@ export function onUpdateGui(session) {
     }
 
     try {
-      serverAPI.registration({
-          jsonConfig: jsonConfig.value,
-          email: session.lastData.data,
-          passwd: passwd.value,
-          confirmPasswd: passwdConfirm.value
-        }, ({ data, error }) => {
-          if (data) {
-            session.loadSync(data);
-          } else if (error) {
+      serverAPI.changePasswd(passwdNew?.value ?? null, ({ data, error }) => {
+        if (data) {
+          globalSession.loadSync(data);
+        } else {
+          if (error) {
             showAlert(error);
           } else {
             showAlert('unhandled error');
           }
         }
-      );
+      });
     } catch (e) {
-      showAlert('Server json config empty');
+      showAlert(e);
     }
   });
 }
