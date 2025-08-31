@@ -174,7 +174,7 @@ img.ico-input {
 }
 
 #spinner .spinner-border  {
-    margin-top: calc( (50% / 2) - 20rem);
+    margin-top: calc( (40% / 2) - 20rem);
     --bs-spinner-width: 20rem;
     --bs-spinner-height: 20rem;
     --bs-spinner-border-width: 0.75em;
