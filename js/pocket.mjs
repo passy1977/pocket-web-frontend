@@ -3,8 +3,8 @@
 import serverAPI from './serverAPI.mjs';
 import Session from './session.mjs';
 
-const debug = '/change-passwd';
-// const debug = null;
+// const debug = '/change-passwd';
+const debug = null;
 
 let session = null;
 let globalCallback = null;
