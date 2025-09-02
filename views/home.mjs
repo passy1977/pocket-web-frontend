@@ -89,7 +89,7 @@ function onChangePasswdClick(e) {
 
   globalSession?.resetGuiCallbacks();
   try {
-    serverAPI.changePasswd(null, ({ data, error }) => {
+    serverAPI.changePasswd({passwd: null, newPasswd: null}, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
 
@@ -612,7 +612,15 @@ function updateRows({ data, error }) {
     globalFields.clear();
     globalElmClicked = false;
 
-    const { groups, fields } = data;
+    let { groups, fields } = data;
+
+    if(!groups) {
+      groups = [];
+    }
+
+    if(!fields) {
+      fields = [];
+    }
 
     if (groups.length === 0 && fields.length === 0) {
       const container = document.createElement('div');

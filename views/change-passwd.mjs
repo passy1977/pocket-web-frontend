@@ -75,7 +75,7 @@ export function onUpdateGui(session) {
     }
 
     try {
-      serverAPI.changePasswd(passwdNew?.value ?? null, ({ data, error }) => {
+      serverAPI.changePasswd({passwd: passwd?.value ?? null, newPasswd: passwdNew?.value ?? null}, ({ data, error }) => {
         if (data) {
           globalSession.loadSync(data);
         } else {

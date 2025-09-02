@@ -497,10 +497,14 @@ class ServerAPI {
     callback({ data: {}, error: null });
   }
 
-  changePasswd(newPasswd = null, callback) {
+  changePasswd({passwd = null, newPasswd = null}, callback) {
     this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
+    }
+
+    if (passwd && typeof passwd !== 'string') {
+      throw new TypeError(`search it's not a string`);
     }
 
     if (newPasswd && typeof newPasswd !== 'string') {
@@ -521,7 +525,7 @@ class ServerAPI {
         ...this.#defaultDataTransfer,
         path: '/home',
         session_id: this.#sessionId,
-        data: `${newPasswd ? newPasswd : ''}`
+        data: passwd && newPasswd ? `${passwd}|${newPasswd}` : ''
       })
     })
       .then(response => response.json())
