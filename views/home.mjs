@@ -425,6 +425,7 @@ function onButtonLeftImage0Click() {
       title: 'Home'
     }, false);
   } else {
+    resizeMenuOrContent();
     globalSideMenu.classList.toggle('open');
   }
   globalElmClicked = false;
@@ -627,6 +628,7 @@ function updateRows({ data, error }) {
       container.className = 'd-flex justify-content-center align-items-center mt-1 mb-1';
       container.append(document.createTextNode(' No data available'));
       globalDataContainer.appendChild(container);
+      resizeMenuOrContent();
       return;
     }
 

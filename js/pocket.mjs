@@ -10,6 +10,7 @@ let session = null;
 let globalCallback = null;
 let globalData = null;
 
+let globalSideMenuTitle = null;
 
 export const EmptyGroup = Object.freeze({
   id: 0,
@@ -234,14 +235,19 @@ export function showModal({ title, message, close = null, confirm = null, data =
 
 export function resizeMenuOrContent() {
   const menu = document.getElementById('side-menu');
+  const sideMenuTitle = document.getElementById('side-menu-title');
+  const sideMenuLogo = document.getElementById('side-menu-logo');
   const content = document.getElementById('content');
 
   const contentComputedStyle = window.getComputedStyle(content);
+  const sideMenuLogoComputedStyle = window.getComputedStyle(sideMenuLogo);
 
   const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
   const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
   const contentFullHeight = content.clientHeight + top + bottom;
 
+
+  sideMenuTitle.style.width = sideMenuLogoComputedStyle.width;
   if(contentFullHeight > menu.clientHeight) {
     menu.style.height = `${content.clientHeight + top + bottom}px`;
   } else {
