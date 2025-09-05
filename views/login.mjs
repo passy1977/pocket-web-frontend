@@ -1,25 +1,41 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert } from '../js/pocket.mjs';
+import showAlert, { hideAlert, hideSpinner, resizeMenuOrContent, showSpinner, sleep } from '../js/pocket.mjs';
 
-export function onUpdateGui(session) {
+let globalForm = null;
+
+export async function onUpdateGui(session) {
   session?.gui?.buttonLeft0?.classList.add('collapse');
   session?.gui?.buttonLeft1?.classList.add('collapse');
   session?.gui?.buttonRight0?.classList.add('collapse');
   session?.gui?.buttonRight1?.classList.add('collapse');
-
+  globalForm = document.getElementById('form');
   if (session.lastData?.data) {
-    const email = document.getElementById('email');
-    const passwd = document.getElementById('passwd');
 
-    const dataSplit = session.lastData.data.split('|');
+    if(session.lastData?.data.indexOf('|')) {
+      //from registration
+      const email = document.getElementById('email');
+      const passwd = document.getElementById('passwd');
 
-    email.value = dataSplit[0];
-    passwd.value = dataSplit[1];
+      const dataSplit = session.lastData.data.split('|');
+
+      email.value = dataSplit[0];
+      passwd.value = dataSplit[1];
+    } else if(session.lastData?.data === 'hello') {
+      //from change passwd
+      showSpinner();
+      session.lastData.data = '';
+      serverAPI.cleanSessionId();
+      location.reload();
+      await sleep(10_000);
+      hideSpinner();
+    }
   }
 
-  document.getElementById('form').addEventListener('submit', event => {
+  resizeMenuOrContent();
+
+  globalForm?.addEventListener('submit', event => {
     event.preventDefault();
 
     hideAlert();
@@ -43,10 +59,12 @@ export function onUpdateGui(session) {
     }
 
     if (execute) {
+      globalForm.disabled = true;
+
       serverAPI.login({
           email: email.value,
           passwd: passwd.value
-        }, ({ data, error }) => {
+        },  ({ data, error }) => {
           if (data) {
             session.loadSync(data);
           } else if (error) {

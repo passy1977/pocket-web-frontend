@@ -78,6 +78,14 @@ class ServerAPI {
     };
   }
 
+  #dbg() {}
+
+  cleanSessionId() {
+    if (this.#sessionId) {
+      this.#sessionId = null;
+    }
+  }
+
   set showSpinner(showSpinner) {
     if (!showSpinner || typeof showSpinner !== 'function') {
       throw new TypeError(`showSpinner it's not a function`);
@@ -92,7 +100,7 @@ class ServerAPI {
     this.#hideSpinner = hideSpinner;
   }
 
-  #dbg() {}
+
 
   hello(callback) {
     this.#dbg();

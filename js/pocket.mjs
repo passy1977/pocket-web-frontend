@@ -142,6 +142,7 @@ export default function showAlert(msg) {
   const div = document.createElement('div');
   div.innerHTML = msg;
   session?.gui?.alert.appendChild(div);
+  resizeMenuOrContent();
 }
 
 export function hideAlert() {
@@ -149,6 +150,7 @@ export function hideAlert() {
     session.gui.alert.innerHTML = '';
     session.gui.alert.classList.add('visually-hidden');
   }
+  resizeMenuOrContent();
 }
 
 export function sleep(ms = 1000) {
