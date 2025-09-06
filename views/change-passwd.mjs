@@ -1,7 +1,7 @@
 'use strict';
 
 
-import showAlert, { hideAlert, sleep } from '../js/pocket.mjs';
+import showAlert, { hideAlert } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 let globalSession = null;

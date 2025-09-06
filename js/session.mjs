@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { EmptyGroup } from './pocket.mjs';
+import showAlert from './pocket.mjs';
 
 export class StackNavigator {
   #stack;
@@ -59,9 +59,9 @@ export default class Session {
   #buttonLeft0Callback = null;
   #buttonRight0Callback = null;
   #buttonRight1Callback = null;
+  #callbackLogout = () => {};
 
-
-  constructor(gui, defaultGroup, callbackUpdate) {
+  constructor(gui, defaultGroup, callbackUpdate, callbackLogout) {
 
     if (!new.target) {
       throw new TypeError(`calling Session constructor without new is invalid`);
@@ -115,6 +115,10 @@ export default class Session {
       throw new TypeError(`callbackUpdate it's not a function`);
     }
 
+    if (typeof callbackLogout !== 'function') {
+      throw new TypeError(`callbackLogout it's not a function`);
+    }
+
     this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
     this.#stackNavigator = new StackNavigator(defaultGroup);
@@ -128,7 +132,7 @@ export default class Session {
     this.#gui.buttonRightImage1.addEventListener('click', e => {
       if (this.#buttonRight1Callback) this.#buttonRight1Callback(e);
     });
-
+    this.#callbackLogout = callbackLogout;
   }
 
   get lastData() {
@@ -145,6 +149,10 @@ export default class Session {
 
   get stackNavigator() {
     return this.#stackNavigator;
+  }
+
+  callbackLogout() {
+    this.#callbackLogout();
   }
 
   setButtonLeft0Callback(src, callback) {
@@ -268,7 +276,7 @@ export default class Session {
 
   async load(data, showTitle = true) {
     if (data === undefined || data === null) {
-      return false;
+      return;
     }
 
     if (typeof data !== 'object') {
@@ -277,7 +285,7 @@ export default class Session {
 
     this.#lastData = data;
 
-    let { path, title } = this.#lastData;
+    let { path, title, data: _data } = this.#lastData;
 
     if (path.startsWith('http')) {
       throw new Error(`path can't start with "http"`);
@@ -295,6 +303,7 @@ export default class Session {
 
     this.#lastPath = path;
 
+
     try {
       await this.#loadHtml(path);
       await this.#loadJs(path);
@@ -308,7 +317,7 @@ export default class Session {
 
   loadSync(data, showTitle = true) {
     if (data === undefined || data === null) {
-      return false;
+      return;
     }
 
     if (typeof data !== 'object') {
@@ -322,7 +331,7 @@ export default class Session {
         })
         .then(ret => {
           if (!ret) {
-            throw Error('Failed to load route');
+            throw Error(`Failed to load route: ${ data.path }`);
           }
         });
     } catch (error) {

@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, hideSpinner, resizeMenuOrContent, showSpinner, sleep } from '../js/pocket.mjs';
+import showAlert, { hideAlert, hideSpinner, showSpinner, sleep } from '../js/pocket.mjs';
 
 let globalForm = null;
 
@@ -11,9 +11,10 @@ export async function onUpdateGui(session) {
   session?.gui?.buttonRight0?.classList.add('collapse');
   session?.gui?.buttonRight1?.classList.add('collapse');
   globalForm = document.getElementById('form');
+
   if (session.lastData?.data) {
 
-    if(session.lastData?.data.indexOf('|')) {
+    if(session.lastData?.data.indexOf('|') > 0) {
       //from registration
       const email = document.getElementById('email');
       const passwd = document.getElementById('passwd');
@@ -22,18 +23,14 @@ export async function onUpdateGui(session) {
 
       email.value = dataSplit[0];
       passwd.value = dataSplit[1];
-    } else if(session.lastData?.data === 'hello') {
-      //from change passwd
-      showSpinner();
-      session.lastData.data = '';
-      serverAPI.cleanSessionId();
-      location.reload();
-      await sleep(10_000);
-      hideSpinner();
+    } else if(session.lastData?.data === 'logout') {
+        showSpinner();
+        await sleep(1000);
+        hideSpinner();
+        session.callbackLogout();
+        return;
     }
   }
-
-  resizeMenuOrContent();
 
   globalForm?.addEventListener('submit', event => {
     event.preventDefault();

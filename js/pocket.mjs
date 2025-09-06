@@ -84,6 +84,19 @@ window.onload = () => {
         if (data.path === '/home') {
           console.debug('TODO', data);
         }
+      },
+      () => {
+        serverAPI.hello(({ data, error }) => {
+          if (data) {
+            session.loadSync(data);
+          } else {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
+            }
+          }
+        });
       }
     );
   } catch (error) {

@@ -9,8 +9,8 @@ class ServerAPI {
   #handleData;
   #defaultDataTransfer;
   #fetchData;
-  #showSpinner;
-  #hideSpinner
+  #showSpinner = () => {};
+  #hideSpinner = () => {};
 
   constructor(url) {
     if (!new.target) {
@@ -99,8 +99,6 @@ class ServerAPI {
     }
     this.#hideSpinner = hideSpinner;
   }
-
-
 
   hello(callback) {
     this.#dbg();
