@@ -545,16 +545,42 @@ class ServerAPI {
       });
   }
 
-  closeSession(callback) {
-    //TODO: non implementato
-    console.debug('closeSession', callback);
-    callback({ data: {}, error: null });
-  }
+  logout(maintainConfig, callback) {
+    this.#dbg();
+    if (this.#sessionId === null) {
+      throw new Error(`Session not valid`);
+    }
 
-  logout(callback) {
-    //TODO: non implementato
-    console.debug('logout', callback);
-    callback({ data: {}, error: null });
+    if (maintainConfig && typeof maintainConfig !== 'boolean') {
+      throw new TypeError(`search it's not a string`);
+    }
+
+    if (typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+
+    this.#showSpinner();
+    fetch(this.#enterPoint + '/logout', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...this.#defaultDataTransfer,
+        path: '/home',
+        session_id: this.#sessionId,
+        data: `${maintainConfig}`
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 }
 

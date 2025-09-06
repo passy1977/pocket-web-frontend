@@ -108,7 +108,7 @@ function onChangePasswdClick(e) {
   }
 }
 
-function onCloseSessionClick(e) {
+function onDeleteSessionClick(e) {
   if (typeof e !== 'object') {
     throw new TypeError(`elm it's not a object`);
   }
@@ -120,24 +120,37 @@ function onCloseSessionClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  try {
-    serverAPI.closeSession(({ data, error }) => {
-      if (data) {
-        globalSideMenu.classList.remove('open');
 
-        globalSession.loadSync(data);
-      } else {
-        if (error) {
-          showAlert(error);
-        } else {
-          showAlert('unhandled error');
-        }
+  showModal({
+    title: 'Delete session',
+    message: `This action will delete all data and the configuration file, you will have to re-register your account`,
+    close: 'No',
+    confirm: 'Yes'
+  }, (confirm) => {
+    if (confirm) {
+
+      try {
+        serverAPI.logout(false, ({ data, error }) => {
+          if (data) {
+            globalSideMenu.classList.remove('open');
+
+            globalSession.loadSync(data);
+          } else {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
+            }
+          }
+          globalElmClicked = false;
+        });
+      } catch (e) {
+        showAlert(e);
       }
-      globalElmClicked = false;
-    });
-  } catch (e) {
-    showAlert(e);
-  }
+
+    }
+    globalElmClicked = false;
+  });
 }
 
 function onLogoutClick(e) {
@@ -153,7 +166,7 @@ function onLogoutClick(e) {
 
   globalSession?.resetGuiCallbacks();
   try {
-    serverAPI.logout(({ data, error }) => {
+    serverAPI.logout(true, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
 
@@ -707,7 +720,7 @@ export function onUpdateGui(session) {
   document.getElementById('import-data')?.addEventListener('click', onImportDataClick);
   document.getElementById('export-data')?.addEventListener('click', onExportDataClick);
   document.getElementById('change-passwd')?.addEventListener('click', onChangePasswdClick);
-  document.getElementById('close-session')?.addEventListener('click', onCloseSessionClick);
+  document.getElementById('delete-session')?.addEventListener('click', onDeleteSessionClick);
   document.getElementById('logout')?.addEventListener('click', onLogoutClick);
   globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
