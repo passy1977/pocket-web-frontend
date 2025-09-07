@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, resizeMenuOrContent, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resizeMenuOrContent, showModal, showModalUpload } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -30,21 +30,9 @@ function onImportDataClick(e) {
 
   globalElmClicked = true;
 
-  globalSession?.resetGuiCallbacks();
-  serverAPI.importData(null, ({ data, error }) => {
-    if (data) {
-      globalSideMenu.classList.remove('open');
-
-      globalSession.loadSync(data);
-    } else {
-      if (error) {
-        showAlert(error);
-      } else {
-        showAlert('unhandled error');
-      }
-    }
-    globalElmClicked = false;
-  });
+  if (serverAPI.sessionId && serverAPI.sessionId !== '') {
+    showModalUpload(() => globalElmClicked = false);
+  }
 
 }
 

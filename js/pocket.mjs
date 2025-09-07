@@ -7,10 +7,12 @@ import Session from './session.mjs';
 const debug = null;
 
 let session = null;
-let globalCallback = null;
-let globalData = null;
+let globalModalCallback = null;
+let globalModalData = null;
 
-let globalSideMenuTitle = null;
+let globalModalUploadElm = null;
+let globalModalUpload = null;
+let globalModalUploadCallback = null;
 
 export const EmptyGroup = Object.freeze({
   id: 0,
@@ -133,7 +135,12 @@ window.onload = () => {
       });
     }
 
+    globalModalUploadElm = document.getElementById('modal-upload');
+    globalModalUpload = bootstrap.Modal.getOrCreateInstance(globalModalUploadElm, {
+      focus: true
+    });
 
+    globalModalUploadElm.addEventListener('hidden.bs.modal', callbackModalUploadHandlerFalse);
   } catch (error) {
     showAlert(error);
   }
@@ -174,22 +181,46 @@ export function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function callbackHandlerFalse(e) {
-  if (globalCallback) {
-    globalCallback(false, globalData);
-    e.target.removeEventListener('click', callbackHandlerFalse);
+function callbackModalHandlerFalse(e) {
+  if (globalModalCallback) {
+    globalModalCallback(false, globalModalData);
+    e.target.removeEventListener('click', callbackModalHandlerFalse);
   }
-  globalCallback = null;
-  globalData = null;
+  globalModalCallback = null;
+  globalModalData = null;
 }
 
-function callbackHandlerTrue(e) {
-  if (globalCallback) {
-    globalCallback(true, globalData);
-    e.target.removeEventListener('click', callbackHandlerTrue);
+function callbackModalHandlerTrue(e) {
+  if (globalModalCallback) {
+    globalModalCallback(true, globalModalData);
+    e.target.removeEventListener('click', callbackModalHandlerTrue);
   }
-  globalCallback = null;
-  globalData = null;
+  globalModalCallback = null;
+  globalModalData = null;
+}
+
+function callbackModalUploadHandlerFalse(e) {
+  if (globalModalUploadCallback) {
+    globalModalUploadCallback(null);
+    e.target.removeEventListener('click', globalModalUploadCallback);
+  }
+  globalModalUploadCallback = null;
+  // globalModalUpload.hide();
+}
+
+function callbackModalUploadHandlerTrue(e) {
+  if (globalModalUploadCallback) {
+    const formData = new FormData();
+    const formFile = document.getElementById('form-file');
+    if (formFile.files.length > 0) {
+      formData.append('file', formFile.files[0]);
+    }
+
+    globalModalUploadCallback(formData);
+    e.target.removeEventListener('click', globalModalUploadCallback);
+  }
+  globalModalUploadCallback = null;
+  // globalModalUpload.hide();
 }
 
 export function showModal({ title, message, close = null, confirm = null, data = null }, callback = null) {
@@ -213,11 +244,11 @@ export function showModal({ title, message, close = null, confirm = null, data =
     close = 'Ok';
   }
 
-  globalCallback = callback;
-  globalData = data;
+  globalModalCallback = callback;
+  globalModalData = data;
 
-  const modelElm = document.getElementById('modal');
-  const modal = bootstrap.Modal.getOrCreateInstance(modelElm, {
+  const modalElm = document.getElementById('modal');
+  const modal = bootstrap.Modal.getOrCreateInstance(modalElm, {
     focus: true
   });
 
@@ -231,14 +262,14 @@ export function showModal({ title, message, close = null, confirm = null, data =
   messageEl.innerHTML = message;
   closeEl.innerHTML = close;
 
-  modelElm.addEventListener('hidden.bs.modal',callbackHandlerFalse);
-  closeEl.addEventListener('click', callbackHandlerFalse);
-  closeHeaderEl.addEventListener('click', callbackHandlerFalse);
+  modalElm.addEventListener('hidden.bs.modal',callbackModalHandlerFalse);
+  closeEl.addEventListener('click', callbackModalHandlerFalse);
+  closeHeaderEl.addEventListener('click', callbackModalHandlerFalse);
 
   if (confirm !== null && typeof confirm === 'string') {
     confirmEl.innerHTML = confirm;
 
-    confirmEl.addEventListener('click', callbackHandlerTrue);
+    confirmEl.addEventListener('click', callbackModalHandlerTrue);
     confirmEl.classList.remove('collapse');
   } else {
     confirmEl.classList.add('collapse');
@@ -246,6 +277,24 @@ export function showModal({ title, message, close = null, confirm = null, data =
 
 
   modal.show();
+}
+
+export function showModalUpload(callback) {
+  if (callback && typeof callback !== 'function') {
+    throw new TypeError(`callback it's not a function`);
+  }
+
+  globalModalUploadCallback = callback;
+
+  const closeHeaderEl = document.getElementById('modal-header-close');
+  const closeEl = document.getElementById('modal-upload-close');
+  const confirmEl = document.getElementById('modal-upload-confirm');
+
+  closeHeaderEl.addEventListener('click', callbackModalUploadHandlerFalse);
+  closeEl.addEventListener('click', callbackModalUploadHandlerFalse);
+  confirmEl.addEventListener('click', callbackModalUploadHandlerTrue);
+
+  globalModalUpload.show();
 }
 
 export function resizeMenuOrContent() {

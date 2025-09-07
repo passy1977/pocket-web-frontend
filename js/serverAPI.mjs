@@ -80,12 +80,6 @@ class ServerAPI {
 
   #dbg() {}
 
-  cleanSessionId() {
-    if (this.#sessionId) {
-      this.#sessionId = null;
-    }
-  }
-
   set showSpinner(showSpinner) {
     if (!showSpinner || typeof showSpinner !== 'function') {
       throw new TypeError(`showSpinner it's not a function`);
@@ -98,6 +92,10 @@ class ServerAPI {
       throw new TypeError(`hideSpinner it's not a function`);
     }
     this.#hideSpinner = hideSpinner;
+  }
+
+  get sessionId() {
+    return this.#sessionId;
   }
 
   hello(callback) {
