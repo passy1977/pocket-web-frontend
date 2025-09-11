@@ -31,7 +31,22 @@ function onImportDataClick(e) {
   globalElmClicked = true;
 
   if (serverAPI.sessionId && serverAPI.sessionId !== '') {
-    showModalUpload(() => globalElmClicked = false);
+    showModalUpload(({formData, fileSize}) => {
+      if(formData) {
+        serverAPI.importData({formData, fileSize}, ({data, error}) => {
+          if (data) {
+
+          } else {
+            if(error) {
+              showAlert(error);
+            } else {
+              showAlert("No data back");
+            }
+          }
+        });
+      }
+      globalElmClicked = false;
+    });
   }
 
 }

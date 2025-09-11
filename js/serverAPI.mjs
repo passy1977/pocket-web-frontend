@@ -489,10 +489,43 @@ class ServerAPI {
       });
   }
 
-  importData(path = null, callback) {
-    //TODO: non implementato
-    console.debug('importData', path);
-    callback({ data: {}, error: null });
+  importData({formData, fileSize}, callback) {
+    this.#dbg();
+    if (this.#sessionId === null) {
+      throw new Error(`Session not valid`);
+    }
+
+    if (typeof formData !== 'object') {
+      throw new TypeError(`formData it's not an object`);
+    }
+
+    if (typeof fileSize !== 'number') {
+      throw new TypeError(`fileSize it's not an number`);
+    }
+
+    if (typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+
+    formData.append('session_id', `${this.#sessionId}`);
+
+    this.#showSpinner();
+    fetch(this.#enterPoint + '/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      body: formData
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.#handleData(data, callback);
+        this.#hideSpinner();
+      })
+      .catch(error => {
+        callback({ data: null, error });
+        this.#hideSpinner();
+      });
   }
 
   exportData(path = null, callback) {

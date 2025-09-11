@@ -13,6 +13,7 @@ let globalModalData = null;
 let globalModalUploadElm = null;
 let globalModalUpload = null;
 let globalModalUploadCallback = null;
+let globalFileSize = 0;
 
 export const EmptyGroup = Object.freeze({
   id: 0,
@@ -208,15 +209,26 @@ function callbackModalUploadHandlerFalse(e) {
   // globalModalUpload.hide();
 }
 
+
+function callbackGetFileSize(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      globalFileSize = file.size;
+    }
+}
+
 function callbackModalUploadHandlerTrue(e) {
   if (globalModalUploadCallback) {
     const formData = new FormData();
     const formFile = document.getElementById('form-file');
+
+    formFile.addEventListener('change', callbackGetFileSize);
+
     if (formFile.files.length > 0) {
       formData.append('file', formFile.files[0]);
     }
 
-    globalModalUploadCallback(formData);
+    globalModalUploadCallback({formData, fileSize: globalFileSize});
     e.target.removeEventListener('click', globalModalUploadCallback);
   }
   globalModalUploadCallback = null;
