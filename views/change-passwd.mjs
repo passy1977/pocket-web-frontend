@@ -5,9 +5,19 @@ import showAlert, { hideAlert } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 let globalSession = null;
+let globalElmClicked = false;
 
 function onButtonLeftImage0Click() {
-
+  if (globalElmClicked) {
+    return;
+  }
+  globalElmClicked = true;
+  globalSession?.resetGuiCallbacks();
+  globalSession.loadSync({
+    path: '/home',
+    title: 'Home'
+  }, false);
+  globalElmClicked = false;
 }
 
 
@@ -23,6 +33,11 @@ export function onUpdateGui(session) {
 
   document.getElementById('form').addEventListener('submit', async event => {
     event.preventDefault();
+
+    if (globalElmClicked) {
+      return;
+    }
+    globalElmClicked = true;
 
     hideAlert();
 
@@ -85,9 +100,11 @@ export function onUpdateGui(session) {
             showAlert('unhandled error');
           }
         }
+        globalElmClicked = false;
       });
     } catch (e) {
       showAlert(e);
+      globalElmClicked = false;
     }
   });
 }

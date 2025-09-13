@@ -92,6 +92,7 @@ function onChangePasswdClick(e) {
 
   globalSession?.resetGuiCallbacks();
   try {
+    hideAlert();
     serverAPI.changePasswd({passwd: null, newPasswd: null}, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
