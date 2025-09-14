@@ -46,7 +46,7 @@ function onButtonRightImage1Click() {
   }
   globalElmClicked = true;
 
-  const fieldTitleElm = document.getElementById("field-title-elm");
+  const fieldTitleElm = document.getElementById('field-title-elm');
   if(globalFieldTitle.value === '') {
     fieldTitleElm.classList.add('is-invalid');
     globalElmClicked = false;

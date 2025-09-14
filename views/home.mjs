@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, resizeMenuOrContent, showModal, showModalUpload } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resizeMenuOrContent, showModal } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -30,25 +30,26 @@ function onImportDataClick(e) {
 
   globalElmClicked = true;
 
-  if (serverAPI.sessionId && serverAPI.sessionId !== '') {
-    showModalUpload(({formData, fileSize}) => {
-      if(formData) {
-        serverAPI.importData({formData, fileSize}, ({data, error}) => {
-          if (data) {
 
-          } else {
-            if(error) {
-              showAlert(error);
-            } else {
-              showAlert("No data back");
-            }
-          }
-        });
+  globalSession?.resetGuiCallbacks();
+  globalSideMenu.classList.remove('open');
+  hideAlert();
+  try {
+    serverAPI.importData({formData: null, fileSize: null}, ({data, error}) => {
+      if (data) {
+        globalSession.loadSync(data);
+      } else {
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
       }
       globalElmClicked = false;
     });
+  } catch (e) {
+    showAlert(e);
   }
-
 }
 
 function onExportDataClick(e) {
@@ -63,20 +64,24 @@ function onExportDataClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  serverAPI.exportData(null, ({ data, error }) => {
-    if (data) {
-      globalSideMenu.classList.remove('open');
-
-      globalSession.loadSync(data);
-    } else {
-      if (error) {
-        showAlert(error);
+  globalSideMenu.classList.remove('open');
+  hideAlert();
+  try {
+    serverAPI.exportData(null, ({ data, error }) => {
+      if (data) {
+        globalSession.loadSync(data);
       } else {
-        showAlert('unhandled error');
+        if (error) {
+          showAlert(error);
+        } else {
+          showAlert('unhandled error');
+        }
       }
-    }
-    globalElmClicked = false;
-  });
+      globalElmClicked = false;
+    });
+  } catch (e) {
+    showAlert(e);
+  }
 }
 
 function onChangePasswdClick(e) {
@@ -91,12 +96,11 @@ function onChangePasswdClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
+  globalSideMenu.classList.remove('open');
+  hideAlert();
   try {
-    hideAlert();
     serverAPI.changePasswd({passwd: null, newPasswd: null}, ({ data, error }) => {
       if (data) {
-        globalSideMenu.classList.remove('open');
-
         globalSession.loadSync(data);
       } else {
         if (error) {
@@ -124,7 +128,8 @@ function onDeleteSessionClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-
+  globalSideMenu.classList.remove('open');
+  hideAlert();
   showModal({
     title: 'Delete session',
     message: `This action will delete all data and the configuration file, you will have to re-register your account`,
@@ -136,8 +141,6 @@ function onDeleteSessionClick(e) {
       try {
         serverAPI.logout(false, ({ data, error }) => {
           if (data) {
-            globalSideMenu.classList.remove('open');
-
             globalSession.loadSync(data);
           } else {
             if (error) {
@@ -169,11 +172,11 @@ function onLogoutClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
+  globalSideMenu.classList.remove('open');
+  hideAlert();
   try {
     serverAPI.logout(true, ({ data, error }) => {
       if (data) {
-        globalSideMenu.classList.remove('open');
-
         globalSession.loadSync(data);
       } else {
         if (error) {

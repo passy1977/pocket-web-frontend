@@ -10,11 +10,6 @@ let session = null;
 let globalModalCallback = null;
 let globalModalData = null;
 
-let globalModalUploadElm = null;
-let globalModalUpload = null;
-let globalModalUploadCallback = null;
-let globalFileSize = 0;
-
 export const EmptyGroup = Object.freeze({
   id: 0,
   server_id: 0,
@@ -59,7 +54,7 @@ export const EmptyField = Object.freeze({
 });
 
 window.onbeforeunload = event => {
-  const message = "Do you want really exit from Pocket 5";
+  const message = 'Do you want really exit from Pocket 5';
   event.preventDefault();
   event.returnValue = message;
   return message;
@@ -135,13 +130,6 @@ window.onload = () => {
         }
       });
     }
-
-    globalModalUploadElm = document.getElementById('modal-upload');
-    globalModalUpload = bootstrap.Modal.getOrCreateInstance(globalModalUploadElm, {
-      focus: true
-    });
-
-    globalModalUploadElm.addEventListener('hidden.bs.modal', callbackModalUploadHandlerFalse);
   } catch (error) {
     showAlert(error);
   }
@@ -152,7 +140,7 @@ export default function showAlert(msg) {
     return false;
   }
 
-  if (msg.constructor.name === "String") {
+  if (msg.constructor.name === 'String') {
     if (msg.includes('Failed to fetch')) {
       msg = 'No server API connection available';
     }
@@ -198,41 +186,6 @@ function callbackModalHandlerTrue(e) {
   }
   globalModalCallback = null;
   globalModalData = null;
-}
-
-function callbackModalUploadHandlerFalse(e) {
-  if (globalModalUploadCallback) {
-    globalModalUploadCallback(null);
-    e.target.removeEventListener('click', globalModalUploadCallback);
-  }
-  globalModalUploadCallback = null;
-  // globalModalUpload.hide();
-}
-
-
-function callbackGetFileSize(event) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      globalFileSize = file.size;
-    }
-}
-
-function callbackModalUploadHandlerTrue(e) {
-  if (globalModalUploadCallback) {
-    const formData = new FormData();
-    const formFile = document.getElementById('form-file');
-
-    formFile.addEventListener('change', callbackGetFileSize);
-
-    if (formFile.files.length > 0) {
-      formData.append('file', formFile.files[0]);
-    }
-
-    globalModalUploadCallback({formData, fileSize: globalFileSize});
-    e.target.removeEventListener('click', globalModalUploadCallback);
-  }
-  globalModalUploadCallback = null;
-  // globalModalUpload.hide();
 }
 
 export function showModal({ title, message, close = null, confirm = null, data = null }, callback = null) {
@@ -289,24 +242,6 @@ export function showModal({ title, message, close = null, confirm = null, data =
 
 
   modal.show();
-}
-
-export function showModalUpload(callback) {
-  if (callback && typeof callback !== 'function') {
-    throw new TypeError(`callback it's not a function`);
-  }
-
-  globalModalUploadCallback = callback;
-
-  const closeHeaderEl = document.getElementById('modal-header-close');
-  const closeEl = document.getElementById('modal-upload-close');
-  const confirmEl = document.getElementById('modal-upload-confirm');
-
-  closeHeaderEl.addEventListener('click', callbackModalUploadHandlerFalse);
-  closeEl.addEventListener('click', callbackModalUploadHandlerFalse);
-  confirmEl.addEventListener('click', callbackModalUploadHandlerTrue);
-
-  globalModalUpload.show();
 }
 
 export function resizeMenuOrContent() {

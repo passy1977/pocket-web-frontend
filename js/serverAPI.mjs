@@ -495,11 +495,11 @@ class ServerAPI {
       throw new Error(`Session not valid`);
     }
 
-    if (typeof formData !== 'object') {
+    if (formData && typeof formData !== 'object') {
       throw new TypeError(`formData it's not an object`);
     }
 
-    if (typeof fileSize !== 'number') {
+    if (fileSize && typeof fileSize !== 'number') {
       throw new TypeError(`fileSize it's not an number`);
     }
 
@@ -507,25 +507,48 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
-    formData.append('session_id', `${this.#sessionId}`);
-
     this.#showSpinner();
-    fetch(this.#enterPoint + '/upload', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.#handleData(data, callback);
-        this.#hideSpinner();
+    if (!formData && !fileSize) {
+      fetch(this.#enterPoint + '/import_data', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...this.#defaultDataTransfer,
+          path: '/import-data',
+          session_id: this.#sessionId,
+          data: ``
+        })
       })
-      .catch(error => {
-        callback({ data: null, error });
-        this.#hideSpinner();
-      });
+        .then(response => response.json())
+        .then(data => {
+          this.#handleData(data, callback);
+          this.#hideSpinner();
+        })
+        .catch(error => {
+          callback({ data: null, error });
+          this.#hideSpinner();
+        });
+    } else {
+      formData.append('session_id', `${this.#sessionId}`);
+      formData.append('file_size', fileSize);
+
+      fetch(this.#enterPoint + '/upload', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.#handleData(data, callback);
+          this.#hideSpinner();
+        })
+        .catch(error => {
+          callback({ data: null, error });
+          this.#hideSpinner();
+        });
+    }
+
   }
 
   exportData(path = null, callback) {

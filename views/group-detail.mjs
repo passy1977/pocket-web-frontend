@@ -224,7 +224,7 @@ function onButtonRightImage1Click() {
   globalElmClicked = true;
 
   //group-title-elm
-  const groupTitleElm = document.getElementById("group-title-elm");
+  const groupTitleElm = document.getElementById('group-title-elm');
   if(globalGroupTitle.value === '') {
     groupTitleElm.classList.add('is-invalid');
     globalElmClicked = false;
