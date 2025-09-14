@@ -71,10 +71,19 @@ export function onUpdateGui(session) {
 
     let formData = new FormData();
 
+
+
     globalFormFile.addEventListener('change', callbackGetFileSize);
     if (globalFormFile.files.length > 0) {
       formData.append('file', globalFormFile.files[0]);
+      if(globalFormFile.files[0].name.includes(".xml")) {
+        formData.append('file_legacy', 1);
+      } else {
+        formData.append('file_legacy', 0);
+      }
     }
+
+
 
     serverAPI.importData({formData: formData, fileSize: globalFileSize}, ({data, error}) => {
       if (data) {
