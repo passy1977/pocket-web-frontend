@@ -151,7 +151,7 @@ export default function showAlert(msg) {
   const div = document.createElement('div');
   div.innerHTML = msg;
   session?.gui?.alert.appendChild(div);
-  resizeMenuOrContent();
+  resizeContent();
 }
 
 export function hideAlert() {
@@ -159,7 +159,7 @@ export function hideAlert() {
     session.gui.alert.innerHTML = '';
     session.gui.alert.classList.add('visually-hidden');
   }
-  resizeMenuOrContent();
+  resizeContent();
 }
 
 export function sleep(ms = 1000) {
@@ -244,7 +244,7 @@ export function showModal({ title, message, close = null, confirm = null, data =
   modal.show();
 }
 
-export function resizeMenuOrContent() {
+export function resizeContent() {
   if (session.lastPath && session.lastPath !== '/home') {
     return;
   }
@@ -272,23 +272,9 @@ export function resizeMenuOrContent() {
     menu.style.height = `${dataContainerFullHeight + 58}px`;
     content.style.height = `${dataContainerFullHeight + 58 - top - bottom + 1}px`;
   }
-
-  // if(mainContainer.clientHeight < contentFullHeight) {
-  //   sideMenuTitle.style.width = sideMenuLogoComputedStyle.width;
-  //   if (contentFullHeight > menu.clientHeight) {
-  //     menu.style.height = `${content.clientHeight + top + bottom}px`;
-  //   } else {
-  //     content.style.height = `${menu.clientHeight - top - bottom + 1}px`;
-  //   }
-  // } else if (mainContainer.clientHeight > contentFullHeight) {
-  //   menu.style.height = `${mainContainer.clientHeight + top + bottom}px`;
-  //   content.style.height = `${mainContainer.clientHeight - top - bottom + 1}px`;
-  // } else {
-  //   content.style.height = `${menu.clientHeight - top - bottom + 1}px`
-  // }
 }
 
-window.onresize = resizeMenuOrContent;
+window.onresize = resizeContent;
 
 export function showSpinner() {
   document.getElementById('spinner').style.visibility =  'visible';

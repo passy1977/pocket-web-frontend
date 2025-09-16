@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, resizeMenuOrContent, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, resizeContent, showModal } from '../js/pocket.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -432,6 +432,39 @@ async function onClickCopy(elm) {
   }
 }
 
+function onClick(elm) {
+  if (typeof elm !== 'object') {
+    throw new TypeError(`elm it's not a object`);
+  }
+  if (globalElmClicked) {
+    return;
+  }
+
+  const id = parseInt(elm.getAttribute('data-type-id'));
+  const type = elm.getAttribute('data-type');
+
+  switch (type) {
+    case 'group':
+      if (globalSession && globalGroups.has(id)) {
+        globalSideMenu.classList.remove('open');
+
+        globalSession.stackNavigator.push(globalGroups.get(id), globalSearch);
+        globalSession.loadSync({
+          path: '/home',
+          title: 'Home'
+        }, false);
+      }
+      break;
+    case 'field':
+      const elm = document.getElementById(`is-hidden-field-${id}`);
+      if (elm) {
+        onToggleHidden(elm);
+      }
+      break;
+
+  }
+}
+
 function onButtonLeftImage0Click() {
   if (globalElmClicked) {
     return;
@@ -445,7 +478,7 @@ function onButtonLeftImage0Click() {
       title: 'Home'
     }, false);
   } else {
-    resizeMenuOrContent();
+    resizeContent();
     globalSideMenu.classList.toggle('open');
   }
   globalElmClicked = false;
@@ -590,40 +623,6 @@ function buildRow(ROW, type, {
   return row;
 }
 
-function onClick(elm) {
-  if (typeof elm !== 'object') {
-    throw new TypeError(`elm it's not a object`);
-  }
-  if (globalElmClicked) {
-    return;
-  }
-
-  const id = parseInt(elm.getAttribute('data-type-id'));
-  const type = elm.getAttribute('data-type');
-
-  switch (type) {
-    case 'group':
-      if (globalSession && globalGroups.has(id)) {
-        globalSideMenu.classList.remove('open');
-
-        globalSession.stackNavigator.push(globalGroups.get(id), globalSearch);
-        globalSession.loadSync({
-          path: '/home',
-          title: 'Home'
-        }, false);
-      }
-      break;
-    case 'field':
-      const elm = document.getElementById(`is-hidden-field-${id}`);
-      if (elm) {
-        onToggleHidden(elm);
-      }
-      break;
-
-  }
-}
-
-
 function updateRows({ data, error }) {
   hideAlert();
   if (data) {
@@ -648,7 +647,7 @@ function updateRows({ data, error }) {
       container.className = 'd-flex justify-content-center align-items-center mt-1 mb-1';
       container.append(document.createTextNode(' No data available'));
       globalDataContainer.appendChild(container);
-      resizeMenuOrContent();
+      resizeContent();
       return;
     }
 
@@ -670,6 +669,8 @@ function updateRows({ data, error }) {
 
     } catch (e) {
       showAlert(error);
+      resizeContent();
+      return;
     }
 
     globalDataContainer.innerHTML = table;
@@ -717,7 +718,7 @@ function updateRows({ data, error }) {
   } else {
     showAlert('unhandled error');
   }
-  resizeMenuOrContent();
+  resizeContent();
 }
 
 export function onUpdateGui(session) {
