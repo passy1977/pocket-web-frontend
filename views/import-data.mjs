@@ -87,7 +87,7 @@ export function onUpdateGui(session) {
 
     serverAPI.importData({formData: formData, fileSize: globalFileSize}, ({data, error}) => {
       if (data) {
-        console.log('TODO: Import data', data);
+        globalSession.loadSync(data);
       } else {
         if(error) {
           showAlert(error);

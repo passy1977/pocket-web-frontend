@@ -245,25 +245,47 @@ export function showModal({ title, message, close = null, confirm = null, data =
 }
 
 export function resizeMenuOrContent() {
-  const menu = document.getElementById('side-menu');
-  const sideMenuTitle = document.getElementById('side-menu-title');
-  const sideMenuLogo = document.getElementById('side-menu-logo');
+  if (session.lastPath && session.lastPath !== '/home') {
+    return;
+  }
+  const contentDefaultHeight = 200;
   const content = document.getElementById('content');
+  const menu = document.getElementById('side-menu');
+  const dataContainer = document.getElementById('data-container');
+  content.style.height = `${contentDefaultHeight}px`;
 
   const contentComputedStyle = window.getComputedStyle(content);
-  const sideMenuLogoComputedStyle = window.getComputedStyle(sideMenuLogo);
 
   const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
   const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
   const contentFullHeight = content.clientHeight + top + bottom;
+  const dataContainerFullHeight = dataContainer.clientHeight + 90;
 
 
-  sideMenuTitle.style.width = sideMenuLogoComputedStyle.width;
-  if(contentFullHeight > menu.clientHeight) {
-    menu.style.height = `${content.clientHeight + top + bottom}px`;
-  } else {
+  if (contentFullHeight > menu.clientHeight) {
+    menu.style.height = `${contentFullHeight}px`;
+  } else if (contentFullHeight < menu.clientHeight) {
     content.style.height = `${menu.clientHeight - top - bottom + 1}px`;
   }
+
+  if(dataContainerFullHeight > contentFullHeight) {
+    menu.style.height = `${dataContainerFullHeight + 58}px`;
+    content.style.height = `${dataContainerFullHeight + 58 - top - bottom + 1}px`;
+  }
+
+  // if(mainContainer.clientHeight < contentFullHeight) {
+  //   sideMenuTitle.style.width = sideMenuLogoComputedStyle.width;
+  //   if (contentFullHeight > menu.clientHeight) {
+  //     menu.style.height = `${content.clientHeight + top + bottom}px`;
+  //   } else {
+  //     content.style.height = `${menu.clientHeight - top - bottom + 1}px`;
+  //   }
+  // } else if (mainContainer.clientHeight > contentFullHeight) {
+  //   menu.style.height = `${mainContainer.clientHeight + top + bottom}px`;
+  //   content.style.height = `${mainContainer.clientHeight - top - bottom + 1}px`;
+  // } else {
+  //   content.style.height = `${menu.clientHeight - top - bottom + 1}px`
+  // }
 }
 
 window.onresize = resizeMenuOrContent;

@@ -102,7 +102,9 @@ nav .btn:disabled {
 }
 
 .form-floating input:focus,
-.form-floating textarea:focus {
+.form-floating textarea:focus,
+.form-control:focus
+{
     border-color: var(--primary-color);
     box-shadow: 0 0 0 1px var(--primary-color);
 }
