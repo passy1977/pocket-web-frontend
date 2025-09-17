@@ -599,7 +599,7 @@ class ServerAPI {
       });
   }
 
-  logout(maintainConfig, callback) {
+  logout({groupId, search, maintainConfig}, callback) {
     this.#dbg();
     if (this.#sessionId === null) {
       throw new Error(`Session not valid`);
@@ -623,7 +623,7 @@ class ServerAPI {
         ...this.#defaultDataTransfer,
         path: '/home',
         session_id: this.#sessionId,
-        data: `${maintainConfig}`
+        data: `${groupId}|${search}|${maintainConfig}`
       })
     })
       .then(response => response.json())

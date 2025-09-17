@@ -139,7 +139,9 @@ function onDeleteSessionClick(e) {
     if (confirm) {
 
       try {
-        serverAPI.logout(false, ({ data, error }) => {
+        const { group: currentGroup, search } = globalSession.stackNavigator.get();
+
+        serverAPI.logout({groupId: currentGroup.id, search, maintainConfig: false}, ({ data, error }) => {
           if (data) {
             globalSession.loadSync(data);
           } else {
@@ -175,7 +177,9 @@ function onLogoutClick(e) {
   globalSideMenu.classList.remove('open');
   hideAlert();
   try {
-    serverAPI.logout(true, ({ data, error }) => {
+    const { group: currentGroup, search } = globalSession.stackNavigator.get();
+
+    serverAPI.logout({groupId: currentGroup.id, search, maintainConfig: true}, ({ data, error }) => {
       if (data) {
         globalSession.loadSync(data);
       } else {
