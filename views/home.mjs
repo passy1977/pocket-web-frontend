@@ -182,6 +182,16 @@ function onLogoutClick(e) {
     serverAPI.logout({groupId: currentGroup.id, search, maintainConfig: true}, ({ data, error }) => {
       if (data) {
         globalSession.loadSync(data);
+        serverAPI.invalidate();
+        serverAPI.hello(({ data, error }) => {
+          if (!data) {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
+            }
+          }
+        });
       } else {
         if (error) {
           showAlert(error);

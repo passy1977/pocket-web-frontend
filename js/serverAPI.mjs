@@ -98,6 +98,10 @@ class ServerAPI {
     return this.#sessionId;
   }
 
+  invalidate() {
+    this.#sessionId = null;
+  }
+
   hello(callback) {
     this.#dbg();
     this.#showSpinner();
