@@ -217,6 +217,7 @@ function onSearchElmKeyUp(e) {
   globalSearch = e.target.value;
 
   try {
+    globalSession.stackNavigator.get().search = globalSearch;
     serverAPI.home({
         groupId: globalGroup.id,
         search: globalSearch
@@ -462,7 +463,7 @@ function onClick(elm) {
       if (globalSession && globalGroups.has(id)) {
         globalSideMenu.classList.remove('open');
 
-        globalSession.stackNavigator.push(globalGroups.get(id), globalSearch);
+        globalSession.stackNavigator.push(globalGroups.get(id));
         globalSession.loadSync({
           path: '/home',
           title: 'Home'
@@ -778,7 +779,7 @@ export function onUpdateGui(session) {
   globalSession.setButtonRight1Callback('/images/ic_add_group.svg', onButtonRightImage1Click);
 
   const searchElm = document.getElementById(`search`);
-  searchElm.textContent = globalSearch;
+  searchElm.value = globalSearch;
   if (!searchElm.onkeyup) {
     searchElm.addEventListener('keyup', onSearchElmKeyUp);
   }
