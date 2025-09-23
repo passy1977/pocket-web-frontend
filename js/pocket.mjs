@@ -53,12 +53,17 @@ export const EmptyField = Object.freeze({
   timestamp_creation: 0,
 });
 
-window.onbeforeunload = event => {
-  const message = 'Do you want really exit from Pocket 5';
+window.addEventListener('popstate', event => {
   event.preventDefault();
-  event.returnValue = message;
-  return message;
-}
+  const shouldExit = confirm('Do you want really exit from Pocket 5?');
+  if (!shouldExit) {
+    // Push a new state to prevent navigation
+    history.pushState(null, '', window.location.href);
+  }
+});
+
+// Prevent initial back navigation by pushing a state
+history.pushState(null, '', window.location.href);
 
 window.onload = () => {
   try {
