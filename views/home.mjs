@@ -262,22 +262,7 @@ function onToggleHidden(elm) {
     return;
   }
 
-  const id = parseInt(elm.getAttribute('data-type-id'));
-
-  for (const fader of globalDataContainer.children) {
-    for (const child of fader.children) {
-      if (child?.getAttribute('data-field') === 'is-hidden' && parseInt(child?.getAttribute('data-type-id')) === id) {
-        const field = globalFields.get(id);
-        if (child.getAttribute('data-hidden') === 'true') {
-          child.textContent = field.value.trim();
-          child.setAttribute('data-hidden', 'false');
-        } else {
-          child.textContent = '*'.repeat(field.value.trim().length);
-          child.setAttribute('data-hidden', 'true');
-        }
-      }
-    }
-  }
+  elm.classList.toggle('hidden-text');
 }
 
 function onClickNote(elm) {
@@ -621,12 +606,20 @@ function buildRow(ROW, type, {
     row = row.replaceAll('{note-alt}', '');
   }
 
-  if (isHidden) {
+  if(isHidden !== undefined) {
     row = row.replaceAll('<!--is-hidden', '');
     row = row.replaceAll('{is-hidden}', value);
+    if (isHidden) {
+      row = row.replaceAll('{is-hidden-class}', 'hidden-text');
+    } else {
+      row = row.replaceAll('{is-hidden-class}', '');
+    }
     row = row.replaceAll('is-hidden-->', '');
-  } else {
+  }
+  else
+  {
     row = row.replaceAll('{is-hidden}', '');
+    row = row.replaceAll('{is-hidden-class}', '');
   }
 
   if (type === FieldType.GROUP && !hasChild) {
@@ -694,10 +687,7 @@ function updateRows({ data, error }) {
       for (const child of fader.children) {
         switch (child.getAttribute('data-field')) {
           case 'is-hidden':
-            child.setAttribute('data-hidden', 'true');
-            const textContent = child.textContent.trim();
-            child.textContent = '*'.repeat(textContent.length);
-
+            child.setAttribute('data-hidden', 'false');
             child.addEventListener('click', () => onToggleHidden(child));
             break;
           case 'buttons':
