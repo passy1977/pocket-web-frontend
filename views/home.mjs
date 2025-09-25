@@ -611,7 +611,12 @@ function buildRow(ROW, type, {
 
   if(isHidden !== undefined) {
     row = row.replaceAll('<!--is-hidden', '');
-    row = row.replaceAll('{is-hidden}', value);
+    if(value.startsWith('http://') || value.startsWith('https://')) {
+      row = row.replaceAll('{is-hidden}', `<a href="${value}" target="_blank" rel="noopener noreferrer">${value}</a>`);
+    } else {
+      row = row.replaceAll('{is-hidden}', value);
+    }
+
     if (isHidden) {
       row = row.replaceAll('{is-hidden-class}', 'hidden-text');
     } else {
