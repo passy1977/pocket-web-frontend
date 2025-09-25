@@ -124,7 +124,7 @@ export function onUpdateGui(session) {
 
   globalFieldIsHidden = document.getElementById('field-is-hidden');
   if (globalFieldIsHidden && globalField.is_hidden) {
-    globalFieldValue.checked = globalField.is_hidden;
+    globalFieldIsHidden.checked = globalField.is_hidden;
   }
 
   const generateRandom = document.getElementById('field-generate-random');
