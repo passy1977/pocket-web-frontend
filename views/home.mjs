@@ -262,7 +262,10 @@ function onToggleHidden(elm) {
     return;
   }
 
-  elm.classList.toggle('hidden-text');
+  const dataHidden = elm.getAttribute('data-hidden');
+  if (dataHidden && dataHidden === 'true') {
+    elm.classList.toggle('hidden-text');
+  }
 }
 
 function onClickNote(elm) {
@@ -687,7 +690,11 @@ function updateRows({ data, error }) {
       for (const child of fader.children) {
         switch (child.getAttribute('data-field')) {
           case 'is-hidden':
-            child.setAttribute('data-hidden', 'false');
+            const id = parseInt(child.getAttribute('data-type-id'));
+
+            const {is_hidden: isHidden} = globalFields.get(id);
+
+            child.setAttribute('data-hidden', `${isHidden}`);
             child.addEventListener('click', () => onToggleHidden(child));
             break;
           case 'buttons':
