@@ -748,6 +748,7 @@ export function onUpdateGui(session) {
   document.getElementById('delete-session')?.addEventListener('click', onDeleteSessionClick);
   document.getElementById('logout')?.addEventListener('click', onLogoutClick);
   globalDataContainer = document.getElementById('data-container');
+
   if (!globalDataContainer) {
     throw new DOMException('data-container not found', 'home.mjs');
   }
@@ -759,6 +760,11 @@ export function onUpdateGui(session) {
   const { group: currentGroup, search } = session.stackNavigator.get();
   globalGroup = currentGroup;
   globalSearch = search;
+
+  if(globalGroup.note && globalGroup.note !== '') {
+    document.getElementById('note').textContent = globalGroup.note;
+    document.getElementById('note-container').classList.remove('collapse');
+  }
 
   globalElmClicked = false;
 

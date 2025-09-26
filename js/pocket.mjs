@@ -257,12 +257,15 @@ export function resizeContent() {
   const content = document.getElementById('content');
   const menu = document.getElementById('side-menu');
   const dataContainer = document.getElementById('data-container');
+  const noteContainer = document.getElementById('note-container');
   content.style.height = `${contentDefaultHeight}px`;
 
-  const contentComputedStyle = window.getComputedStyle(content);
+  const contentComputedStyle = window.getComputedStyle(noteContainer);
+  const noteContainerComputedStyle = window.getComputedStyle(content);
 
   const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
   const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
+  const noteContainerHeight = parseInt(contentComputedStyle.height.slice(0, -2));
   const contentFullHeight = content.clientHeight + top + bottom;
   const dataContainerFullHeight = dataContainer.clientHeight + 90;
 
