@@ -2,6 +2,7 @@
 
 import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert, resizeContent, showModal } from '../js/pocket.mjs';
+import { FORCE_SEARCH } from '../js/constants.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -18,6 +19,7 @@ let globalGroup = null;
 let globalSearch = '';
 const globalGroups = new Map();
 const globalFields = new Map();
+
 
 function onImportDataClick(e) {
   if (typeof e !== 'object') {
@@ -531,8 +533,7 @@ function onButtonRightImage1Click() {
   try {
     serverAPI.groupDetail({
       id: 0,
-      groupId: globalGroup.id,
-      group: globalGroup
+      groupId: globalGroup.id
     }, ({ data, error }) => {
       if (data) {
         globalSideMenu.classList.remove('open');
@@ -759,7 +760,11 @@ export function onUpdateGui(session) {
 
   const { group: currentGroup, search } = session.stackNavigator.get();
   globalGroup = currentGroup;
-  globalSearch = search;
+  if(!session.lastData.data?.startsWith(FORCE_SEARCH)) {
+    globalSearch = search;
+  } else {
+    globalSearch = session.lastData.data?.slice(FORCE_SEARCH.length);
+  }
 
   if(globalGroup.note && globalGroup.note !== '') {
     document.getElementById('note').textContent = globalGroup.note;

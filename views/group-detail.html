@@ -3,7 +3,7 @@
       <img src="/images/ic_group.svg" alt="Password icon" class="ico" />
     </span>
   <div class="form-floating">
-    <input autocomplete="off" class="form-control" id="group-title" placeholder="Grcccccoup title" aria-describedby="addon-group-title" required>
+    <input autocomplete="off" class="form-control" id="group-title" placeholder="Group title" aria-describedby="addon-group-title" required>
     <label id="addon-group-title">Insert or modify the group name</label>
   </div>
   <div class="invalid-feedback justify-content-center">
@@ -11,9 +11,14 @@
   </div>
 </div>
 
-<div class="form-floating">
-  <textarea class="form-control group-note-height" placeholder="Note" id="group-note"></textarea>
-  <label for="group-note">Group note</label>
+<div class="input-group mb-3">
+  <span class="input-group-text">
+    <img class="ico" src="/images/ic_note.svg" alt="Note icon">
+  </span>
+  <div class="form-floating">
+    <textarea class="form-control group-note-height" placeholder="Note" id="group-note"></textarea>
+    <label for="group-note">Group note</label>
+  </div>
 </div>
 
 <p class="border-top mt-4 pt-1 d-flex justify-content-center">This session allows the addition of fields that will appear by default in the subgroups view.</p>

@@ -2,6 +2,7 @@
 
 import showAlert, { EmptyField, EmptyGroup, EmptyGroupField, hideAlert, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
+import { FORCE_SEARCH } from '../js/constants.mjs';
 
 const CollumType = Object.freeze({
   TITLE: 0,
@@ -281,7 +282,7 @@ function onButtonRightImage1Click() {
         serverAPI.data(`/group_detail/group/update`, {
           id: globalGroup.id,
           groupId: globalGroup.group_id,
-          search
+          search: FORCE_SEARCH + globalGroup.title
         }, {
           groups: [globalGroup],
           groupFields,
@@ -309,7 +310,7 @@ function onButtonRightImage1Click() {
         serverAPI.data(`/group_detail/group/insert`, {
           id: globalGroup.id,
           groupId: currentGroup.group_id,
-          search
+          search: FORCE_SEARCH + globalGroup.title
         }, {
           groups: [globalGroup],
           groupFields,
