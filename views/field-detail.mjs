@@ -2,6 +2,7 @@
 
 import showAlert, { EmptyField, EmptyGroup, hideAlert, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
+import { FORCE_SEARCH } from '../js/constants.mjs';
 
 const PASSWD_LEN = Object.freeze(16);
 
@@ -77,7 +78,7 @@ function onButtonRightImage1Click() {
       serverAPI.data(`/field_detail/field/${globalField.id > 0 ? 'update' : 'insert'}`, {
         id: globalField.id,
         groupId: globalField.group_id,
-        search
+        search: FORCE_SEARCH + globalField.title
       }, {
         fields: [globalField],
       }, ({ data, error }) => {
