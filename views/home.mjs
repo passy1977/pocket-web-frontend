@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, resizeContent, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, showModal } from '../js/pocket.mjs';
 import { FORCE_SEARCH } from '../js/constants.mjs';
 
 const FieldType = Object.freeze({
@@ -483,7 +483,6 @@ function onButtonLeftImage0Click() {
       title: 'Home'
     }, false);
   } else {
-    resizeContent();
     globalSideMenu.classList.toggle('open');
   }
   globalElmClicked = false;
@@ -664,7 +663,6 @@ function updateRows({ data, error }) {
       container.className = 'd-flex justify-content-center align-items-center mt-1 mb-1';
       container.append(document.createTextNode(' No data available'));
       globalDataContainer.appendChild(container);
-      resizeContent();
       return;
     }
 
@@ -686,7 +684,6 @@ function updateRows({ data, error }) {
 
     } catch (e) {
       showAlert(error);
-      resizeContent();
       return;
     }
 
@@ -736,7 +733,6 @@ function updateRows({ data, error }) {
   } else {
     showAlert('unhandled error');
   }
-  resizeContent();
 }
 
 export function onUpdateGui(session) {

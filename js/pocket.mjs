@@ -156,7 +156,6 @@ export default function showAlert(msg) {
   const div = document.createElement('div');
   div.innerHTML = msg;
   session?.gui?.alert.appendChild(div);
-  resizeContent();
 }
 
 export function hideAlert() {
@@ -164,7 +163,6 @@ export function hideAlert() {
     session.gui.alert.innerHTML = '';
     session.gui.alert.classList.add('visually-hidden');
   }
-  resizeContent();
 }
 
 export function sleep(ms = 1000) {
@@ -248,42 +246,6 @@ export function showModal({ title, message, close = null, confirm = null, data =
 
   modal.show();
 }
-
-export function resizeContent() {
-  // if (session.lastPath && session.lastPath !== '/home') {
-  //   return;
-  // }
-  //
-  // const content = document.getElementById('content');
-  // const menu = document.getElementById('side-menu');
-  // const dataContainer = document.getElementById('data-container');
-  //
-  // if (!content || !menu) return;
-  //
-  // // Get the main container to calculate available space
-  // const mainContainer = document.querySelector('.main-container');
-  // if (!mainContainer) return;
-  //
-  // // Calculate minimum height based on menu
-  // const menuHeight = menu.offsetHeight;
-  // let requiredContentHeight = menuHeight;
-  //
-  // // If data-container exists and is longer, use its height instead
-  // if (dataContainer) {
-  //   const dataContainerHeight = dataContainer.offsetHeight + 100; // Add padding for spacing
-  //   requiredContentHeight = Math.max(menuHeight, dataContainerHeight);
-  // }
-  //
-  // // Set the content minimum height
-  // content.style.minHeight = `${requiredContentHeight}px`;
-  //
-  // // Ensure menu height matches content if needed
-  // if (dataContainer && dataContainer.offsetHeight > menuHeight) {
-  //   menu.style.minHeight = `${requiredContentHeight}px`;
-  // }
-}
-
-window.onresize = resizeContent;
 
 export function showSpinner() {
   document.getElementById('spinner').style.visibility =  'visible';
