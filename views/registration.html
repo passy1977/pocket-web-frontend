@@ -3,26 +3,41 @@
   <form id="form" class="mx-auto">
     <!-- SERVER JSON CONFIGURATION -->
     <h3 class="mt-3">Please provide server configuration</h3>
-    <div class="form-floating has-validation">
-      <textarea class="form-control json-config-height" placeholder="Note" id="json-config"></textarea>
-      <label for="json-config">Group note</label>
-      <div class="invalid-feedback">
+    <div class="input-group mb-3">
+      <span class="input-group-text">
+        <img class="ico" src="/images/ic_information.svg" alt="Config icon">
+      </span>
+      <div class="form-floating" id="json-config-container">
+        <textarea class="form-control json-config-height" placeholder="Server configuration" id="json-config"></textarea>
+        <label for="json-config">Server configuration JSON</label>
+      </div>
+      <div class="invalid-feedback" id="json-config-invalid">
         This field is required
       </div>
     </div>
 
-
     <h3 class="mt-3">Insert the password used for server account</h3>
-    <div class="form-floating has-validation mb-3">
-      <input type="password" class="form-control" id="passwd" placeholder="Password">
-      <label for="passwd">Password</label>
+    <div class="input-group has-validation mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_passwd.svg" alt="Password icon" class="ico" />
+      </span>
+      <div class="form-floating" id="passwd-container">
+        <input autocomplete="off" type="password" class="form-control" id="passwd" placeholder="Password" aria-describedby="addon-passwd">
+        <label id="addon-passwd">Password</label>
+      </div>
       <div class="invalid-feedback" id="passwd-invalid-feedback">
         This field is required
       </div>
     </div>
-    <div class="form-floating has-validation mb-3">
-      <input type="password" class="form-control" id="passwd-confirm" placeholder="Password">
-      <label for="passwd-confirm">Confirm password</label>
+    
+    <div class="input-group has-validation mb-3">
+      <span class="input-group-text">
+        <img src="/images/ic_passwd.svg" alt="Confirm password icon" class="ico" />
+      </span>
+      <div class="form-floating" id="passwd-confirm-container">
+        <input autocomplete="off" type="password" class="form-control" id="passwd-confirm" placeholder="Confirm password" aria-describedby="addon-passwd-confirm">
+        <label id="addon-passwd-confirm">Confirm password</label>
+      </div>
       <div class="invalid-feedback" id="passwd-confirm-invalid-feedback">
         This field is required
       </div>

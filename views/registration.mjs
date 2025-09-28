@@ -41,49 +41,63 @@ export function onUpdateGui(session) {
     hideAlert();
 
     const passwd = document.getElementById('passwd');
+    const passwdContainer = document.getElementById('passwd-container');
     const passwdInvalidFeedback = document.getElementById('passwd-invalid-feedback');
     const passwdConfirm = document.getElementById('passwd-confirm');
+    const passwdConfirmContainer = document.getElementById('passwd-confirm-container');
     const passwdConfirmInvalidFeedback = document.getElementById('passwd-confirm-invalid-feedback');
     const jsonConfig = document.getElementById('json-config');
-
+    const jsonConfigContainer = document.getElementById('json-config-container');
+    const jsonConfigInvalid = document.getElementById('json-config-invalid');
 
     let exit = false;
 
+    // JSON Config validation
+    jsonConfigContainer.classList.remove('is-invalid');
     if (jsonConfig?.value === '') {
-      jsonConfig.classList.add('is-invalid');
+      jsonConfigInvalid.innerText = 'This field is required';
+      jsonConfigContainer.classList.add('is-invalid');
       exit = true;
     } else {
-      jsonConfig.classList.remove('is-invalid');
+      try {
+        JSON.parse(jsonConfig.value);
+      } catch (e) {
+        jsonConfigInvalid.innerText = 'Invalid JSON configuration';
+        jsonConfigContainer.classList.add('is-invalid');
+        exit = true;
+      }
     }
 
+    // Password validation
+    passwdContainer.classList.remove('is-invalid');
     if (passwd?.value === '') {
-      passwd.classList.add('is-invalid');
-      exit = true;
-    } else {
       passwdInvalidFeedback.innerText = 'This field is required';
-      passwd?.classList.remove('is-invalid');
-    }
-
-    if (passwdConfirm?.value === '') {
-      passwdConfirm.classList.add('is-invalid');
+      passwdContainer.classList.add('is-invalid');
       exit = true;
-    } else {
+    } else if (passwd.value.length < PASSWD_MIN_LEN) {
+      passwdInvalidFeedback.innerText = `Password must be at least ${PASSWD_MIN_LEN} characters`;
+      passwdContainer.classList.add('is-invalid');
+      exit = true;
+    }
+
+    // Confirm password validation
+    passwdConfirmContainer.classList.remove('is-invalid');
+    if (passwdConfirm?.value === '') {
       passwdConfirmInvalidFeedback.innerText = 'This field is required';
-      passwdConfirm?.classList.remove('is-invalid');
-    }
-
-    if (exit) {
-      return;
-    }
-
-    if (passwd?.value !== passwdConfirm?.value) {
+      passwdConfirmContainer.classList.add('is-invalid');
+      exit = true;
+    } else if (passwd?.value !== passwdConfirm?.value) {
       passwd.value = '';
       passwdInvalidFeedback.innerText = 'Passwords mismatch';
-      passwd.classList.add('is-invalid');
+      passwdContainer.classList.add('is-invalid');
 
       passwdConfirm.value = '';
       passwdConfirmInvalidFeedback.innerText = 'Passwords mismatch';
-      passwdConfirm.classList.add('is-invalid');
+      passwdConfirmContainer.classList.add('is-invalid');
+      exit = true;
+    }
+
+    if (exit) {
       return;
     }
 
@@ -100,20 +114,6 @@ export function onUpdateGui(session) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(session.lastData.data)) {
       showAlert('Invalid email format');
-      return;
-    }
-
-    if (passwd.value.length < PASSWD_MIN_LEN) {
-      passwd.classList.add('is-invalid');
-      passwdInvalidFeedback.innerText = `Password must be at least ${PASSWD_MIN_LEN} characters`;
-      exit = true;
-    }
-
-    try {
-      JSON.parse(jsonConfig.value);
-    } catch (e) {
-      jsonConfig.classList.add('is-invalid');
-      showAlert('Invalid JSON configuration');
       return;
     }
 

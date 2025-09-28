@@ -8,3 +8,12 @@ h3 {
 .json-config-height {
     height: 20em !important;
 }
+
+.ico {
+    width: 20px;
+    height: 20px;
+}
+
+.mouse-hover {
+    cursor: pointer;
+}
