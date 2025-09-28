@@ -3,7 +3,7 @@
     --primary-color: #ef705d;
     --secondary-color: #c4c4c4;
     --secondary-active-color: #dcdcdc;
-    --background-color: #f8f9fa;
+    --background-color: 248, 249 ,250; /* rgb(97, 98, 98) #f8f9fa */
     --text-color: #212529;
     --text-selected: #f8f9fa;
     --border-radius: 5px;

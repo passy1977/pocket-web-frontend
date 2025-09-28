@@ -8,9 +8,10 @@
     min-height: calc(100% - 50px);
     transition: transform 500s ease-in-out, width 500ms ease-in-out;
     overflow: hidden;
-    background: var(--background-color);
+    background: rgba(var(--background-color), 0.8);
     z-index: 99;
     border-radius: 0 0 0 calc(var(--border-radius) + 1px);
+    border-rigth: 1px solid rgba(var(--background-color), 0.95);
 }
 
 .menu.open {
