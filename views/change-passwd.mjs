@@ -1,7 +1,7 @@
 'use strict';
 
 
-import showAlert, { hideAlert } from '../js/pocket.mjs';
+import showAlert, { hideAlert, sanitize } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 
 let globalSession = null;
@@ -74,6 +74,12 @@ export function onUpdateGui(session) {
       passwdConfirm?.classList.remove('is-invalid');
     }
 
+    if (passwd.value.length < PASSWD_MIN_LEN) {
+      passwd.classList.add('is-invalid');
+      passwdInvalidFeedback.innerText = `Password must be at least ${PASSWD_MIN_LEN} characters`;
+      exit = true;
+    }
+
     if (exit) {
       return;
     }
@@ -90,7 +96,12 @@ export function onUpdateGui(session) {
     }
 
     try {
-      serverAPI.changePasswd({passwd: passwd?.value ?? null, newPasswd: passwdNew?.value ?? null}, ({ data, error }) => {
+      serverAPI.registration({
+        jsonConfig: jsonConfig.value,
+        email: sanitize(session.lastData.data, true),
+        passwd: passwd.value,
+        confirmPasswd: passwdConfirm.value
+      }, ({ data, error }) => {
         if (data) {
           globalSession.loadSync(data);
         } else {

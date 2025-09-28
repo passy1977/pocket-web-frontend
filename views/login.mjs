@@ -2,6 +2,7 @@
 
 import serverAPI from '../js/serverAPI.mjs';
 import showAlert, { hideAlert, hideSpinner, showSpinner, sleep } from '../js/pocket.mjs';
+import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalForm = null;
 
@@ -53,6 +54,17 @@ export async function onUpdateGui(session) {
       execute = false;
     } else {
       passwd?.classList.remove('is-invalid');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value)) {
+      email.classList.add('is-invalid');
+      execute = false;
+    }
+
+    if (passwd.value.length < PASSWD_MIN_LEN) {
+      passwd.classList.add('is-invalid');
+      execute = false;
     }
 
     if (execute) {

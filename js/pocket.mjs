@@ -154,7 +154,7 @@ export default function showAlert(msg) {
 
   session?.gui?.alert.classList.remove('visually-hidden');
   const div = document.createElement('div');
-  div.innerHTML = msg;
+  div.textContent = msg;
   session?.gui?.alert.appendChild(div);
 }
 
@@ -226,16 +226,16 @@ export function showModal({ title, message, close = null, confirm = null, data =
   const closeEl = document.getElementById('modal-close');
   const confirmEl = document.getElementById('modal-confirm');
 
-  titleEl.innerHTML = title;
-  messageEl.innerHTML = message;
-  closeEl.innerHTML = close;
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  closeEl.textContent = close;
 
   modalElm.addEventListener('hidden.bs.modal',callbackModalHandlerFalse);
   closeEl.addEventListener('click', callbackModalHandlerFalse);
   closeHeaderEl.addEventListener('click', callbackModalHandlerFalse);
 
   if (confirm !== null && typeof confirm === 'string') {
-    confirmEl.innerHTML = confirm;
+    confirmEl.textContent = confirm;
 
     confirmEl.addEventListener('click', callbackModalHandlerTrue);
     confirmEl.classList.remove('collapse');
@@ -254,3 +254,21 @@ export function showSpinner() {
 export function hideSpinner() {
   document.getElementById('spinner').style.visibility =  'hidden';
 }
+
+export function sanitize(value, remove = false) {
+  if (typeof value !== 'string') {
+    throw new TypeError(`value it's not a string`);
+  }
+
+  if (remove) {
+    return value.replace(/[&<>"']/g, '');
+  } else {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+}
+

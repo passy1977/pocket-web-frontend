@@ -1,9 +1,18 @@
 'use strict';
 
-import showAlert, { hideAlert, sleep } from '../js/pocket.mjs';
+import showAlert, { hideAlert, sleep, sanitize } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
+import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalSession = null;
+
+function clearSensitiveData() {
+  const passwd = document.getElementById('passwd');
+  const passwdConfirm = document.getElementById('passwd-confirm');
+  if (passwd) passwd.value = '';
+  if (passwdConfirm) passwdConfirm.value = '';
+}
+
 
 function onButtonLeftImage0Click() {
   globalSession?.loadSync({
@@ -88,13 +97,34 @@ export function onUpdateGui(session) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(session.lastData.data)) {
+      showAlert('Invalid email format');
+      return;
+    }
+
+    if (passwd.value.length < PASSWD_MIN_LEN) {
+      passwd.classList.add('is-invalid');
+      passwdInvalidFeedback.innerText = `Password must be at least ${PASSWD_MIN_LEN} characters`;
+      exit = true;
+    }
+
+    try {
+      JSON.parse(jsonConfig.value);
+    } catch (e) {
+      jsonConfig.classList.add('is-invalid');
+      showAlert('Invalid JSON configuration');
+      return;
+    }
+
     try {
       serverAPI.registration({
           jsonConfig: jsonConfig.value,
-          email: session.lastData.data,
+          email: sanitize(session.lastData.data, true),
           passwd: passwd.value,
           confirmPasswd: passwdConfirm.value
         }, ({ data, error }) => {
+          clearSensitiveData(); 
           if (data) {
             session.loadSync(data);
           } else if (error) {

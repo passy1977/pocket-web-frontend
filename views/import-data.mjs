@@ -1,7 +1,8 @@
 'use strict';
 
-import showAlert, { hideAlert } from '../js/pocket.mjs';
+import showAlert, { hideAlert, sanitize } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
+import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from '../js/constants.mjs';
 
 let globalSession = null;
 let globalFormFile = null;
@@ -71,12 +72,25 @@ export function onUpdateGui(session) {
 
     let formData = new FormData();
 
-
-
+    globalFormFile.removeEventListener('change', callbackGetFileSize);
     globalFormFile.addEventListener('change', callbackGetFileSize);
     if (globalFormFile.files.length > 0) {
-      formData.append('file', globalFormFile.files[0]);
-      if(globalFormFile.files[0].name.includes(".xml")) {
+      const file = globalFormFile.files[0];
+      const sanitizedFileName = sanitize(file.name, true);
+
+      if (file.size > MAX_FILE_SIZE) {
+        showAlert('File troppo grande');
+        globalElmClicked = false;
+        return;
+      }
+      if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+        showAlert('Tipo file non supportato');
+        globalElmClicked = false;
+        return;
+      }
+
+      formData.append('file', file);
+      if(sanitizedFileName.includes(".xml")) {
         formData.append('file_legacy', 1);
       } else {
         formData.append('file_legacy', 0);
@@ -90,7 +104,8 @@ export function onUpdateGui(session) {
         globalSession.loadSync(data);
       } else {
         if(error) {
-          showAlert(error);
+          showAlert('Error during data import');
+          console.error('Import error:', error);
         } else {
           showAlert('No data back');
         }

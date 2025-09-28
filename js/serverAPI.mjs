@@ -8,7 +8,6 @@ class ServerAPI {
   #sessionId;
   #handleData;
   #defaultDataTransfer;
-  #fetchData;
   #showSpinner = () => {};
   #hideSpinner = () => {};
 
@@ -45,36 +44,6 @@ class ServerAPI {
       fields: null,
       data: null,
       error: null
-    };
-    this.#fetchData = async (endPoint, body, method = 'POST', headers = { 'Content-Type': 'application/json' }) => {
-      if (typeof endPoint !== 'string') {
-        throw new TypeError(`endPoint it's not a string`);
-      }
-
-      if (body && typeof body !== 'string') {
-        throw new TypeError(`body it's not a string`);
-      }
-
-      if (typeof method !== 'string') {
-        throw new TypeError(`method it's not a string`);
-      }
-
-      if (typeof headers !== 'object') {
-        throw new TypeError(`headers it's not a object`);
-      }
-
-      const response = await fetch(endPoint,
-        {
-          method,
-          headers,
-          body
-        });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-
-      await response.json().then(response => response.json()).then(data => data);
     };
   }
 

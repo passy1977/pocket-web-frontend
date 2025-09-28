@@ -642,7 +642,7 @@ function buildRow(ROW, type, {
 function updateRows({ data, error }) {
   hideAlert();
   if (data) {
-    globalDataContainer.innerHTML = '';
+    globalDataContainer.innerText = '';
 
     globalGroups.clear();
     globalFields.clear();
@@ -771,10 +771,10 @@ export function onUpdateGui(session) {
 
   if (globalSession.stackNavigator.index > 0) {
     document.title = `Pocket 5 - ${globalGroup.title}`;
-    globalSession.gui.title.innerHTML = globalGroup.title;
+    globalSession.gui.title.innerText = globalGroup.title;
   } else {
     document.title = `Pocket 5 - Home`;
-    globalSession.gui.title.innerHTML = 'Home';
+    globalSession.gui.title.innerText = 'Home';
   }
 
 

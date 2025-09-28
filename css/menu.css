@@ -11,7 +11,7 @@
     background: rgba(var(--background-color), 0.8);
     z-index: 99;
     border-radius: 0 0 0 calc(var(--border-radius) + 1px);
-    border-rigth: 1px solid rgba(var(--background-color), 0.95);
+    border-right: 1px solid rgba(var(--background-color), 0.95);
 }
 
 .menu.open {

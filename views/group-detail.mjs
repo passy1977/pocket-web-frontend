@@ -1,15 +1,8 @@
 'use strict';
 
-import showAlert, { EmptyField, EmptyGroup, EmptyGroupField, hideAlert, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyField, EmptyGroup, EmptyGroupField, hideAlert, sanitize, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
-import { FORCE_SEARCH } from '../js/constants.mjs';
-
-const CollumType = Object.freeze({
-  TITLE: 0,
-  IS_HIDDEN: 1,
-  ACTIONS: 2
-});
-
+import { FORCE_SEARCH, MAX_INPUT_LEN } from '../js/constants.mjs';
 
 let globalElmClicked = false;
 let globalSession = null;
@@ -50,6 +43,18 @@ function onFieldAddOrModify() {
     globalFieldTitleContainer.classList.add('is-invalid');
     globalElmClicked = false;
     return;
+  } else {
+    const sanitizeInput = (input) => {
+      return input.replace(/[<>\"'&]/g, '');
+    };
+
+    globalFieldTitle.value = sanitizeInput(globalFieldTitle.value);
+  }
+
+  if(globalFieldTitle.value.length > MAX_INPUT_LEN) {
+    globalFieldTitleInvalid.text = 'Title too long';
+    globalFieldTitleContainer.classList.add('is-invalid');
+    return;
   }
 
 
@@ -78,7 +83,7 @@ function onFieldAddOrModify() {
   for(const idx in values) {
     const groupField = values[idx];
     if (groupField.id !== localGroupField.id && groupField.title.toLowerCase() === localGroupField.title.toLowerCase()) {
-      globalFieldTitleInvalid.innerHTML = 'Another field insert with same name';
+      globalFieldTitleInvalid.innerText = 'Another field insert with same name';
       globalFieldTitleContainer.classList.add('is-invalid');
       globalElmClicked = false;
       return;
@@ -224,7 +229,7 @@ function onButtonRightImage1Click() {
   }
   globalElmClicked = true;
 
-  //group-title-elm
+
   const groupTitleElm = document.getElementById('group-title-elm');
   if(globalGroupTitle.value === '') {
     groupTitleElm.classList.add('is-invalid');
@@ -330,10 +335,8 @@ function onButtonRightImage1Click() {
 
 }
 
-function buildRow(ROW, {
-  id,
-  title
-}) {
+function buildRow(ROW, { id, title }) {
+
   if (typeof ROW !== 'string') {
     throw new TypeError(`ROW it's not a string`);
   }
@@ -345,10 +348,10 @@ function buildRow(ROW, {
   if (typeof title !== 'string') {
     throw new TypeError(`title it's not a string`);
   }
-
+  
   let row = ROW;
   row = row.replaceAll('{id}', id);
-  row = row.replaceAll('{title}', title);
+  row = row.replaceAll('{title}', sanitize(title));
   return row;
 }
 
@@ -356,7 +359,7 @@ function updateRows({ data, error }) {
   hideAlert();
 
   if (data) {
-    globalDataContainer.innerHTML = '';
+    globalDataContainer.innerText = '';
 
     globalElmClicked = false;
 
@@ -437,7 +440,7 @@ export function onUpdateGui(session) {
     globalGroup = session?.lastData?.groups.at(0);
   }
 
-  globalSession.gui.title.innerHTML = globalGroup.title;
+  globalSession.gui.title.innerText = globalGroup.title;
 
   globalSession.setButtonLeft0Callback('/images/ic_back.svg', onButtonLeftImage0Click);
   globalSession.gui?.buttonRight0.classList.add('collapse');
@@ -446,12 +449,12 @@ export function onUpdateGui(session) {
 
   globalGroupTitle = document.getElementById('group-title');
   if (globalGroup && globalGroup.title) {
-    globalGroupTitle.value = globalGroup.title;
+    globalGroupTitle.value = sanitize(globalGroup.title);
   }
 
   globalGroupNote = document.getElementById('group-note');
   if (globalGroup && globalGroup.note) {
-    globalGroupNote.value = globalGroup.note;
+    globalGroupNote.value = sanitize(globalGroup.note);
   }
 
   globalFieldTitle = document.getElementById('field-title');

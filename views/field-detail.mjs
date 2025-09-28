@@ -1,10 +1,8 @@
 'use strict';
 
-import showAlert, { EmptyField, EmptyGroup, hideAlert, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyField, hideAlert, sanitize, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
-import { FORCE_SEARCH } from '../js/constants.mjs';
-
-const PASSWD_LEN = Object.freeze(16);
+import { FORCE_SEARCH, MAX_INPUT_LEN, PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalElmClicked = false;
 let globalSession = null;
@@ -19,12 +17,22 @@ function onButtonGenerateRandomClick() {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_-.?^~';
   let password = '';
 
-  for (let i = 0; i < PASSWD_LEN; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
+  const array = new Uint8Array(PASSWD_MIN_LEN * 2);
+  crypto.getRandomValues(array);
+  
+  for (let i = 0; i < array.length; i++) {
+    password += charset[array[i] % charset.length];
   }
-
+  
   globalFieldValue.value = password;
+  
+  array.fill(0);
+}
+
+function clearSensitiveData() {
+  if (globalFieldValue && globalFieldValue.type === 'password') {
+    globalFieldValue.value = '';
+  }
 }
 
 function onButtonLeftImage0Click() {
@@ -33,6 +41,7 @@ function onButtonLeftImage0Click() {
   }
   globalElmClicked = true;
   globalSession?.resetGuiCallbacks();
+  clearSensitiveData();
   globalSession.loadSync({
     path: '/home',
     title: 'Home'
@@ -46,14 +55,39 @@ function onButtonRightImage1Click() {
     return;
   }
   globalElmClicked = true;
+  
+  hideAlert();
 
+  const fieldTitleInvalid = document.getElementById('field-title-invalid')
   const fieldTitleElm = document.getElementById('field-title-elm');
   if(globalFieldTitle.value === '') {
+    fieldTitleInvalid.text = 'This field is required';
+    fieldTitleElm.classList.add('is-invalid');
+    globalElmClicked = false;
+    return;
+  } else if(globalFieldTitle.value > MAX_INPUT_LEN) {
+    fieldTitleInvalid.text = 'Title too long';
     fieldTitleElm.classList.add('is-invalid');
     globalElmClicked = false;
     return;
   } else {
     fieldTitleElm.classList.remove('is-invalid');
+  }
+
+  const fieldValueInvalid = document.getElementById('field-value-invalid')
+  const fieldValueElm = document.getElementById('field-value-elm');
+  if(globalFieldValue.value === '') {
+    fieldValueInvalid.text = 'This field is required';
+    fieldValueElm.classList.add('is-invalid');
+    globalElmClicked = false;
+    return;
+  } else if(globalFieldValue.value > MAX_TEXT_AREA_LEN) {
+    fieldValueInvalid.text = 'Value too long';
+    fieldValueElm.classList.add('is-invalid');
+    globalElmClicked = false;
+    return;
+  } else {
+    fieldValueElm.classList.remove('is-invalid');
   }
 
   showModal({
@@ -83,6 +117,7 @@ function onButtonRightImage1Click() {
         fields: [globalField],
       }, ({ data, error }) => {
         if (data) {
+          clearSensitiveData();
           globalSession.loadSync(data);
         } else {
           showAlert(error);
@@ -115,12 +150,12 @@ export function onUpdateGui(session) {
 
   globalFieldTitle = document.getElementById('field-title');
   if (globalField && globalField.title) {
-    globalFieldTitle.value = globalField.title;
+    globalFieldTitle.value = sanitize(globalField.title);
   }
 
   globalFieldValue = document.getElementById('field-value');
   if (globalField && globalField.value) {
-    globalFieldValue.value = globalField.value;
+    globalFieldValue.value = sanitize(globalField.value);
   }
 
   globalFieldIsHidden = document.getElementById('field-is-hidden');
