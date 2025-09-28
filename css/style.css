@@ -28,6 +28,7 @@ nav {
     padding: 5px;
     display: flex;
     align-items: center;
+    max-height: 50px;
 }
 
 nav img {
@@ -53,8 +54,9 @@ nav .btn-primary:hover {
 
 nav h1 {
     display: inline-block;
-    line-height: 2vw;
-    min-height: 20px;
+    line-height: 42px;
+    min-height: 48px;
+    max-height: 48px;
     left: 0;
     margin: auto;
     font-size: 20px;
@@ -79,6 +81,9 @@ nav .btn:disabled {
     border-radius: var(--border-radius);
     border: solid 1px var(--primary-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .btn-primary {
@@ -184,3 +189,16 @@ img.ico-input {
     border: var(--bs-spinner-border-width) solid var(--primary-color);
     border-right-color: transparent;
 }
+
+#content {
+    min-height: 200px; /* fallback, will be overridden by JS */
+    box-sizing: border-box;
+    flex-grow: 1; /* Allow content to grow */
+}
+
+ .main-container {
+     display: flex;
+     flex-direction: column;
+     position: relative;
+ }
+

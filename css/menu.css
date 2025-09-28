@@ -1,10 +1,12 @@
-
-
 .menu {
-    width: 0;
-    transition: transform 500s ease-in-out, width 500ms ease-in-out;
     position: absolute;
-    top-bar-button: initial;
+    margin-top: 50px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    min-height: calc(100% - 50px);
+    transition: transform 500s ease-in-out, width 500ms ease-in-out;
     overflow: hidden;
     background: var(--background-color);
     z-index: 99;
@@ -53,4 +55,3 @@
 ol, ul {
     padding-left: 0;
 }
-

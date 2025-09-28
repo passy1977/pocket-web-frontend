@@ -250,36 +250,37 @@ export function showModal({ title, message, close = null, confirm = null, data =
 }
 
 export function resizeContent() {
-  if (session.lastPath && session.lastPath !== '/home') {
-    return;
-  }
-  const contentDefaultHeight = 200;
-  const content = document.getElementById('content');
-  const menu = document.getElementById('side-menu');
-  const dataContainer = document.getElementById('data-container');
-  const noteContainer = document.getElementById('note-container');
-  content.style.height = `${contentDefaultHeight}px`;
-
-  const contentComputedStyle = window.getComputedStyle(noteContainer);
-  const noteContainerComputedStyle = window.getComputedStyle(content);
-
-  const top = parseInt(contentComputedStyle.marginTop.slice(0, -2));
-  const bottom = parseInt(contentComputedStyle.marginTop.slice(0, -2));
-  const noteContainerHeight = parseInt(contentComputedStyle.height.slice(0, -2));
-  const contentFullHeight = content.clientHeight + top + bottom;
-  const dataContainerFullHeight = dataContainer.clientHeight + 90;
-
-
-  if (contentFullHeight > menu.clientHeight) {
-    menu.style.height = `${contentFullHeight}px`;
-  } else if (contentFullHeight < menu.clientHeight) {
-    content.style.height = `${menu.clientHeight - top - bottom + 1}px`;
-  }
-
-  if(dataContainerFullHeight > contentFullHeight) {
-    menu.style.height = `${dataContainerFullHeight + 58}px`;
-    content.style.height = `${dataContainerFullHeight + 58 - top - bottom + 1}px`;
-  }
+  // if (session.lastPath && session.lastPath !== '/home') {
+  //   return;
+  // }
+  //
+  // const content = document.getElementById('content');
+  // const menu = document.getElementById('side-menu');
+  // const dataContainer = document.getElementById('data-container');
+  //
+  // if (!content || !menu) return;
+  //
+  // // Get the main container to calculate available space
+  // const mainContainer = document.querySelector('.main-container');
+  // if (!mainContainer) return;
+  //
+  // // Calculate minimum height based on menu
+  // const menuHeight = menu.offsetHeight;
+  // let requiredContentHeight = menuHeight;
+  //
+  // // If data-container exists and is longer, use its height instead
+  // if (dataContainer) {
+  //   const dataContainerHeight = dataContainer.offsetHeight + 100; // Add padding for spacing
+  //   requiredContentHeight = Math.max(menuHeight, dataContainerHeight);
+  // }
+  //
+  // // Set the content minimum height
+  // content.style.minHeight = `${requiredContentHeight}px`;
+  //
+  // // Ensure menu height matches content if needed
+  // if (dataContainer && dataContainer.offsetHeight > menuHeight) {
+  //   menu.style.minHeight = `${requiredContentHeight}px`;
+  // }
 }
 
 window.onresize = resizeContent;
@@ -291,4 +292,3 @@ export function showSpinner() {
 export function hideSpinner() {
   document.getElementById('spinner').style.visibility =  'hidden';
 }
-
