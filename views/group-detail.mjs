@@ -1,6 +1,14 @@
 'use strict';
 
-import showAlert, { EmptyField, EmptyGroup, EmptyGroupField, hideAlert, sanitize, showModal } from '../js/pocket.mjs';
+import showAlert, {
+  EmptyField,
+  EmptyGroup,
+  EmptyGroupField,
+  hideAlert,
+  sanitize,
+  setBackHandler,
+  showModal
+} from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 import { FORCE_SEARCH, MAX_INPUT_LEN } from '../js/constants.mjs';
 
@@ -421,6 +429,8 @@ function updateRows({ data, error }) {
 
 export function onUpdateGui(session) {
   hideAlert();
+
+  setBackHandler(onButtonLeftImage0Click);
 
   globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {

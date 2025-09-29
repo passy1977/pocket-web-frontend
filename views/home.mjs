@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/serverAPI.mjs';
-import showAlert, { hideAlert, showModal } from '../js/pocket.mjs';
+import showAlert, { hideAlert, showModal, setBackCallback } from '../js/pocket.mjs';
 import { FORCE_SEARCH } from '../js/constants.mjs';
 
 const FieldType = Object.freeze({
@@ -737,6 +737,8 @@ function updateRows({ data, error }) {
 
 export function onUpdateGui(session) {
   hideAlert();
+
+  setBackCallback(onButtonLeftImage0Click);
 
   globalSideMenu = document.getElementById('side-menu');
   document.getElementById('import-data')?.addEventListener('click', onImportDataClick);

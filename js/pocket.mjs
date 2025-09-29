@@ -9,6 +9,7 @@ const debug = null;
 let session = null;
 let globalModalCallback = null;
 let globalModalData = null;
+let globalBackCallback = null;
 
 export const EmptyGroup = Object.freeze({
   id: 0,
@@ -53,19 +54,14 @@ export const EmptyField = Object.freeze({
   timestamp_creation: 0,
 });
 
-window.addEventListener('popstate', event => {
-  event.preventDefault();
-  const shouldExit = confirm('Do you want really exit from Pocket 5?');
-  if (!shouldExit) {
-    // Push a new state to prevent navigation
-    history.pushState(null, '', window.location.href);
-  }
-});
 
-// Prevent initial back navigation by pushing a state
-history.pushState(null, '', window.location.href);
+
+
 
 window.onload = () => {
+  // Initialize handlers to intercept back events
+  initializeBackCallbacks();
+  
   try {
     serverAPI.showSpinner = showSpinner;
     serverAPI.hideSpinner = hideSpinner;
@@ -226,23 +222,42 @@ export function showModal({ title, message, close = null, confirm = null, data =
   const closeEl = document.getElementById('modal-close');
   const confirmEl = document.getElementById('modal-confirm');
 
-  titleEl.textContent = title;
-  messageEl.textContent = message;
-  closeEl.textContent = close;
+  titleEl.textContent = sanitize(title);
+  messageEl.innerHTML = message;
+  closeEl.textContent = sanitize(close, true);
 
-  modalElm.addEventListener('hidden.bs.modal',callbackModalHandlerFalse);
+  // Clean up any existing event listeners to prevent duplicates
+  modalElm.removeEventListener('hidden.bs.modal', callbackModalHandlerFalse);
+  closeEl.removeEventListener('click', callbackModalHandlerFalse);
+  closeHeaderEl.removeEventListener('click', callbackModalHandlerFalse);
+  confirmEl.removeEventListener('click', callbackModalHandlerTrue);
+
+  // Add event listeners
+  modalElm.addEventListener('hidden.bs.modal', callbackModalHandlerFalse);
   closeEl.addEventListener('click', callbackModalHandlerFalse);
   closeHeaderEl.addEventListener('click', callbackModalHandlerFalse);
 
-  if (confirm !== null && typeof confirm === 'string') {
-    confirmEl.textContent = confirm;
+  // Handle focus management and accessibility
+  modalElm.addEventListener('shown.bs.modal', function() {
+    // Ensure aria-hidden is properly managed by Bootstrap
+    modalElm.removeAttribute('aria-hidden');
+  });
 
+  modalElm.addEventListener('hide.bs.modal', function() {
+    // Clear focus from any modal elements before hiding
+    const focusedElement = modalElm.querySelector(':focus');
+    if (focusedElement) {
+      focusedElement.blur();
+    }
+  });
+
+  if (confirm !== null && typeof confirm === 'string') {
+    confirmEl.textContent = sanitize(confirm, true);
     confirmEl.addEventListener('click', callbackModalHandlerTrue);
     confirmEl.classList.remove('collapse');
   } else {
     confirmEl.classList.add('collapse');
   }
-
 
   modal.show();
 }
@@ -253,6 +268,69 @@ export function showSpinner() {
 
 export function hideSpinner() {
   document.getElementById('spinner').style.visibility =  'hidden';
+}
+
+/**
+ * Set a custom function to be called when a back event is detected
+ * @param {Function} callback - Function to call when the back button is pressed
+ */
+export function setBackCallback(callback) {
+  if (callback && typeof callback !== 'function') {
+    throw new TypeError('Callback must be a function or null');
+  }
+  globalBackCallback = callback;
+}
+
+/**
+ * Internal function to handle back events
+ */
+function onBackEvent(event) {
+  if (globalBackCallback && typeof globalBackCallback === 'function') {
+    // Prevent default behavior if the handler returns false
+    const result = globalBackCallback(event);
+    if (result === false && event.preventDefault) {
+      event.preventDefault();
+    }
+  }
+}
+
+/**
+ * Initialize listeners to intercept back events
+ */
+function initializeBackCallbacks() {
+  // Handle browser back button (mobile and desktop devices)
+  window.addEventListener('popstate', onBackEvent);
+  
+  // // Handle mouse buttons (back/forward)
+  document.addEventListener('mousedown', (event) => {
+    // Button 3 = back button, Button 4 = forward button
+    if (event.button === 3) {
+      event.preventDefault(); // Prevent browser's default back action
+      onBackEvent(event);
+    }
+  });
+  
+  // For some browsers, also use the mouseup event
+  document.addEventListener('mouseup', (event) => {
+    if (event.button === 3) {
+      event.preventDefault(); // Prevent browser's default back action
+      // Don't call onBackEvent here to avoid double execution
+    }
+  });
+  
+  // // Also handle some keyboard keys that can act as back
+  // document.addEventListener('keydown', (event) => {
+  //   // Alt + Left Arrow (common shortcut for back)
+  //   if (event.altKey && event.key === 'ArrowLeft') {
+  //     onBackEvent(event);
+  //   }
+  //   // Backspace in some contexts (only if not typing in an input)
+  //   else if (event.key === 'Backspace' && 
+  //            !['INPUT', 'TEXTAREA'].includes(event.target.tagName) &&
+  //            !event.target.isContentEditable) {
+  //     onBackEvent(event);
+  //   }
+  // });
 }
 
 export function sanitize(value, remove = false) {
