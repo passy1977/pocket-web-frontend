@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { hideAlert, sanitize } from '../js/pocket.mjs';
+import showAlert, { hideAlert, sanitize, setBackHandler } from '../js/pocket.mjs';
 import serverAPI from '../js/serverAPI.mjs';
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from '../js/constants.mjs';
 
@@ -46,6 +46,8 @@ function onButtonLeftImage0Click() {
 
 export function onUpdateGui(session) {
   hideAlert();
+
+  setBackHandler(onButtonLeftImage0Click);
 
   globalSession = session;
 
