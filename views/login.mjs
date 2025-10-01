@@ -28,7 +28,8 @@ export async function onUpdateGui(session) {
         showSpinner();
         await sleep(1000);
         hideSpinner();
-        session.callbackLogout();
+        session.invalidate();
+        serverAPI.invalidate();
         return;
     }
   }

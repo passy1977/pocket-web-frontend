@@ -18,4 +18,6 @@ export const ALLOWED_MIME_TYPES = [
   'text/xml'
 ];
 
+export const HEARTBEAT_INTERVAL = 10 * 1_000; // 10 seconds
+
 export default BACKEND_URL;

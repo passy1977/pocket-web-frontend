@@ -48,10 +48,14 @@ export class StackNavigator {
   get index() {
     return this.#index;
   }
+
+  invalidate() {
+    this.#stack = this.#stack.slice(0, 1);
+    this.#index = 0;
+  }
 }
 
 export default class Session {
-  #callbackUpdate;
   #gui;
   #stackNavigator;
   #lastData;
@@ -59,9 +63,8 @@ export default class Session {
   #buttonLeft0Callback = null;
   #buttonRight0Callback = null;
   #buttonRight1Callback = null;
-  #callbackLogout = () => {};
 
-  constructor(gui, defaultGroup, callbackUpdate, callbackLogout) {
+  constructor(gui, defaultGroup) {
 
     if (!new.target) {
       throw new TypeError(`calling Session constructor without new is invalid`);
@@ -111,15 +114,6 @@ export default class Session {
       throw new TypeError(`buttonRightImage1 it's not a object`);
     }
 
-    if (typeof callbackUpdate !== 'function') {
-      throw new TypeError(`callbackUpdate it's not a function`);
-    }
-
-    if (typeof callbackLogout !== 'function') {
-      throw new TypeError(`callbackLogout it's not a function`);
-    }
-
-    this.#callbackUpdate = callbackUpdate;
     this.#gui = gui;
     this.#stackNavigator = new StackNavigator(defaultGroup);
 
@@ -132,7 +126,6 @@ export default class Session {
     this.#gui.buttonRightImage1.addEventListener('click', e => {
       if (this.#buttonRight1Callback) this.#buttonRight1Callback(e);
     });
-    this.#callbackLogout = callbackLogout;
   }
 
   get lastData() {
@@ -149,10 +142,6 @@ export default class Session {
 
   get stackNavigator() {
     return this.#stackNavigator;
-  }
-
-  callbackLogout() {
-    this.#callbackLogout();
   }
 
   setButtonLeft0Callback(src, callback) {
@@ -226,6 +215,13 @@ export default class Session {
     this.setButtonRight1Callback(null, null);
   }
 
+  invalidate() {
+    this.#stackNavigator.invalidate();
+    this.#lastData = null;
+    this.#lastPath = null;
+  }
+
+
   async #loadHtml(path) {
     if (typeof path !== 'string') {
       throw new TypeError(`path is not a string`);
@@ -285,7 +281,7 @@ export default class Session {
 
     this.#lastData = data;
 
-    let { path, title, data: _data } = this.#lastData;
+    let { path, title } = this.#lastData;
 
     if (path.startsWith('http')) {
       throw new Error(`path can't start with "http"`);
@@ -308,7 +304,6 @@ export default class Session {
       await this.#loadHtml(path);
       await this.#loadJs(path);
 
-      this.#callbackUpdate(this.#lastData);
       return true;
     } catch (error) {
       throw new Error(`Failed to load resources for ${path}: ${error}`);

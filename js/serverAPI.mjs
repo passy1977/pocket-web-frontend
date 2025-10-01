@@ -1,6 +1,93 @@
 'use strict';
 
-import BACKEND_URL from './constants.mjs';
+import BACKEND_URL, { HEARTBEAT_INTERVAL } from './constants.mjs';
+
+class HeartbeatTimer {
+  #callback;
+  #interval;
+  #intervalId;
+  #remainingTime;
+  #startTime;
+  #isRunning;
+  #isPaused;
+
+  constructor(callback, interval) {
+    if (typeof callback !== 'function') {
+      throw new TypeError('callback must be a function');
+    }
+
+    if (typeof interval !== 'number' || interval <= 0) {
+      throw new TypeError('interval must be a positive number');
+    }
+
+    this.#callback = callback;
+    this.#interval = interval;
+    this.#intervalId = null;
+    this.#remainingTime = interval;
+    this.#startTime = null;
+    this.#isRunning = false;
+    this.#isPaused = false;
+  }
+
+  start() {
+    if (this.#isRunning) return;
+
+    this.#isRunning = true;
+    this.#isPaused = false;
+    this.#startTime = Date.now();
+
+    this.#scheduleNext();
+  }
+
+  stop() {
+    if (this.#intervalId) {
+      clearTimeout(this.#intervalId);
+      this.#intervalId = null;
+    }
+
+    this.#isRunning = false;
+    this.#isPaused = false;
+    this.#remainingTime = this.#interval;
+  }
+
+  pause() {
+    if (!this.#isRunning || this.#isPaused) return;
+
+    if (this.#intervalId) {
+      clearTimeout(this.#intervalId);
+      this.#intervalId = null;
+    }
+
+    this.#remainingTime -= Date.now() - this.#startTime;
+    this.#isPaused = true;
+  }
+
+  resume() {
+    if (!this.#isRunning || !this.#isPaused) return;
+
+    this.#isPaused = false;
+    this.#startTime = Date.now();
+    this.#scheduleNext();
+  }
+
+  #scheduleNext() {
+    this.#intervalId = setTimeout(() => {
+      this.#callback();
+      this.#remainingTime = this.#interval;
+      this.#startTime = Date.now();
+      this.#scheduleNext();
+    }, this.#remainingTime);
+  }
+
+  // Getter per verificare lo stato
+  get isRunning() {
+    return this.#isRunning;
+  }
+
+  get isPaused() {
+    return this.#isPaused;
+  }
+}
 
 
 class ServerAPI {
@@ -10,6 +97,8 @@ class ServerAPI {
   #defaultDataTransfer;
   #showSpinner = () => {};
   #hideSpinner = () => {};
+  #heartbeatTimer;
+  #callbackLogout = null;
 
   constructor(url) {
     if (!new.target) {
@@ -45,9 +134,52 @@ class ServerAPI {
       data: null,
       error: null
     };
+
+    this.#heartbeatTimer = new HeartbeatTimer(() => this.#heartbeat(), HEARTBEAT_INTERVAL);
+
   }
 
   #dbg() {}
+
+  #heartbeat() {
+    if (!this.#sessionId) {
+      if(this.#callbackLogout) {
+        this.#callbackLogout();
+      }
+      return;
+    }
+
+    fetch(this.#enterPoint + '/heartbeat/' + this.#sessionId, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.session_id && typeof data.session_id == 'string') {
+          console.log("Heartbeat OK", new Date().toLocaleTimeString());
+        } else {
+          console.log("Session expired", new Date().toLocaleTimeString());
+          if(this.#callbackLogout) {
+            this.#callbackLogout();
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Server connection lost", new Date().toLocaleTimeString());
+        if(this.#callbackLogout) {
+          this.#callbackLogout();
+        }
+      });
+  }
+
+  set callbackLogout(callback) {
+    if (callback !== null && typeof callback !== 'function') {
+      throw new TypeError(`callback it's not a function`);
+    }
+    this.#callbackLogout = callback;
+  }
 
   set showSpinner(showSpinner) {
     if (!showSpinner || typeof showSpinner !== 'function') {
@@ -131,6 +263,7 @@ class ServerAPI {
       .then(data => {
         this.#handleData(data, callback);
         this.#hideSpinner();
+        this.#heartbeatTimer.start();
       })
       .catch(error => {
         callback({ data: null, error });
@@ -206,6 +339,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/home', {
       method: 'PUT',
@@ -223,10 +357,12 @@ class ServerAPI {
       .then(data => {
         this.#handleData(data, callback);
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       })
       .catch(error => {
         callback({ data: null, error });
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       });
   }
 
@@ -240,6 +376,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/debug', {
       method: 'POST',
@@ -304,6 +441,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/data', {
       method: 'POST',
@@ -327,6 +465,7 @@ class ServerAPI {
       .then(data => {
         if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id) {
           callback({ data, error: null });
+          this.#heartbeatTimer.resume();
         } else {
           callback({ data: null, error: 'No valid session_id' });
         }
@@ -335,6 +474,7 @@ class ServerAPI {
       .catch(error => {
         callback({ data: null, error });
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       });
   }
 
@@ -376,6 +516,7 @@ class ServerAPI {
       return;
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/group_detail', {
       method: 'PUT',
@@ -393,10 +534,12 @@ class ServerAPI {
       .then(data => {
         this.#handleData(data, callback);
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       })
       .catch(error => {
         callback({ data: null, error });
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       });
   }
 
@@ -438,6 +581,7 @@ class ServerAPI {
       return;
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/field_detail', {
       method: 'PUT',
@@ -455,10 +599,12 @@ class ServerAPI {
       .then(data => {
         this.#handleData(data, callback);
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       })
       .catch(error => {
         callback({ data: null, error });
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       });
   }
 
@@ -480,6 +626,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     if (!formData && !fileSize) {
       fetch(this.#enterPoint + '/import_data', {
@@ -498,10 +645,12 @@ class ServerAPI {
         .then(data => {
           this.#handleData(data, callback);
           this.#hideSpinner();
+          this.#heartbeatTimer.resume();
         })
         .catch(error => {
           callback({ data: null, error });
           this.#hideSpinner();
+          this.#heartbeatTimer.resume();
         });
     } else {
       formData.append('session_id', `${this.#sessionId}`);
@@ -515,19 +664,15 @@ class ServerAPI {
         .then(data => {
           this.#handleData(data, callback);
           this.#hideSpinner();
+          this.#heartbeatTimer.resume();
         })
         .catch(error => {
           callback({ data: null, error });
           this.#hideSpinner();
+          this.#heartbeatTimer.resume();
         });
     }
 
-  }
-
-  exportData(path = null, callback) {
-    //TODO: non implementato
-    console.debug('exportData', path);
-    callback({ data: {}, error: null });
   }
 
   changePasswd({passwd = null, newPasswd = null}, callback) {
@@ -548,6 +693,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.pause();
     this.#showSpinner();
     fetch(this.#enterPoint + '/change_passwd', {
       method: 'PUT',
@@ -565,10 +711,12 @@ class ServerAPI {
       .then(data => {
         this.#handleData(data, callback);
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       })
       .catch(error => {
         callback({ data: null, error });
         this.#hideSpinner();
+        this.#heartbeatTimer.resume();
       });
   }
 
@@ -586,6 +734,7 @@ class ServerAPI {
       throw new TypeError(`callback it's not a function`);
     }
 
+    this.#heartbeatTimer.stop();
     this.#showSpinner();
     fetch(this.#enterPoint + '/logout', {
       method: 'PUT',

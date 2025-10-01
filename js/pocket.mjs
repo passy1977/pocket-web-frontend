@@ -56,8 +56,6 @@ export const EmptyField = Object.freeze({
 
 
 
-
-
 window.onload = () => {
   // Initialize handlers to intercept back events
   initializeBackCallbacks();
@@ -65,6 +63,23 @@ window.onload = () => {
   try {
     serverAPI.showSpinner = showSpinner;
     serverAPI.hideSpinner = hideSpinner;
+    serverAPI.callbackLogout = () => {
+      const { group: currentGroup, search } = session.stackNavigator.get();
+
+      serverAPI.logout({groupId: currentGroup.id, search, maintainConfig: true}, ({ data }) => {
+        if (data) {
+          session.loadSync(data);
+          serverAPI.invalidate();
+          session.invalidate();
+        } else {
+          session.loadSync({path: 'login', title : 'Login', data: ''});// Back login
+          serverAPI.invalidate();
+          session.invalidate();
+        }
+      });
+
+    };
+
     session = new Session({
         alert: document.getElementById('alert'),
         context: document.getElementById('context'),
@@ -78,25 +93,7 @@ window.onload = () => {
         buttonRight1: document.getElementById('right-1'),
         buttonRightImage1: document.getElementById('right-image-1')
       },
-      EmptyGroup,
-      data => {
-        if (data.path === '/home') {
-          console.debug('TODO', data);
-        }
-      },
-      () => {
-        serverAPI.hello(({ data, error }) => {
-          if (data) {
-            session.loadSync(data);
-          } else {
-            if (error) {
-              showAlert(error);
-            } else {
-              showAlert('unhandled error');
-            }
-          }
-        });
-      }
+      EmptyGroup
     );
   } catch (error) {
     console.error('Failed to initialize session:', error);
