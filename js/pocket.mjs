@@ -318,19 +318,6 @@ function initializeBackCallbacks() {
     }
   });
   
-  // // Also handle some keyboard keys that can act as back
-  // document.addEventListener('keydown', (event) => {
-  //   // Alt + Left Arrow (common shortcut for back)
-  //   if (event.altKey && event.key === 'ArrowLeft') {
-  //     onBackEvent(event);
-  //   }
-  //   // Backspace in some contexts (only if not typing in an input)
-  //   else if (event.key === 'Backspace' && 
-  //            !['INPUT', 'TEXTAREA'].includes(event.target.tagName) &&
-  //            !event.target.isContentEditable) {
-  //     onBackEvent(event);
-  //   }
-  // });
 }
 
 export function sanitize(value, remove = false) {
