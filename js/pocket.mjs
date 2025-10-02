@@ -1,6 +1,6 @@
 'use strict';
 
-import serverAPI from './serverAPI.mjs';
+import serverAPI from './server-api.mjs';
 import Session from './session.mjs';
 
 // const debug = '/change-passwd';
@@ -72,7 +72,7 @@ window.onload = () => {
           serverAPI.invalidate();
           session.invalidate();
         } else {
-          session.loadSync({path: 'login', title : 'Login', data: ''});// Back login
+          session.loadSync({path: '/login', title : 'Login', data: ''});// Back login
           serverAPI.invalidate();
           session.invalidate();
         }

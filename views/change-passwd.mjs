@@ -2,7 +2,7 @@
 
 
 import showAlert, { hideAlert, sanitize, setBackHandler } from '../js/pocket.mjs';
-import serverAPI from '../js/serverAPI.mjs';
+import serverAPI from '../js/server-api.mjs';
 
 let globalSession = null;
 let globalElmClicked = false;

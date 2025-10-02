@@ -1,6 +1,6 @@
 'use strict';
 
-import serverAPI from '../js/serverAPI.mjs';
+import serverAPI from '../js/server-api.mjs';
 import showAlert, { hideAlert, hideSpinner, showSpinner, sleep } from '../js/pocket.mjs';
 import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 

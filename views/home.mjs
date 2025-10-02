@@ -1,6 +1,6 @@
 'use strict';
 
-import serverAPI from '../js/serverAPI.mjs';
+import serverAPI from '../js/server-api.mjs';
 import showAlert, { hideAlert, showModal, setBackCallback } from '../js/pocket.mjs';
 import { FORCE_SEARCH } from '../js/constants.mjs';
 

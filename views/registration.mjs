@@ -1,7 +1,7 @@
 'use strict';
 
 import showAlert, { hideAlert, sleep, sanitize, setBackHandler } from '../js/pocket.mjs';
-import serverAPI from '../js/serverAPI.mjs';
+import serverAPI from '../js/server-api.mjs';
 import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalSession = null;

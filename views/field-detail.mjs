@@ -1,7 +1,7 @@
 'use strict';
 
 import showAlert, { EmptyField, hideAlert, sanitize, setBackHandler, showModal } from '../js/pocket.mjs';
-import serverAPI from '../js/serverAPI.mjs';
+import serverAPI from '../js/server-api.mjs';
 import { FORCE_SEARCH, MAX_INPUT_LEN, PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalElmClicked = false;
