@@ -78,6 +78,12 @@ window.onload = () => {
       try {
         serverAPI.hello(({ data, error }) => {
           if (!data) {
+            console.log("--->1", data.session_id);
+            showModal({
+              title: 'Session expired',
+              message: 'Your session has expired. Please log in again.',
+              close: 'Close'
+            });
             if (error) {
               showAlert(error);
             } else {

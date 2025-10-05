@@ -32,10 +32,13 @@ class ServerAPI {
         } else {
           callback({ data: null, error: data.error });
         }
+        return true;
       } else if (data.error) {
         callback({ data: null, error: data.error });
+        return false;
       } else {
         callback({ data: null, error: Error('No valid session_id') });
+        return false;
       }
     };
     this.#defaultDataTransfer = {
@@ -121,6 +124,7 @@ class ServerAPI {
   hello(callback) {
     this.#dbg();
     this.#showSpinner();
+    console.log("--->2", this.#sessionId);
     fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
       method: 'GET',
       headers: {
@@ -176,9 +180,10 @@ class ServerAPI {
     })
       .then(response => response.json())
       .then(data => {
-        this.#handleData(data, callback);
+        if (this.#handleData(data, callback)) {
+          this.#heartbeatTimer.start();
+        }
         this.#hideSpinner();
-        this.#heartbeatTimer.start();
       })
       .catch(error => {
         callback({ data: null, error });
