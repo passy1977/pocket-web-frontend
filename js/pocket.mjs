@@ -66,18 +66,28 @@ window.onload = () => {
     serverAPI.callbackLogout = () => {
       const { group: currentGroup, search } = session.stackNavigator.get();
 
-      serverAPI.logout({groupId: currentGroup.id, search, maintainConfig: true}, ({ data }) => {
-        if (data) {
-          session.loadSync(data);
-          serverAPI.invalidate();
-          session.invalidate();
-        } else {
-          session.loadSync({path: '/login', title : 'Login', data: ''});// Back login
-          serverAPI.invalidate();
-          session.invalidate();
-        }
-      });
+      session.loadSync({
+        path: '/login',
+        title: 'Login',
+        data: 'expired',
+      });// Back login
 
+      serverAPI.invalidate();
+      session.invalidate();
+
+      try {
+        serverAPI.hello(({ data, error }) => {
+          if (!data) {
+            if (error) {
+              showAlert(error);
+            } else {
+              showAlert('unhandled error');
+            }
+          }
+        });
+      } catch (e) {
+        showAlert(e);
+      }
     };
 
     session = new Session({

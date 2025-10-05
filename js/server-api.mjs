@@ -71,17 +71,17 @@ class ServerAPI {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.session_id && typeof data.session_id == 'string') {
+        if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && !data.error) {
           console.log("Heartbeat OK", new Date().toLocaleTimeString());
-        } else {
-          console.log("Session expired", new Date().toLocaleTimeString());
+        } else if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && data.error) {
+          console.log(data.error, new Date().toLocaleTimeString());
           if(this.#callbackLogout) {
             this.#callbackLogout();
           }
         }
       })
       .catch(error => {
-        console.error("Server connection lost", new Date().toLocaleTimeString());
+        console.error("Server connection lost", new Date().toLocaleTimeString(), error);
         if(this.#callbackLogout) {
           this.#callbackLogout();
         }
@@ -114,6 +114,7 @@ class ServerAPI {
   }
 
   invalidate() {
+    this.#heartbeatTimer.stop();
     this.#sessionId = null;
   }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/server-api.mjs';
-import showAlert, { hideAlert, hideSpinner, showSpinner, sleep } from '../js/pocket.mjs';
+import showAlert, { hideAlert, hideSpinner, showModal, showSpinner, sleep } from '../js/pocket.mjs';
 import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalForm = null;
@@ -25,12 +25,17 @@ export async function onUpdateGui(session) {
       email.value = dataSplit[0];
       passwd.value = dataSplit[1];
     } else if(session.lastData?.data === 'logout') {
-        showSpinner();
-        await sleep(1000);
-        hideSpinner();
-        session.invalidate();
-        serverAPI.invalidate();
-        return;
+      showSpinner();
+      await sleep(1000);
+      hideSpinner();
+      return;
+    } else if(session.lastData?.data === 'expired') {
+      showModal({
+        title: 'Session expired',
+        message: 'Your session has expired. Please log in again.',
+        close: 'Close',
+      });
+      return;
     }
   }
 
