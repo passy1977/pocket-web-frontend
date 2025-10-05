@@ -68,12 +68,24 @@ export default class HeartbeatTimer {
     this.#scheduleNext();
   }
 
-  #scheduleNext() {
-    this.#intervalId = setTimeout(() => {
-      this.#callback();
-      this.#remainingTime = this.#interval;
+  async #scheduleNext() {
+    if (!this.#isRunning || this.#isPaused) return;
+    this.#intervalId = setTimeout(async () => {
+      this.#intervalId = null;
       this.#startTime = Date.now();
-      this.#scheduleNext();
+      try {
+        // Support both sync and async callbacks
+        await this.#callback();
+      } catch (e) {
+        // Optionally handle callback errors
+        console.error('HeartbeatTimer callback error:', e);
+      }
+      // Only schedule next if still running and not paused
+      if (this.#isRunning && !this.#isPaused) {
+        this.#remainingTime = this.#interval;
+        this.#startTime = Date.now();
+        this.#scheduleNext();
+      }
     }, this.#remainingTime);
   }
 
