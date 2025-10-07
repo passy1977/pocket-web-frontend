@@ -124,7 +124,6 @@ class ServerAPI {
   hello(callback) {
     this.#dbg();
     this.#showSpinner();
-    console.log("--->2", this.#sessionId);
     fetch(this.#enterPoint + '/hello/' + this.#sessionId, {
       method: 'GET',
       headers: {
