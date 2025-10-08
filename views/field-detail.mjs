@@ -1,6 +1,6 @@
 'use strict';
 
-import showAlert, { EmptyField, hideAlert, sanitize, setBackHandler, showModal } from '../js/pocket.mjs';
+import showAlert, { EmptyField, hideAlert, sanitize, setBackCallback, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/server-api.mjs';
 import { FORCE_SEARCH, MAX_INPUT_LEN, PASSWD_MIN_LEN } from '../js/constants.mjs';
 
@@ -133,7 +133,7 @@ function onButtonRightImage1Click() {
 export function onUpdateGui(session) {
   hideAlert();
 
-  setBackHandler(onButtonLeftImage0Click);
+  setBackCallback(onButtonLeftImage0Click);
 
   globalSession = session;
 

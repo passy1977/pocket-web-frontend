@@ -6,7 +6,7 @@ import showAlert, {
   EmptyGroupField,
   hideAlert,
   sanitize,
-  setBackHandler,
+  setBackCallback,
   showModal
 } from '../js/pocket.mjs';
 import serverAPI from '../js/server-api.mjs';
@@ -430,7 +430,7 @@ function updateRows({ data, error }) {
 export function onUpdateGui(session) {
   hideAlert();
 
-  setBackHandler(onButtonLeftImage0Click);
+  setBackCallback(onButtonLeftImage0Click);
 
   globalDataContainer = document.getElementById('data-container');
   if (!globalDataContainer) {
