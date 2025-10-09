@@ -147,7 +147,7 @@ function onDeleteSessionClick(e) {
           if (data) {
             globalSession.loadSync(data);
             serverAPI.invalidate();
-            session.invalidate();
+            globalSession.invalidate();
           } else {
             if (error) {
               showAlert(error);
@@ -187,7 +187,7 @@ function onLogoutClick(e) {
       if (data) {
         globalSession.loadSync(data);
         serverAPI.invalidate();
-        session.invalidate();
+        globalSession.invalidate();
         serverAPI.hello(({ data, error }) => {
           if (!data) {
             if (error) {
