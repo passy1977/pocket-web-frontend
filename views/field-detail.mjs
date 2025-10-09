@@ -2,7 +2,7 @@
 
 import showAlert, { EmptyField, hideAlert, sanitize, setBackCallback, showModal } from '../js/pocket.mjs';
 import serverAPI from '../js/server-api.mjs';
-import { FORCE_SEARCH, MAX_INPUT_LEN, PASSWD_MIN_LEN } from '../js/constants.mjs';
+import { FORCE_SEARCH, MAX_INPUT_LEN, MAX_TEXT_AREA_LEN, PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalElmClicked = false;
 let globalSession = null;
@@ -25,7 +25,8 @@ function onButtonGenerateRandomClick() {
   }
   
   globalFieldValue.value = password;
-  
+  globalFieldIsHidden.checked = true;
+
   array.fill(0);
 }
 
