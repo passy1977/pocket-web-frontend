@@ -159,6 +159,7 @@ export default function showAlert(msg) {
     }
   }
 
+  serverAPI?.stopHeartbeat();
 
   session?.gui?.alert.classList.remove('visually-hidden');
   const div = document.createElement('div');

@@ -27,14 +27,14 @@ export default class HeartbeatTimer {
     this.#isPaused = false;
   }
 
-  start() {
+  async start() {
     if (this.#isRunning) return;
 
     this.#isRunning = true;
     this.#isPaused = false;
     this.#startTime = Date.now();
 
-    this.#scheduleNext();
+    await this.#scheduleNext();
   }
 
   stop() {
@@ -60,12 +60,12 @@ export default class HeartbeatTimer {
     this.#isPaused = true;
   }
 
-  resume() {
+  async resume() {
     if (!this.#isRunning || !this.#isPaused) return;
 
     this.#isPaused = false;
     this.#startTime = Date.now();
-    this.#scheduleNext();
+    await this.#scheduleNext();
   }
 
   async #scheduleNext() {
@@ -84,7 +84,7 @@ export default class HeartbeatTimer {
       if (this.#isRunning && !this.#isPaused) {
         this.#remainingTime = this.#interval;
         this.#startTime = Date.now();
-        this.#scheduleNext();
+        await this.#scheduleNext();
       }
     }, this.#remainingTime);
   }

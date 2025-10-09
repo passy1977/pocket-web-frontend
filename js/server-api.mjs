@@ -121,6 +121,14 @@ class ServerAPI {
     this.#sessionId = null;
   }
 
+  startHeartbeat() {
+    this.#heartbeatTimer.start();
+  }
+
+  stopHeartbeat() {
+    this.#heartbeatTimer.stop();
+  }
+
   hello(callback) {
     this.#dbg();
     this.#showSpinner();
@@ -180,7 +188,9 @@ class ServerAPI {
       .then(response => response.json())
       .then(data => {
         if (this.#handleData(data, callback)) {
-          this.#heartbeatTimer.start();
+          if (data.path !== '/registration' && data.error == null) {
+            this.#heartbeatTimer.start();
+          }
         }
         this.#hideSpinner();
       })

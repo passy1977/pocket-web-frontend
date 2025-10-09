@@ -604,7 +604,7 @@ function buildRow(ROW, type, {
 
   if (note) {
     row = row.replaceAll('<!--note', '');
-    row = row.replaceAll('{note-alt}', note.replaceAll('"', '\"'));
+    row = row.replaceAll('{note-alt}', note.replaceAll(/"/g, '\"'));
     row = row.replaceAll('{note}', note);
     row = row.replaceAll('note-->', '');
   } else {
