@@ -189,7 +189,7 @@ class ServerAPI {
       .then(response => response.json())
       .then(data => {
         if (this.#handleData(data, callback)) {
-          if (data.path !== '/registration' && data.error == null) {
+          if (data.path !== '/registration') {
             this.#heartbeatTimer.start();
           }
         }
