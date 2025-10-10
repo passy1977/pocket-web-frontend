@@ -29,10 +29,11 @@ class ServerAPI {
       if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id) {
         if (!data.error) {
           callback({ data, error: null });
+          return true;
         } else {
           callback({ data: null, error: data.error });
+          return false;
         }
-        return true;
       } else if (data.error) {
         callback({ data: null, error: data.error });
         return false;
@@ -86,7 +87,7 @@ class ServerAPI {
       .catch(error => {
         console.error("Server connection lost", new Date().toLocaleTimeString(), error);
         if(this.#callbackLogout) {
-          this.#callbackLogout();
+          this.#callbackLogout(error);
         }
       });
   }

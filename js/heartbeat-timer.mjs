@@ -84,7 +84,7 @@ export default class HeartbeatTimer {
       if (this.#isRunning && !this.#isPaused) {
         this.#remainingTime = this.#interval;
         this.#startTime = Date.now();
-        await this.#scheduleNext();
+        this.#scheduleNext();
       }
     }, this.#remainingTime);
   }

@@ -63,36 +63,46 @@ window.onload = () => {
   try {
     serverAPI.showSpinner = showSpinner;
     serverAPI.hideSpinner = hideSpinner;
-    serverAPI.callbackLogout = () => {
-      const { group: currentGroup, search } = session.stackNavigator.get();
+    serverAPI.callbackLogout = error => {
+      let data = '';
 
-      session.loadSync({
-        path: '/login',
-        title: 'Login',
-        data: 'expired',
-      });// Back login
+      if (error && error.message === 'Failed to fetch') {
+        data = 'no-network';
 
-      serverAPI.invalidate();
-      session.invalidate();
+        showAlert('No server API connection available');
+        session.gui.context.textContent = '';
+      } else {
+        data = 'expired';
 
-      try {
-        serverAPI.hello(({ data, error }) => {
-          if (!data) {
-            showModal({
-              title: 'Session expired',
-              message: 'Your session has expired. Please log in again.',
-              close: 'Close'
-            });
-            if (error) {
-              showAlert(error);
-            } else {
-              showAlert('unhandled error');
+        session.loadSync({
+          path: '/login',
+          title: 'Login',
+          data,
+        });// Back login
+
+        serverAPI.invalidate();
+        session.invalidate();
+
+        try {
+          serverAPI.hello(({ data, error }) => {
+            if (!data) {
+              showModal({
+                title: 'Session expired',
+                message: 'Your session has expired. Please log in again.',
+                close: 'Close'
+              });
+              if (error) {
+                showAlert(error);
+              } else {
+                showAlert('unhandled error');
+              }
             }
-          }
-        });
-      } catch (e) {
-        showAlert(e);
+          });
+        } catch (e) {
+          showAlert(e);
+        }
       }
+
     };
 
     session = new Session({
@@ -156,6 +166,7 @@ export default function showAlert(msg) {
   if (msg.constructor.name === 'String') {
     if (msg.includes('Failed to fetch')) {
       msg = 'No server API connection available';
+      session.gui.context.textContent = '';
     }
   }
 

@@ -29,13 +29,6 @@ export async function onUpdateGui(session) {
       await sleep(1000);
       hideSpinner();
       return;
-    } else if(session.lastData?.data === 'expired') {
-      showModal({
-        title: 'Session expired',
-        message: 'Your session has expired. Please log in again.',
-        close: 'Close',
-      });
-      return;
     }
   }
 
@@ -70,6 +63,16 @@ export async function onUpdateGui(session) {
 
     if (passwd.value.length < PASSWD_MIN_LEN) {
       passwd.classList.add('is-invalid');
+      execute = false;
+    }
+
+    if(session.lastData?.data === 'expired') {
+      showModal({
+        title: 'Session expired',
+        message: 'Your session has expired. Please log in again.',
+        close: 'Close',
+      });
+    } else if(session.lastData?.data === 'no-network') {
       execute = false;
     }
 
