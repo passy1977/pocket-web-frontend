@@ -70,7 +70,8 @@ window.onload = () => {
         data = 'no-network';
 
         showAlert('No server API connection available');
-        session.gui.context.textContent = '';
+        session.resetGui();
+
       } else {
         data = 'expired';
 
@@ -166,7 +167,7 @@ export default function showAlert(msg) {
   if (msg.constructor.name === 'String') {
     if (msg.includes('Failed to fetch')) {
       msg = 'No server API connection available';
-      session.gui.context.textContent = '';
+      session.resetGui();
     }
   }
 
