@@ -2,6 +2,7 @@
 
 import showAlert from './pocket.mjs';
 import StackNavigator from './stack-navigator.mjs';
+import { TITLE } from './constants.mjs';
 
 export default class Session {
   #gui;
@@ -163,6 +164,30 @@ export default class Session {
     this.setButtonRight1Callback(null, null);
   }
 
+  resetGui() {
+    this.#gui.buttonLeft0?.classList.add('collapse');
+    this.#gui.buttonLeftImage0?.classList.add('collapse');
+    this.#gui.buttonLeft1?.classList.add('collapse');
+    this.#gui.buttonLeftImage1?.classList.add('collapse');
+    this.#gui.title.innerHTML = TITLE;
+    this.#gui.buttonRight0?.classList.add('collapse');
+    this.#gui.buttonRightImage0?.classList.add('collapse');
+    this.#gui.buttonRight1?.classList.add('collapse');
+    this.#gui.buttonRightImage1?.classList.add('collapse');
+    this.#gui.context.innerHTML = '';
+    this.#gui.buttonLeft0.alt = '';
+    this.#gui.buttonLeftImage0.alt = '';
+    this.#gui.buttonLeft1.alt = '';
+    this.#gui.buttonLeftImage1.alt = '';
+    this.#gui.buttonRight0.alt = '';
+    this.#gui.buttonRightImage0.alt = '';
+    this.#gui.buttonRight1.alt = '';
+    this.#gui.buttonRightImage1.alt = '';
+    document.title = TITLE;
+    this.resetGuiCallbacks();
+  }
+
+
   invalidate() {
     this.#stackNavigator.invalidate();
     this.#lastData = null;
@@ -241,7 +266,7 @@ export default class Session {
     }
 
     if (showTitle) {
-      document.title = `Pocket 5 - ${title}`;
+      document.title = `${TITLE} - ${title}`;
       this.#gui.title.innerHTML = title;
     }
 

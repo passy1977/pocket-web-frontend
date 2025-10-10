@@ -2,7 +2,7 @@
 
 import serverAPI from '../js/server-api.mjs';
 import showAlert, { hideAlert, showModal, setBackCallback } from '../js/pocket.mjs';
-import { FORCE_SEARCH } from '../js/constants.mjs';
+import { FORCE_SEARCH, TITLE } from '../js/constants.mjs';
 
 const FieldType = Object.freeze({
   GROUP: 0,
@@ -775,10 +775,10 @@ export function onUpdateGui(session) {
   globalElmClicked = false;
 
   if (globalSession.stackNavigator.index > 0) {
-    document.title = `Pocket 5 - ${globalGroup.title}`;
+    document.title = `${TITLE} - ${globalGroup.title}`;
     globalSession.gui.title.innerText = globalGroup.title;
   } else {
-    document.title = `Pocket 5 - Home`;
+    document.title = `${TITLE} - Home`;
     globalSession.gui.title.innerText = 'Home';
   }
 

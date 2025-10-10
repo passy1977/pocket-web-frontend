@@ -1,6 +1,9 @@
 'use strict';
 
+
 const BACKEND_URL = 'http://localhost:8080';
+
+export const TITLE = 'Pocket 5';
 
 export const FORCE_SEARCH = 'force_search=';
 
@@ -18,6 +21,6 @@ export const ALLOWED_MIME_TYPES = [
   'text/xml'
 ];
 
-export const HEARTBEAT_INTERVAL = 5 * 1_000; // 10 seconds
+export const HEARTBEAT_INTERVAL = 5 * 1_000; // 5 seconds
 
 export default BACKEND_URL;
