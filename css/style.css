@@ -84,6 +84,7 @@ nav .btn:disabled {
     display: flex;
     flex-direction: column;
     position: relative;
+    min-height: 550px;
 }
 
 .btn-primary {
