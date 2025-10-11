@@ -47,7 +47,7 @@ function onFieldAddOrModify() {
 
   globalFieldTitleContainer.classList.remove('is-invalid');
   if(globalFieldTitle.value.trim() === '') {
-    globalFieldTitleInvalid.text = 'This field is required';
+    globalFieldTitleInvalid.value = 'This field is required';
     globalFieldTitleContainer.classList.add('is-invalid');
     globalElmClicked = false;
     return;
@@ -60,7 +60,7 @@ function onFieldAddOrModify() {
   }
 
   if(globalFieldTitle.value.length > MAX_INPUT_LEN) {
-    globalFieldTitleInvalid.text = 'Title too long';
+    globalFieldTitleInvalid.value = 'Title too long';
     globalFieldTitleContainer.classList.add('is-invalid');
     return;
   }
