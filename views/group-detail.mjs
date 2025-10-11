@@ -264,7 +264,7 @@ function onButtonRightImage1Click() {
       globalGroupFields.forEach( (groupField, _) => {
         if (!groupField.synchronized) {
           newGlobalGroupFields.push(groupField);
-          if(groupField.id < 0) {
+          if(groupField.id < 0 && globalGroup.id === 0) {
             fields.push({
               ...EmptyField,
               group_id: groupField.group_id,
