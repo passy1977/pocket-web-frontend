@@ -768,7 +768,7 @@ export function onUpdateGui(session) {
   }
 
   if(globalGroup.note && globalGroup.note !== '') {
-    document.getElementById('note').textContent = globalGroup.note;
+    document.getElementById('note').value = globalGroup.note;
     document.getElementById('note-container').classList.remove('collapse');
   }
 
