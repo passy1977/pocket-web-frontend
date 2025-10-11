@@ -59,18 +59,20 @@ function onButtonRightImage1Click() {
   
   hideAlert();
 
+  let fieldsError = false;
+
   const fieldTitleInvalid = document.getElementById('field-title-invalid')
   const fieldTitleElm = document.getElementById('field-title-elm');
   if(globalFieldTitle.value === '') {
-    fieldTitleInvalid.text = 'This field is required';
+    fieldTitleInvalid.value = 'This field is required';
     fieldTitleElm.classList.add('is-invalid');
     globalElmClicked = false;
-    return;
+    fieldsError = true;
   } else if(globalFieldTitle.value > MAX_INPUT_LEN) {
-    fieldTitleInvalid.text = 'Title too long';
+    fieldTitleInvalid.value = 'Title too long';
     fieldTitleElm.classList.add('is-invalid');
     globalElmClicked = false;
-    return;
+    fieldsError = true;
   } else {
     fieldTitleElm.classList.remove('is-invalid');
   }
@@ -78,17 +80,21 @@ function onButtonRightImage1Click() {
   const fieldValueInvalid = document.getElementById('field-value-invalid')
   const fieldValueElm = document.getElementById('field-value-elm');
   if(globalFieldValue.value === '') {
-    fieldValueInvalid.text = 'This field is required';
+    fieldValueInvalid.value = 'This field is required';
     fieldValueElm.classList.add('is-invalid');
     globalElmClicked = false;
-    return;
+    fieldsError = true;
   } else if(globalFieldValue.value > MAX_TEXT_AREA_LEN) {
-    fieldValueInvalid.text = 'Value too long';
+    fieldValueInvalid.value = 'Value too long';
     fieldValueElm.classList.add('is-invalid');
     globalElmClicked = false;
-    return;
+    fieldsError = true;
   } else {
     fieldValueElm.classList.remove('is-invalid');
+  }
+
+  if(fieldsError) {
+    return;
   }
 
   showModal({
