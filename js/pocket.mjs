@@ -71,6 +71,7 @@ window.onload = () => {
 
         showAlert('No server API connection available');
         session.resetGui();
+        closeSideMenu();
 
       } else {
         data = 'expired';
@@ -107,6 +108,7 @@ window.onload = () => {
     };
 
     session = new Session({
+        sideMenu: document.getElementById('side-menu'),
         alert: document.getElementById('alert'),
         context: document.getElementById('context'),
         buttonLeft0: document.getElementById('left-0'),
@@ -168,6 +170,7 @@ export default function showAlert(msg) {
     if (msg.includes('Failed to fetch')) {
       msg = 'No server API connection available';
       session.resetGui();
+      closeSideMenu();
     }
   }
 
@@ -362,3 +365,10 @@ export function sanitize(value, remove = false) {
   }
 }
 
+export function closeSideMenu() {
+  session?.gui.sideMenu.classList.remove('open');
+}
+
+export function toggleSideMenu() {
+  session?.gui.sideMenu.classList.toggle('open');
+}

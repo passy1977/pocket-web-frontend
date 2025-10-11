@@ -1,7 +1,13 @@
 'use strict';
 
 import serverAPI from '../js/server-api.mjs';
-import showAlert, { hideAlert, showModal, setBackCallback } from '../js/pocket.mjs';
+import showAlert, {
+  hideAlert,
+  showModal,
+  setBackCallback,
+  closeSideMenu,
+  toggleSideMenu
+} from '../js/pocket.mjs';
 import { FORCE_SEARCH, TITLE } from '../js/constants.mjs';
 
 const FieldType = Object.freeze({
@@ -13,13 +19,11 @@ let globalElmClicked = false;
 let globalSession = null;
 let globalDataContainer = null;
 let globalTemplateRow = '';
-let globalSideMenu = null;
 
 let globalGroup = null;
 let globalSearch = '';
 const globalGroups = new Map();
 const globalFields = new Map();
-
 
 function onImportDataClick(e) {
   if (typeof e !== 'object') {
@@ -34,7 +38,7 @@ function onImportDataClick(e) {
 
 
   globalSession?.resetGuiCallbacks();
-  globalSideMenu.classList.remove('open');
+  closeSideMenu();
   hideAlert();
   try {
     serverAPI.importData({formData: null, fileSize: null}, ({data, error}) => {
@@ -66,7 +70,7 @@ function onExportDataClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  globalSideMenu.classList.remove('open');
+  closeSideMenu();
   hideAlert();
   try {
     serverAPI.exportData(null, ({ data, error }) => {
@@ -98,7 +102,7 @@ function onChangePasswdClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  globalSideMenu.classList.remove('open');
+  closeSideMenu();
   hideAlert();
   try {
     serverAPI.changePasswd({passwd: null, newPasswd: null}, ({ data, error }) => {
@@ -130,7 +134,7 @@ function onDeleteSessionClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  globalSideMenu.classList.remove('open');
+  closeSideMenu();
   hideAlert();
   showModal({
     title: 'Delete session',
@@ -178,7 +182,7 @@ function onLogoutClick(e) {
   globalElmClicked = true;
 
   globalSession?.resetGuiCallbacks();
-  globalSideMenu.classList.remove('open');
+  closeSideMenu();
   hideAlert();
   try {
     const { group: currentGroup, search } = globalSession.stackNavigator.get();
@@ -385,7 +389,7 @@ function onClickEdit(elm) {
             groupId
           }, ({ data, error }) => {
             if (data) {
-              globalSideMenu.classList.remove('open');
+              closeSideMenu();
 
               data['insert'] = false;
               globalSession.loadSync(data);
@@ -409,7 +413,7 @@ function onClickEdit(elm) {
             groupId
           }, ({ data, error }) => {
             if (data) {
-              globalSideMenu.classList.remove('open');
+              closeSideMenu();
 
               data['insert'] = false;
               globalSession.loadSync(data);
@@ -454,7 +458,7 @@ function onClick(elm) {
   switch (type) {
     case 'group':
       if (globalSession && globalGroups.has(id)) {
-        globalSideMenu.classList.remove('open');
+        closeSideMenu();
 
         globalSession.stackNavigator.push(globalGroups.get(id));
         globalSession.loadSync({
@@ -480,13 +484,13 @@ function onButtonLeftImage0Click() {
   globalElmClicked = true;
   const data = globalSession.stackNavigator.pop();
   if (data) {
-    globalSideMenu.classList.remove('open');
+    closeSideMenu();
     globalSession.loadSync({
       path: '/home',
       title: 'Home'
     }, false);
   } else {
-    globalSideMenu.classList.toggle('open');
+    toggleSideMenu();
   }
   globalElmClicked = false;
 }
@@ -506,7 +510,7 @@ function onButtonRightImage0Click() {
       group: globalGroup
     }, ({ data, error }) => {
       if (data) {
-        globalSideMenu.classList.remove('open');
+        closeSideMenu();
 
         data['insert'] = true;
         globalSession.loadSync(data);
@@ -538,7 +542,7 @@ function onButtonRightImage1Click() {
       groupId: globalGroup.id
     }, ({ data, error }) => {
       if (data) {
-        globalSideMenu.classList.remove('open');
+        closeSideMenu();
 
         data['insert'] = true;
         globalSession.loadSync(data);
@@ -743,7 +747,6 @@ export function onUpdateGui(session) {
 
   setBackCallback(onButtonLeftImage0Click);
 
-  globalSideMenu = document.getElementById('side-menu');
   document.getElementById('import-data')?.addEventListener('click', onImportDataClick);
   document.getElementById('export-data')?.addEventListener('click', onExportDataClick);
   document.getElementById('change-passwd')?.addEventListener('click', onChangePasswdClick);

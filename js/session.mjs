@@ -19,6 +19,10 @@ export default class Session {
       throw new TypeError(`calling Session constructor without new is invalid`);
     }
 
+    if (typeof gui.sideMenu !== 'object') {
+      throw new TypeError(`sideMenu it's not a object`);
+    }
+
     if (typeof gui.alert !== 'object') {
       throw new TypeError(`alert it's not a object`);
     }
