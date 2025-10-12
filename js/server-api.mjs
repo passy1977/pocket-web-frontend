@@ -53,13 +53,13 @@ class ServerAPI {
       error: null
     };
 
-    this.#heartbeatTimer = new HeartbeatTimer(() => this.#heartbeat(), HEARTBEAT_INTERVAL);
+    this.#heartbeatTimer = new HeartbeatTimer(async () => await this.#heartbeat(), HEARTBEAT_INTERVAL);
 
   }
 
   #dbg() {}
 
-  #heartbeat() {
+  async #heartbeat() {
     if (!this.#sessionId) {
       if(this.#callbackLogout) {
         this.#callbackLogout();
@@ -67,29 +67,60 @@ class ServerAPI {
       return;
     }
 
-    fetch(this.#enterPoint + '/heartbeat/' + this.#sessionId, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && !data.error) {
-          console.log("Heartbeat OK", new Date().toLocaleTimeString());
-        } else if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && data.error) {
-          console.log(data.error, new Date().toLocaleTimeString());
-          if(this.#callbackLogout) {
-            this.#callbackLogout();
-          }
+    try {
+      const response = await fetch(this.#enterPoint + '/heartbeat/' + this.#sessionId, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
       })
-      .catch(error => {
-        console.error("Server connection lost", new Date().toLocaleTimeString(), error);
-        if(this.#callbackLogout) {
-          this.#callbackLogout(error);
+      const data = await response.json();
+      if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && !data.error) {
+        console.log("Heartbeat OK", new Date().toLocaleTimeString());
+      } else if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && data.error) {
+        console.log(data.error, new Date().toLocaleTimeString());
+        if (this.#callbackLogout) {
+          this.#callbackLogout();
         }
-      });
+      }
+    } catch (error) {
+      console.error("Server connection lost", new Date().toLocaleTimeString(), error);
+      if(this.#callbackLogout) {
+        this.#callbackLogout(error);
+      }
+    }
+
+
+    // let lock = true;
+
+    // fetch(this.#enterPoint + '/heartbeat/' + this.#sessionId, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && !data.error) {
+    //     console.log("Heartbeat OK", new Date().toLocaleTimeString());
+    //   } else if (data.session_id && typeof data.session_id == 'string' && this.#sessionId === data.session_id && data.error) {
+    //     console.log(data.error, new Date().toLocaleTimeString());
+    //     if(this.#callbackLogout) {
+    //       this.#callbackLogout();
+    //     }
+    //   }
+    //   lock = false;
+    // })
+    // .catch(error => {
+    //   console.error("Server connection lost", new Date().toLocaleTimeString(), error);
+    //   if(this.#callbackLogout) {
+    //     this.#callbackLogout(error);
+    //   }
+    //   lock = false;
+    // });
+    //
+    // while(lock);
+
   }
 
   set callbackLogout(callback) {

@@ -8,6 +8,7 @@ export default class HeartbeatTimer {
   #startTime;
   #isRunning;
   #isPaused;
+  #isExecuting;
 
   constructor(callback, interval) {
     if (typeof callback !== 'function') {
@@ -25,6 +26,7 @@ export default class HeartbeatTimer {
     this.#startTime = null;
     this.#isRunning = false;
     this.#isPaused = false;
+    this.#isExecuting = false;
   }
 
   async start() {
@@ -45,6 +47,7 @@ export default class HeartbeatTimer {
 
     this.#isRunning = false;
     this.#isPaused = false;
+    this.#isExecuting = false;
     this.#remainingTime = this.#interval;
   }
 
@@ -70,16 +73,32 @@ export default class HeartbeatTimer {
 
   async #scheduleNext() {
     if (!this.#isRunning || this.#isPaused) return;
+    
     this.#intervalId = setTimeout(async () => {
+      // If already executing, reschedule and return
+      if (this.#isExecuting) {
+        if (this.#isRunning && !this.#isPaused) {
+          this.#scheduleNext();
+        }
+        return;
+      }
+      
       this.#intervalId = null;
+      this.#isExecuting = true;
       this.#startTime = Date.now();
+
+
       try {
         // Support both sync and async callbacks
         await this.#callback();
+        this.#isExecuting = false;
       } catch (e) {
         // Optionally handle callback errors
         console.error('HeartbeatTimer callback error:', e);
+        this.#isExecuting = false;
       }
+
+      
       // Only schedule next if still running and not paused
       if (this.#isRunning && !this.#isPaused) {
         this.#remainingTime = this.#interval;
@@ -95,5 +114,9 @@ export default class HeartbeatTimer {
 
   get isPaused() {
     return this.#isPaused;
+  }
+
+  get isExecuting() {
+    return this.#isExecuting;
   }
 }
