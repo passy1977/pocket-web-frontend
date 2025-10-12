@@ -73,6 +73,12 @@ window.onload = () => {
         session.resetGui();
         closeSideMenu();
 
+        showModal({
+          title: 'Session expired',
+          message: 'Your session has expired. Please log in again.',
+          close: 'Close'
+        });
+
       } else {
         data = 'expired';
 

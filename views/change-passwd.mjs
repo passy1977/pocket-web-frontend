@@ -1,8 +1,9 @@
 'use strict';
 
-
+import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 import showAlert, { hideAlert, sanitize, setBackCallback } from '../js/pocket.mjs';
 import serverAPI from '../js/server-api.mjs';
+
 
 let globalSession = null;
 let globalElmClicked = false;
