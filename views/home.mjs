@@ -6,7 +6,7 @@ import showAlert, {
   showModal,
   setBackCallback,
   closeSideMenu,
-  toggleSideMenu
+  toggleSideMenu, sanitize
 } from '../js/pocket.mjs';
 import { FORCE_SEARCH, TITLE } from '../js/constants.mjs';
 
@@ -608,7 +608,7 @@ function buildRow(ROW, type, {
 
   if (note) {
     row = row.replaceAll('<!--note', '');
-    row = row.replaceAll('{note-alt}', note.replaceAll(/"/g, '\"'));
+    row = row.replaceAll('{note-alt}', sanitize(note));
     row = row.replaceAll('{note}', note);
     row = row.replaceAll('note-->', '');
   } else {
