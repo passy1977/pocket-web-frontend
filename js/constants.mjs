@@ -23,4 +23,6 @@ export const ALLOWED_MIME_TYPES = [
 
 export const HEARTBEAT_INTERVAL = 5 * 1_000; // 5 seconds
 
+export const HEARTBEAT_DISABLE = true;
+
 export default BACKEND_URL;

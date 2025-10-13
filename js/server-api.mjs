@@ -1,6 +1,6 @@
 'use strict';
 
-import BACKEND_URL, { HEARTBEAT_INTERVAL } from './constants.mjs';
+import BACKEND_URL, { HEARTBEAT_DISABLE, HEARTBEAT_INTERVAL } from './constants.mjs';
 import HeartbeatTimer from './heartbeat-timer.mjs';
 
 
@@ -53,7 +53,7 @@ class ServerAPI {
       error: null
     };
 
-    this.#heartbeatTimer = new HeartbeatTimer(async () => await this.#heartbeat(), HEARTBEAT_INTERVAL);
+    this.#heartbeatTimer = new HeartbeatTimer(async () => await this.#heartbeat(), HEARTBEAT_INTERVAL, HEARTBEAT_DISABLE);
 
   }
 

@@ -9,8 +9,13 @@ export default class HeartbeatTimer {
   #isRunning;
   #isPaused;
   #isExecuting;
+  #disable;
 
-  constructor(callback, interval) {
+  constructor(callback, interval, disable = false) {
+    if (!new.target) {
+      throw new TypeError(`calling HeartbeatTimer constructor without new is invalid`);
+    }
+
     if (typeof callback !== 'function') {
       throw new TypeError('callback must be a function');
     }
@@ -19,8 +24,14 @@ export default class HeartbeatTimer {
       throw new TypeError('interval must be a positive number');
     }
 
+    if (typeof disable !== 'boolean') {
+      throw new TypeError('interval must be a boolean');
+    }
+
+
     this.#callback = callback;
     this.#interval = interval;
+    this.#disable = disable;
     this.#intervalId = null;
     this.#remainingTime = interval;
     this.#startTime = null;
@@ -30,6 +41,7 @@ export default class HeartbeatTimer {
   }
 
   async start() {
+    if (this.#disable) return;
     if (this.#isRunning) return;
 
     this.#isRunning = true;
@@ -40,6 +52,7 @@ export default class HeartbeatTimer {
   }
 
   stop() {
+    if (this.#disable) return;
     if (this.#intervalId) {
       clearTimeout(this.#intervalId);
       this.#intervalId = null;
@@ -52,6 +65,7 @@ export default class HeartbeatTimer {
   }
 
   pause() {
+    if (this.#disable) return;
     if (!this.#isRunning || this.#isPaused) return;
 
     if (this.#intervalId) {
@@ -64,6 +78,7 @@ export default class HeartbeatTimer {
   }
 
   async resume() {
+    if (this.#disable) return;
     if (!this.#isRunning || !this.#isPaused) return;
 
     this.#isPaused = false;
@@ -72,6 +87,7 @@ export default class HeartbeatTimer {
   }
 
   async #scheduleNext() {
+    if (this.#disable) return;
     if (!this.#isRunning || this.#isPaused) return;
     
     this.#intervalId = setTimeout(async () => {
@@ -89,12 +105,10 @@ export default class HeartbeatTimer {
 
 
       try {
-        // Support both sync and async callbacks
         await this.#callback();
-        this.#isExecuting = false;
       } catch (e) {
-        // Optionally handle callback errors
         console.error('HeartbeatTimer callback error:', e);
+      } finally  {
         this.#isExecuting = false;
       }
 

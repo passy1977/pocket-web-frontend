@@ -7,7 +7,7 @@ export default class StackNavigator {
 
   constructor(defaultGroup) {
     if (!new.target) {
-      throw new TypeError(`calling GroupStacked constructor without new is invalid`);
+      throw new TypeError(`calling StackNavigator constructor without new is invalid`);
     }
 
     this.#stack = [];
