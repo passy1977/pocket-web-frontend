@@ -99,12 +99,7 @@ export function onUpdateGui(session) {
     }
 
     try {
-      serverAPI.registration({
-        jsonConfig: jsonConfig.value,
-        email: sanitize(session.lastData.data, true),
-        passwd: passwd.value,
-        confirmPasswd: passwdConfirm.value
-      }, ({ data, error }) => {
+      serverAPI.changePasswd({passwd: passwd?.value ?? null, newPasswd: passwdNew?.value ?? null}, ({ data, error }) => {
         if (data) {
           globalSession.loadSync(data);
         } else {
