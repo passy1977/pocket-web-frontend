@@ -1,7 +1,7 @@
 'use strict';
 
 import serverAPI from '../js/server-api.mjs';
-import showAlert, { hideAlert, hideSpinner, showModal, showSpinner, sleep } from '../js/pocket.mjs';
+import showAlert, { closeSideMenu, hideAlert, hideSpinner, showModal, showSpinner, sleep } from '../js/pocket.mjs';
 import { PASSWD_MIN_LEN } from '../js/constants.mjs';
 
 let globalForm = null;
@@ -26,8 +26,16 @@ export async function onUpdateGui(session) {
       passwd.value = dataSplit[1];
     } else if(session.lastData?.data === 'logout') {
       showSpinner();
+      session.invalidate();
+      serverAPI.invalidate();
+      closeSideMenu();
       await sleep(1000);
       hideSpinner();
+      try {
+        serverAPI.hello(() => {});
+      } catch (e) {
+        showAlert(e);
+      }
       return;
     }
   }

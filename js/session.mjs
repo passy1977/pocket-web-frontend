@@ -196,6 +196,7 @@ export default class Session {
     this.#stackNavigator.invalidate();
     this.#lastData = null;
     this.#lastPath = null;
+    this.resetGuiCallbacks();
   }
 
 

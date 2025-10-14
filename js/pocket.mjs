@@ -72,6 +72,8 @@ window.onload = () => {
         showAlert('No server API connection available');
         session.resetGui();
         closeSideMenu();
+        serverAPI.invalidate();
+        session.invalidate();
 
         showModal({
           title: 'Session expired',
@@ -177,6 +179,13 @@ export default function showAlert(msg) {
       msg = 'No server API connection available';
       session.resetGui();
       closeSideMenu();
+
+      showModal({
+        title: 'Session expired',
+        message: 'Your session has expired. Please log in again.',
+        close: 'Close'
+      });
+
     }
   }
 
