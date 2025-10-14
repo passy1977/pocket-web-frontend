@@ -84,6 +84,7 @@ export function onUpdateGui(session) {
     }
 
     if (exit) {
+      globalElmClicked = false;
       return;
     }
 
@@ -95,6 +96,7 @@ export function onUpdateGui(session) {
       passwdConfirm.value = '';
       passwdConfirmInvalidFeedback.innerText = 'Passwords mismatch';
       passwdConfirm.classList.add('is-invalid');
+      globalElmClicked = false;
       return;
     }
 
