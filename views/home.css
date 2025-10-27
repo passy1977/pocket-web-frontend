@@ -22,6 +22,14 @@
     height: 19px;
 }
 
+@media (max-width: 768px) {
+    #data-container .row div {
+        text-align: center;
+    }
+    .hidden-text::before {
+        position: static;
+    }
+}
 .row-group:hover, .row-field:hover {
     background-color: var(--secondary-active-color);
     cursor: pointer;
