@@ -203,3 +203,10 @@ img.ico-input {
      position: relative;
  }
 
+
+
+@media (max-width: 768px) {
+    .container {
+        overflow-x: hidden;
+    }
+}
