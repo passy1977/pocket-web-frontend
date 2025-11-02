@@ -34,3 +34,21 @@
 .group-note-height {
     height: 10em !important;
 }
+
+@media (max-width: 768px) {
+    #group-field-area-tips {
+        text-align: center;
+    }
+
+    #group-field-area {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #group-field-area .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+        display: block;
+        box-sizing: border-box;
+    }
+}
