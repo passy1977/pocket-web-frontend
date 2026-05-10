@@ -266,7 +266,7 @@ export function showModal({ title, message, close = null, confirm = null, data =
   const confirmEl = document.getElementById('modal-confirm');
 
   titleEl.textContent = sanitize(title);
-  messageEl.innerHTML = message;
+  messageEl.textContent = sanitize(message);
   closeEl.textContent = sanitize(close, true);
 
   // Clean up any existing event listeners to prevent duplicates

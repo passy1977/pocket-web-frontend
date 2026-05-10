@@ -23,7 +23,13 @@ export async function onUpdateGui(session) {
       const dataSplit = session.lastData.data.split('|');
 
       email.value = dataSplit[0];
-      passwd.value = dataSplit[1];
+      if (dataSplit.length > 1) {
+        passwd.value = dataSplit[1];
+      }
+    } else if(session.lastData?.data !== 'logout' && session.lastData?.data !== 'expired' && session.lastData?.data !== 'no-network') {
+      //from registration (email only)
+      const email = document.getElementById('email');
+      email.value = session.lastData.data;
     } else if(session.lastData?.data === 'logout') {
       showSpinner();
       session.invalidate();
